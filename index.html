@@ -7,59 +7,97 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      background: #f5f5f5;
+      background: linear-gradient(to bottom right, #2e7d32, #1b5e20);
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    h2 {
+      margin-bottom: 30px;
+      font-size: 1.8rem;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: auto;
     }
     .stat-box {
-      display: inline-block;
-      margin: 15px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 15px;
       padding: 20px;
-      border: 2px solid #333;
-      border-radius: 10px;
-      background: white;
-      width: 200px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+    .stat-box:hover {
+      transform: scale(1.05);
+    }
+    .stat-box h3 {
+      margin-bottom: 15px;
     }
     button {
-      margin-top: 10px;
       padding: 10px 15px;
-      font-size: 16px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      background: #ffca28;
       cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    button:hover:enabled {
+      background: #ffc107;
+      transform: scale(1.1);
+    }
+    button:disabled {
+      background: gray;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
-  <h1>⚽ Football Clicker Game ⚽</h1>
+  <h1>⚽ Football Training Clicker ⚽</h1>
   <h2>Overall: <span id="overall">0</span></h2>
 
-  <div class="stat-box">
-    <h3>Dribbling: <span id="dribbling">0</span></h3>
-    <button onclick="increaseStat('dribbling')">Train Dribbling</button>
-  </div>
-
-  <div class="stat-box">
-    <h3>Passing: <span id="passing">0</span></h3>
-    <button onclick="increaseStat('passing')">Train Passing</button>
-  </div>
-
-  <div class="stat-box">
-    <h3>Shooting: <span id="shooting">0</span></h3>
-    <button onclick="increaseStat('shooting')">Train Shooting</button>
-  </div>
-
-  <div class="stat-box">
-    <h3>Defending: <span id="defending">0</span></h3>
-    <button onclick="increaseStat('defending')">Train Defending</button>
-  </div>
+  <div class="stats-grid" id="stats-container"></div>
 
   <script>
-    // Load stats from localStorage or set defaults
-    let stats = JSON.parse(localStorage.getItem("footballStats")) || {
-      dribbling: 0,
-      passing: 0,
-      shooting: 0,
-      defending: 0
-    };
+    // --- CONFIG ---
+    const statNames = [
+      "Shooting",
+      "Defending",
+      "Dribbling",
+      "Agility",
+      "Speed",
+      "Vision",
+      "Pressing",
+      "Jumping"
+    ];
+    const cooldownTime = 5000; // 5 seconds in ms
 
-    // Function to update display
+    // --- LOAD STATS OR SET DEFAULTS ---
+    let stats = JSON.parse(localStorage.getItem("footballStats")) || {};
+    statNames.forEach(name => {
+      if (!(name in stats)) stats[name] = 0;
+    });
+
+    // --- CREATE STAT BOXES ---
+    const container = document.getElementById("stats-container");
+    statNames.forEach(name => {
+      const box = document.createElement("div");
+      box.className = "stat-box";
+      box.innerHTML = `
+        <h3>${name}: <span id="${name}">${stats[name]}</span></h3>
+        <button id="btn-${name}" onclick="increaseStat('${name}')">Train ${name}</button>
+      `;
+      container.appendChild(box);
+    });
+
+    // --- UPDATE DISPLAY ---
     function updateDisplay() {
       for (let key in stats) {
         document.getElementById(key).textContent = stats[key];
@@ -70,13 +108,31 @@
       localStorage.setItem("footballStats", JSON.stringify(stats));
     }
 
-    // Function to increase a stat
+    // --- INCREASE STAT WITH COOLDOWN ---
     function increaseStat(stat) {
       stats[stat]++;
       updateDisplay();
+
+      const button = document.getElementById("btn-" + stat);
+      button.disabled = true;
+      let remaining = cooldownTime / 1000;
+
+      const originalText = `Train ${stat}`;
+      button.textContent = `Wait ${remaining}s`;
+
+      const countdown = setInterval(() => {
+        remaining--;
+        if (remaining > 0) {
+          button.textContent = `Wait ${remaining}s`;
+        } else {
+          clearInterval(countdown);
+          button.disabled = false;
+          button.textContent = originalText;
+        }
+      }, 1000);
     }
 
-    // Initial update
+    // --- INITIAL LOAD ---
     updateDisplay();
   </script>
 </body>

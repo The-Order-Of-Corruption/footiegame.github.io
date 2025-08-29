@@ -5,7 +5,577 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Football Training Clicker</title>
   <style>
+    * {<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Training Clicker</title>
+  <style>
     * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+   
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+      color: white;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+   
+    .container {
+      max-width: 1200px;
+      width: 100%;
+    }
+   
+    header {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+   
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+   
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+   
+    .overall-display {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #FFD700;
+      margin: 15px 0;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    }
+   
+    .main-content {
+      display: flex;
+      width: 100%;
+      gap: 25px;
+      margin-bottom: 20px;
+    }
+   
+    .stats-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+   
+    .profile {
+      width: 300px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+   
+    .profile h3 {
+      font-size: 1.6rem;
+      color: #FFD700;
+      margin-bottom: 20px;
+    }
+   
+    .profile label {
+      display: block;
+      text-align: left;
+      margin-bottom: 5px;
+      font-size: 1.1rem;
+    }
+   
+    .profile input,
+    .profile select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+    }
+   
+    .profile input::placeholder,
+    .profile select {
+      color: #BDBDBD;
+    }
+   
+    .stat-box {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 25px 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+   
+    .stat-box.active {
+      background: rgba(0, 0, 0, 0.7);
+    }
+   
+    .stat-box.cooldown {
+      background: rgba(60, 60, 60, 0.7);
+      opacity: 0.8;
+    }
+   
+    .stat-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+    }
+   
+    .stat-title {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      color: #FFD700;
+    }
+   
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #4CAF50;
+    }
+   
+    .stat-value.increase {
+      animation: flash 0.3s ease;
+    }
+   
+    @keyframes flash {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+   
+    .cooldown-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+   
+    .cooldown-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #FFD700 0%, #FF9800 100%);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+   
+    button {
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(to bottom, #FFD700 0%, #FFA000 100%);
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 200px;
+    }
+   
+    button:hover:enabled {
+      background: linear-gradient(to bottom, #FFC400 0%, #FF6F00 100%);
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+   
+    button:disabled {
+      background: linear-gradient(to bottom, #9E9E9E 0%, #616161 100%);
+      cursor: not-allowed;
+      transform: scale(0.98);
+    }
+   
+    .cooldown-text {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #BDBDBD;
+    }
+   
+    .instructions {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 15px;
+      max-width: 800px;
+    }
+   
+    .instructions h3 {
+      margin-bottom: 15px;
+      color: #FFD700;
+    }
+   
+    .instructions p {
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+   
+    #reset-game {
+      margin-top: 20px;
+      background: linear-gradient(to bottom, #FF0000 0%, #B30000 100%);
+      color: white;
+    }
+   
+    #reset-game:hover:enabled {
+      background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
+    }
+   
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+     
+      h2 {
+        font-size: 1.5rem;
+      }
+     
+      .main-content {
+        flex-direction: column;
+      }
+     
+      .profile {
+        width: 100%;
+        margin-top: 20px;
+      }
+     
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+     
+      .stat-box {
+        padding: 20px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>⚽ Football Training Clicker ⚽</h1>
+      <h2>Improve your player's skills</h2>
+      <div class="overall-display">Overall Rating: <span id="overall">0</span></div>
+    </header>
+    <div class="main-content">
+      <div class="stats-grid" id="stats-container">
+        <!-- Stats will be generated by JavaScript -->
+      </div>
+      <div class="profile">
+        <h3>Player Profile</h3>
+        <label for="player-name">Name:</label>
+        <input type="text" id="player-name" placeholder="Enter name">
+        <label for="player-age">Age:</label>
+        <input type="number" id="player-age" placeholder="Enter age" min="1" max="100">
+        <label for="player-club">Club:</label>
+        <input type="text" id="player-club" placeholder="Enter club">
+        <label for="player-position">Position:</label>
+        <select id="player-position">
+          <option value="">Select position</option>
+          <option value="GK">GK</option>
+          <option value="LB">LB</option>
+          <option value="CB">CB</option>
+          <option value="RB">RB</option>
+          <option value="CDM">CDM</option>
+          <option value="DM">DM</option>
+          <option value="CAM">CAM</option>
+          <option value="LM">LM</option>
+          <option value="RM">RM</option>
+          <option value="ST">ST</option>
+          <option value="LW">LW</option>
+          <option value="RW">RW</option>
+        </select>
+      </div>
+    </div>
+    <button id="reset-game">Reset Progress</button>
+    <div class="instructions">
+      <h3>How to Play</h3>
+      <p>Click on the training buttons to improve your player's skills.</p>
+      <p>Each skill has a 5-second cooldown after training.</p>
+      <p>You can only train up to 2 skills at the same time.</p>
+      <p>Your overall rating is the average of all skills.</p>
+      <p>Progress and profile are automatically saved to your browser.</p>
+    </div>
+  </div>
+  <script>
+    // Game configuration
+    const statNames = [
+      "Shooting", "Defending", "Dribbling", "Agility",
+      "Speed", "Vision", "Pressing", "Jumping"
+    ];
+    const cooldownTime = 5000; // 5 seconds
+    const maxStat = 100; // Optional stat cap
+    const maxConcurrentTraining = 2;
+
+    // Helper function to create safe IDs
+    function idify(name) {
+      return name.toLowerCase().replace(/\s+/g, "-");
+    }
+
+    // Load data from localStorage with error handling
+    function loadData(key, defaultValue) {
+      try {
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : defaultValue;
+      } catch (e) {
+        console.error(`Failed to load ${key} from localStorage:`, e);
+        return defaultValue;
+      }
+    }
+
+    let stats = loadData("footballStats", {});
+    let cooldowns = loadData("footballCooldowns", {});
+    let profile = loadData("footballProfile", { name: "", age: "", club: "", position: "" });
+
+    // Initialize stats and cooldowns if they don't exist
+    statNames.forEach(name => {
+      if (!(name in stats)) stats[name] = 0;
+      if (!(name in cooldowns)) cooldowns[name] = 0;
+    });
+
+    // Save data to localStorage with error handling
+    function saveData(key, data) {
+      try {
+        localStorage.setItem(key, JSON.stringify(data));
+      } catch (e) {
+        console.error(`Failed to save ${key} to localStorage:`, e);
+      }
+    }
+
+    // Create stat boxes
+    const container = document.getElementById("stats-container");
+
+    statNames.forEach(name => {
+      const id = idify(name);
+      const box = document.createElement("div");
+      box.className = "stat-box";
+      box.id = `box-${id}`;
+      box.innerHTML = `
+        <h3 class="stat-title">${name}</h3>
+        <div class="stat-value"><span id="stat-${id}">${stats[name]}</span></div>
+        <div class="cooldown-bar">
+          <div class="cooldown-progress" id="cooldown-progress-${id}"></div>
+        </div>
+        <button id="btn-${id}" aria-label="Train ${name} skill" aria-disabled="false">Train ${name}</button>
+        <div class="cooldown-text" id="cooldown-text-${id}"></div>
+      `;
+      container.appendChild(box);
+
+      // Add event listener with debounce
+      const button = document.getElementById(`btn-${id}`);
+      button.addEventListener("click", debounce(() => increaseStat(name), 200));
+    });
+
+    // Load profile data into inputs
+    document.getElementById("player-name").value = profile.name;
+    document.getElementById("player-age").value = profile.age;
+    document.getElementById("player-club").value = profile.club;
+    document.getElementById("player-position").value = profile.position;
+
+    // Save profile on input change
+    const profileInputs = ["player-name", "player-age", "player-club", "player-position"];
+    profileInputs.forEach(id => {
+      const input = document.getElementById(id);
+      input.addEventListener("change", () => {
+        profile.name = document.getElementById("player-name").value;
+        profile.age = document.getElementById("player-age").value;
+        profile.club = document.getElementById("player-club").value;
+        profile.position = document.getElementById("player-position").value;
+        saveData("footballProfile", profile);
+      });
+    });
+
+    // Debounce function
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // Update display function
+    function updateDisplay() {
+      // Update all stat values
+      for (let key in stats) {
+        const id = idify(key);
+        const statElement = document.getElementById(`stat-${id}`);
+        if (statElement) {
+          statElement.textContent = stats[key];
+        }
+      }
+
+      // Calculate and update overall rating
+      const values = Object.values(stats);
+      const overall = Math.floor(values.reduce((a, b) => a + b, 0) / values.length);
+      document.getElementById("overall").textContent = overall;
+
+      // Save stats
+      saveData("footballStats", stats);
+    }
+
+    // Count active cooldowns
+    function activeCooldownCount() {
+      return statNames.filter(name => cooldowns[name] > Date.now()).length;
+    }
+
+    // Increase stat function with cooldown
+    function increaseStat(stat) {
+      const id = idify(stat);
+      const button = document.getElementById(`btn-${id}`);
+      const statValue = document.getElementById(`stat-${id}`);
+      const statBox = document.getElementById(`box-${id}`);
+
+      // Check if at max, in cooldown, or max concurrent reached
+      if (stats[stat] >= maxStat || cooldowns[stat] > Date.now() || activeCooldownCount() >= maxConcurrentTraining) {
+        return;
+      }
+
+      // Increase the stat with visual feedback
+      stats[stat]++;
+      if (statValue) {
+        statValue.classList.add('increase');
+        setTimeout(() => statValue.classList.remove('increase'), 300);
+      }
+      updateDisplay();
+
+      // Set cooldown
+      cooldowns[stat] = Date.now() + cooldownTime;
+      saveData("footballCooldowns", cooldowns);
+
+      // Disable button and update ARIA
+      button.disabled = true;
+      button.setAttribute('aria-disabled', 'true');
+      statBox.classList.remove('active');
+      statBox.classList.add('cooldown');
+
+      // Ensure updater is running
+      startCooldownUpdater();
+    }
+
+    // Single interval to update all cooldowns and handle concurrent limit
+    let cooldownInterval;
+    function startCooldownUpdater() {
+      if (cooldownInterval) return; // Already running
+
+      cooldownInterval = setInterval(() => {
+        let activeCooldowns = 0;
+        statNames.forEach(name => {
+          if (cooldowns[name] > Date.now()) {
+            activeCooldowns++;
+          }
+        });
+
+        let allCooldownsDone = true;
+        statNames.forEach(name => {
+          const id = idify(name);
+          const button = document.getElementById(`btn-${id}`);
+          const cooldownText = document.getElementById(`cooldown-text-${id}`);
+          const cooldownProgress = document.getElementById(`cooldown-progress-${id}`);
+          const statBox = document.getElementById(`box-${id}`);
+          if (!button || !cooldownText || !cooldownProgress || !statBox) return;
+
+          const remaining = Math.max(0, cooldowns[name] - Date.now());
+          const progress = Math.min(100, ((cooldownTime - remaining) / cooldownTime) * 100);
+
+          cooldownProgress.style.width = `${progress}%`;
+
+          if (remaining > 0) {
+            const seconds = (remaining / 1000).toFixed(1);
+            cooldownText.textContent = `Available in ${seconds}s`;
+            button.disabled = true;
+            button.setAttribute('aria-disabled', 'true');
+            statBox.classList.add('cooldown');
+            statBox.classList.remove('active');
+            allCooldownsDone = false;
+          } else {
+            // For stats not in cooldown, disable if active count >= max
+            const shouldDisable = activeCooldowns >= maxConcurrentTraining;
+            button.disabled = shouldDisable;
+            button.setAttribute('aria-disabled', shouldDisable ? 'true' : 'false');
+            cooldownText.textContent = '';
+            statBox.classList.remove('cooldown');
+            statBox.classList.add('active');
+            cooldownProgress.style.width = '0%';
+          }
+        });
+
+        if (allCooldownsDone) {
+          clearInterval(cooldownInterval);
+          cooldownInterval = null;
+        }
+      }, 50);
+    }
+
+    // Reset game function
+    document.getElementById('reset-game').addEventListener('click', () => {
+      if (confirm('Are you sure you want to reset all progress?')) {
+        try {
+          localStorage.removeItem('footballStats');
+          localStorage.removeItem('footballCooldowns');
+          localStorage.removeItem('footballProfile');
+        } catch (e) {
+          console.error('Failed to clear localStorage:', e);
+        }
+        stats = {};
+        cooldowns = {};
+        profile = { name: "", age: "", club: "", position: "" };
+        statNames.forEach(name => {
+          stats[name] = 0;
+          cooldowns[name] = 0;
+        });
+        document.getElementById("player-name").value = "";
+        document.getElementById("player-age").value = "";
+        document.getElementById("player-club").value = "";
+        document.getElementById("player-position").value = "";
+        updateDisplay();
+        startCooldownUpdater(); // Restart updater if needed
+      }
+    });
+
+    // Initialize the game
+    function initGame() {
+      updateDisplay();
+      statNames.forEach(name => {
+        const id = idify(name);
+        const statBox = document.getElementById(`box-${id}`);
+        if (statBox) {
+          statBox.classList.add('active');
+        }
+      });
+      startCooldownUpdater(); // Start the cooldown updater
+    }
+
+    // Start the game
+    initGame();
+  </script>
+</body>
+</html>
       box-sizing: border-box;
       margin: 0;
       padding: 0;

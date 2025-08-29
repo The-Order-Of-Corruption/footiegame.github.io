@@ -68,10 +68,21 @@
       border-radius: 15px;
       padding: 25px 20px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: all 0.3s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-box.active {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    
+    .stat-box.cooldown {
+      background: rgba(60, 60, 60, 0.7);
+      opacity: 0.8;
     }
     
     .stat-box:hover {
@@ -92,21 +103,22 @@
       color: #4CAF50;
     }
     
-    .progress-bar {
+    .cooldown-bar {
       width: 100%;
-      height: 12px;
+      height: 8px;
       background: rgba(255, 255, 255, 0.2);
       border-radius: 10px;
       margin-bottom: 20px;
       overflow: hidden;
+      position: relative;
     }
     
-    .progress-fill {
+    .cooldown-progress {
       height: 100%;
       background: linear-gradient(90deg, #FFD700 0%, #FF9800 100%);
       border-radius: 10px;
       width: 0%;
-      transition: width 0.5s ease;
+      transition: width 0.1s linear;
     }
     
     button {
@@ -136,7 +148,7 @@
       transform: scale(0.98);
     }
     
-    .cooldown {
+    .cooldown-text {
       margin-top: 10px;
       font-size: 0.9rem;
       color: #BDBDBD;
@@ -231,14 +243,15 @@
       const id = idify(name);
       const box = document.createElement("div");
       box.className = "stat-box";
+      box.id = `box-${id}`;
       box.innerHTML = `
         <h3 class="stat-title">${name}</h3>
         <div class="stat-value"><span id="stat-${id}">${stats[name]}</span></div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progress-${id}"></div>
+        <div class="cooldown-bar">
+          <div class="cooldown-progress" id="cooldown-progress-${id}"></div>
         </div>
         <button id="btn-${id}">Train ${name}</button>
-        <div class="cooldown" id="cooldown-${id}"></div>
+        <div class="cooldown-text" id="cooldown-text-${id}"></div>
       `;
       container.appendChild(box);
 
@@ -246,9 +259,6 @@
       document.getElementById(`btn-${id}`).addEventListener("click", () => {
         increaseStat(name);
       });
-      
-      // Update progress bar
-      updateProgressBar(name);
     });
 
     // Update display function
@@ -257,7 +267,6 @@
       for (let key in stats) {
         const id = idify(key);
         document.getElementById(`stat-${id}`).textContent = stats[key];
-        updateProgressBar(key);
       }
       
       // Calculate and update overall rating
@@ -270,20 +279,13 @@
       localStorage.setItem("footballCooldowns", JSON.stringify(cooldowns));
     }
 
-    // Update progress bar based on stat value
-    function updateProgressBar(stat) {
-      const id = idify(stat);
-      const progressElement = document.getElementById(`progress-${id}`);
-      const statValue = stats[stat];
-      const percentage = Math.min(100, (statValue / 100) * 100);
-      progressElement.style.width = `${percentage}%`;
-    }
-
     // Increase stat function with cooldown
     function increaseStat(stat) {
       const id = idify(stat);
       const button = document.getElementById(`btn-${id}`);
-      const cooldownElement = document.getElementById(`cooldown-${id}`);
+      const cooldownText = document.getElementById(`cooldown-text-${id}`);
+      const cooldownProgress = document.getElementById(`cooldown-progress-${id}`);
+      const statBox = document.getElementById(`box-${id}`);
       
       // Check if still in cooldown
       const now = Date.now();
@@ -300,20 +302,35 @@
       
       // Disable button and show countdown
       button.disabled = true;
+      statBox.classList.remove('active');
+      statBox.classList.add('cooldown');
       
-      // Update cooldown display every second
-      const countdownInterval = setInterval(() => {
-        const remaining = Math.max(0, cooldowns[stat] - Date.now());
-        const seconds = Math.ceil(remaining / 1000);
+      // Start cooldown progress animation
+      const startTime = Date.now();
+      const endTime = cooldowns[stat];
+      
+      // Update cooldown display every 50ms for smooth progress bar
+      const cooldownInterval = setInterval(() => {
+        const currentTime = Date.now();
+        const elapsed = currentTime - startTime;
+        const remaining = Math.max(0, endTime - currentTime);
+        const progress = Math.min(100, (elapsed / cooldownTime) * 100);
         
-        if (seconds > 0) {
-          cooldownElement.textContent = `Available in ${seconds}s`;
+        // Update progress bar
+        cooldownProgress.style.width = `${progress}%`;
+        
+        if (remaining > 0) {
+          const seconds = (remaining / 1000).toFixed(1);
+          cooldownText.textContent = `Available in ${seconds}s`;
         } else {
-          clearInterval(countdownInterval);
-          cooldownElement.textContent = '';
+          clearInterval(cooldownInterval);
+          cooldownText.textContent = '';
           button.disabled = false;
+          statBox.classList.remove('cooldown');
+          statBox.classList.add('active');
+          cooldownProgress.style.width = '0%';
         }
-      }, 100);
+      }, 50);
     }
 
     // Initialize the game
@@ -325,24 +342,42 @@
       for (let stat in cooldowns) {
         const id = idify(stat);
         const button = document.getElementById(`btn-${id}`);
-        const cooldownElement = document.getElementById(`cooldown-${id}`);
+        const cooldownText = document.getElementById(`cooldown-text-${id}`);
+        const cooldownProgress = document.getElementById(`cooldown-progress-${id}`);
+        const statBox = document.getElementById(`box-${id}`);
         
         if (cooldowns[stat] > now) {
           button.disabled = true;
+          statBox.classList.remove('active');
+          statBox.classList.add('cooldown');
           
-          // Continue countdown if needed
-          const countdownInterval = setInterval(() => {
-            const remaining = Math.max(0, cooldowns[stat] - Date.now());
-            const seconds = Math.ceil(remaining / 1000);
+          const remainingTime = cooldowns[stat] - now;
+          const startTime = now - (cooldownTime - remainingTime);
+          
+          // Continue cooldown progress animation
+          const cooldownInterval = setInterval(() => {
+            const currentTime = Date.now();
+            const elapsed = currentTime - startTime;
+            const remaining = Math.max(0, cooldowns[stat] - currentTime);
+            const progress = Math.min(100, (elapsed / cooldownTime) * 100);
             
-            if (seconds > 0) {
-              cooldownElement.textContent = `Available in ${seconds}s`;
+            // Update progress bar
+            cooldownProgress.style.width = `${progress}%`;
+            
+            if (remaining > 0) {
+              const seconds = (remaining / 1000).toFixed(1);
+              cooldownText.textContent = `Available in ${seconds}s`;
             } else {
-              clearInterval(countdownInterval);
-              cooldownElement.textContent = '';
+              clearInterval(cooldownInterval);
+              cooldownText.textContent = '';
               button.disabled = false;
+              statBox.classList.remove('cooldown');
+              statBox.classList.add('active');
+              cooldownProgress.style.width = '0%';
             }
-          }, 100);
+          }, 50);
+        } else {
+          statBox.classList.add('active');
         }
       }
     }

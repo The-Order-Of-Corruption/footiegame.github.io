@@ -66,74 +66,83 @@
   <div class="stats-grid" id="stats-container"></div>
 
   <script>
-    // --- CONFIG ---
-    const statNames = [
-      "Shooting",
-      "Defending",
-      "Dribbling",
-      "Agility",
-      "Speed",
-      "Vision",
-      "Pressing",
-      "Jumping"
-    ];
-    const cooldownTime = 5000; // 5 seconds in ms
+  // --- CONFIG ---
+  const statNames = [
+    "Shooting",
+    "Defending",
+    "Dribbling",
+    "Agility",
+    "Speed",
+    "Vision",
+    "Pressing",
+    "Jumping"
+  ];
+  const cooldownTime = 5000; // 5 seconds in ms
 
-    // --- LOAD STATS OR SET DEFAULTS ---
-    let stats = JSON.parse(localStorage.getItem("footballStats")) || {};
-    statNames.forEach(name => {
-      if (!(name in stats)) stats[name] = 0;
-    });
+  // Helper: convert "Shooting" -> "shooting"
+  function idify(name) {
+    return name.toLowerCase().replace(/\s+/g, "-");
+  }
 
-    // --- CREATE STAT BOXES ---
-    const container = document.getElementById("stats-container");
-    statNames.forEach(name => {
-      const box = document.createElement("div");
-      box.className = "stat-box";
-      box.innerHTML = `
-        <h3>${name}: <span id="${name}">${stats[name]}</span></h3>
-        <button id="btn-${name}" onclick="increaseStat('${name}')">Train ${name}</button>
-      `;
-      container.appendChild(box);
-    });
+  // --- LOAD STATS OR SET DEFAULTS ---
+  let stats = JSON.parse(localStorage.getItem("footballStats")) || {};
+  statNames.forEach(name => {
+    if (!(name in stats)) stats[name] = 0;
+  });
 
-    // --- UPDATE DISPLAY ---
-    function updateDisplay() {
-      for (let key in stats) {
-        document.getElementById(key).textContent = stats[key];
-      }
-      const values = Object.values(stats);
-      const overall = Math.floor(values.reduce((a,b)=>a+b,0) / values.length);
-      document.getElementById("overall").textContent = overall;
-      localStorage.setItem("footballStats", JSON.stringify(stats));
+  // --- CREATE STAT BOXES ---
+  const container = document.getElementById("stats-container");
+  statNames.forEach(name => {
+    const id = idify(name);
+    const box = document.createElement("div");
+    box.className = "stat-box";
+    box.innerHTML = `
+      <h3>${name}: <span id="${id}">${stats[name]}</span></h3>
+      <button id="btn-${id}" onclick="increaseStat('${name}')">Train ${name}</button>
+    `;
+    container.appendChild(box);
+  });
+
+  // --- UPDATE DISPLAY ---
+  function updateDisplay() {
+    for (let key in stats) {
+      const id = idify(key);
+      document.getElementById(id).textContent = stats[key];
     }
+    const values = Object.values(stats);
+    const overall = Math.floor(values.reduce((a,b)=>a+b,0) / values.length);
+    document.getElementById("overall").textContent = overall;
+    localStorage.setItem("footballStats", JSON.stringify(stats));
+  }
 
-    // --- INCREASE STAT WITH COOLDOWN ---
-    function increaseStat(stat) {
-      stats[stat]++;
-      updateDisplay();
-
-      const button = document.getElementById("btn-" + stat);
-      button.disabled = true;
-      let remaining = cooldownTime / 1000;
-
-      const originalText = `Train ${stat}`;
-      button.textContent = `Wait ${remaining}s`;
-
-      const countdown = setInterval(() => {
-        remaining--;
-        if (remaining > 0) {
-          button.textContent = `Wait ${remaining}s`;
-        } else {
-          clearInterval(countdown);
-          button.disabled = false;
-          button.textContent = originalText;
-        }
-      }, 1000);
-    }
-
-    // --- INITIAL LOAD ---
+  // --- INCREASE STAT WITH COOLDOWN ---
+  function increaseStat(stat) {
+    stats[stat]++;
     updateDisplay();
-  </script>
+
+    const id = idify(stat);
+    const button = document.getElementById("btn-" + id);
+    button.disabled = true;
+    let remaining = cooldownTime / 1000;
+
+    const originalText = `Train ${stat}`;
+    button.textContent = `Wait ${remaining}s`;
+
+    const countdown = setInterval(() => {
+      remaining--;
+      if (remaining > 0) {
+        button.textContent = `Wait ${remaining}s`;
+      } else {
+        clearInterval(countdown);
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+    }, 1000);
+  }
+
+  // --- INITIAL LOAD ---
+  updateDisplay();
+</script>
+
 </body>
 </html>

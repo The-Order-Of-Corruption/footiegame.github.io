@@ -228,12 +228,12 @@
 
     // Load stats from localStorage or set defaults
     let stats = JSON.parse(localStorage.getItem("footballStats")) || {};
-    let cooldowns = JSON.parse(localStorage.getItem("footballCooldowns")) || {};
+    let cooldowns = {};
     
-    // Initialize stats and cooldowns if they don't exist
+    // Initialize stats if they don't exist
     statNames.forEach(name => {
       if (!(name in stats)) stats[name] = 0;
-      if (!(name in cooldowns)) cooldowns[name] = 0;
+      cooldowns[name] = 0; // Initialize cooldowns to 0
     });
 
     // Create stat boxes
@@ -242,7 +242,7 @@
     statNames.forEach(name => {
       const id = idify(name);
       const box = document.createElement("div");
-      box.className = "stat-box";
+      box.className = "stat-box active";
       box.id = `box-${id}`;
       box.innerHTML = `
         <h3 class="stat-title">${name}</h3>
@@ -276,7 +276,6 @@
       
       // Save to localStorage
       localStorage.setItem("footballStats", JSON.stringify(stats));
-      localStorage.setItem("footballCooldowns", JSON.stringify(cooldowns));
     }
 
     // Increase stat function with cooldown
@@ -288,8 +287,7 @@
       const statBox = document.getElementById(`box-${id}`);
       
       // Check if still in cooldown
-      const now = Date.now();
-      if (cooldowns[stat] > now) {
+      if (cooldowns[stat] > Date.now()) {
         return; // Still in cooldown, do nothing
       }
       
@@ -298,7 +296,7 @@
       updateDisplay();
       
       // Set cooldown
-      cooldowns[stat] = now + cooldownTime;
+      cooldowns[stat] = Date.now() + cooldownTime;
       
       // Disable button and show countdown
       button.disabled = true;
@@ -337,49 +335,12 @@
     function initGame() {
       updateDisplay();
       
-      // Check for any active cooldowns on page load
-      const now = Date.now();
-      for (let stat in cooldowns) {
-        const id = idify(stat);
-        const button = document.getElementById(`btn-${id}`);
-        const cooldownText = document.getElementById(`cooldown-text-${id}`);
-        const cooldownProgress = document.getElementById(`cooldown-progress-${id}`);
+      // Set all boxes to active state initially
+      statNames.forEach(name => {
+        const id = idify(name);
         const statBox = document.getElementById(`box-${id}`);
-        
-        if (cooldowns[stat] > now) {
-          button.disabled = true;
-          statBox.classList.remove('active');
-          statBox.classList.add('cooldown');
-          
-          const remainingTime = cooldowns[stat] - now;
-          const startTime = now - (cooldownTime - remainingTime);
-          
-          // Continue cooldown progress animation
-          const cooldownInterval = setInterval(() => {
-            const currentTime = Date.now();
-            const elapsed = currentTime - startTime;
-            const remaining = Math.max(0, cooldowns[stat] - currentTime);
-            const progress = Math.min(100, (elapsed / cooldownTime) * 100);
-            
-            // Update progress bar
-            cooldownProgress.style.width = `${progress}%`;
-            
-            if (remaining > 0) {
-              const seconds = (remaining / 1000).toFixed(1);
-              cooldownText.textContent = `Available in ${seconds}s`;
-            } else {
-              clearInterval(cooldownInterval);
-              cooldownText.textContent = '';
-              button.disabled = false;
-              statBox.classList.remove('cooldown');
-              statBox.classList.add('active');
-              cooldownProgress.style.width = '0%';
-            }
-          }, 50);
-        } else {
-          statBox.classList.add('active');
-        }
-      }
+        statBox.classList.add('active');
+      });
     }
 
     // Start the game

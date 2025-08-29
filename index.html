@@ -153,7 +153,7 @@
       color: #BDBDBD;
     }
    
-    .inventory, .matches {
+    .inventory, .matches, .stats-section {
       width: 100%;
       background: rgba(0, 0, 0, 0.7);
       border-radius: 15px;
@@ -184,23 +184,23 @@
       background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
     }
    
-    .matches table {
+    .matches table, .stats-section table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
     }
    
-    .matches th, .matches td {
+    .matches th, .matches td, .stats-section th, .stats-section td {
       padding: 8px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       text-align: left;
     }
    
-    .matches th {
+    .matches th, .stats-section th {
       background: rgba(255, 255, 255, 0.1);
     }
    
-    .matches tr:hover {
+    .matches tr:hover, .stats-section tr:hover {
       background: rgba(255, 255, 255, 0.05);
     }
    
@@ -521,7 +521,25 @@
       <div class="match-cooldown-text" id="match-cooldown-text"></div>
       <h4>Match History</h4>
       <table id="match-history">
-        <tr><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th></tr>
+        <tr><th>Score</th><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th><th>Stats</th></tr>
+      </table>
+    </div>
+    <div class="stats-section" id="stats-section">
+      <h3>Career Statistics</h3>
+      <h4>Friendly Matches</h4>
+      <table id="friendly-stats">
+        <tr><th>Goals</th><th>Assists</th><th>Interventions</th><th>Saves</th></tr>
+        <tr><td id="friendly-goals">0</td><td id="friendly-assists">0</td><td id="friendly-interventions">0</td><td id="friendly-saves">0</td></tr>
+      </table>
+      <h4>League Matches</h4>
+      <table id="league-stats">
+        <tr><th>Goals</th><th>Assists</th><th>Interventions</th><th>Saves</th></tr>
+        <tr><td id="league-goals">0</td><td id="league-assists">0</td><td id="league-interventions">0</td><td id="league-saves">0</td></tr>
+      </table>
+      <h4>Total</h4>
+      <table id="total-stats">
+        <tr><th>Goals</th><th>Assists</th><th>Interventions</th><th>Saves</th></tr>
+        <tr><td id="total-goals">0</td><td id="total-assists">0</td><td id="total-interventions">0</td><td id="total-saves">0</td></tr>
       </table>
     </div>
     <button id="reset-game">Reset Progress</button>
@@ -534,8 +552,9 @@
       <p>Use Euros to open different packs with varying costs and chances for items.</p>
       <p>Equip items for stat bonuses. Full set (3 items same country) multiplies bonuses by 1.5.</p>
       <p>Your overall rating is a weighted average of all boosted skills based on selected position (or simple average if no position selected).</p>
-      <p>Play friendly matches (30-second cooldown) to earn Euros based on outcome (Win: 50€, Draw: 25€, Loss: 10€).</p>
-      <p>Progress, profile, inventory, currency, and match history are automatically saved to your browser.</p>
+      <p>Play friendly matches (5-minute cooldown) to earn Euros (Win: 100€, Draw: 50€, Loss: 20€) and accumulate stats (Goals, Assists, Interventions, Saves).</p>
+      <p>Match stats depend on your position (e.g., only GKs get Saves). Scores are realistic based on ratings.</p>
+      <p>Progress, profile, inventory, currency, match history, and stats are automatically saved to your browser.</p>
     </div>
   </div>
   <script>
@@ -545,7 +564,7 @@
       "Speed", "Vision", "Pressing", "Jumping"
     ];
     const cooldownTime = 5000; // 5 seconds
-    const matchCooldownTime = 30000; // 30 seconds
+    const matchCooldownTime = 300000; // 5 minutes
     const maxStat = 100; // Optional stat cap
     const maxConcurrentTraining = 2;
     const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
@@ -597,7 +616,7 @@
       'LW': { Shooting: 8, Defending: 3, Dribbling: 10, Agility: 9, Speed: 10, Vision: 7, Pressing: 5, Jumping: 4 },
       'RW': { Shooting: 8, Defending: 3, Dribbling: 10, Agility: 9, Speed: 10, Vision: 7, Pressing: 5, Jumping: 4 }
     };
-    const matchRewards = { Win: 50, Draw: 25, Loss: 10 };
+    const matchRewards = { Win: 100, Draw: 50, Loss: 20 };
 
     // Helper function to create safe IDs
     function idify(name) {
@@ -623,6 +642,10 @@
     let equipped = loadData("footballEquipped", { Shirt: null, Shorts: null, Boots: null });
     let matchCooldown = loadData("footballMatchCooldown", 0);
     let matchHistory = loadData("footballMatchHistory", []);
+    let careerStats = loadData("footballCareerStats", {
+      friendly: { goals: 0, assists: 0, interventions: 0, saves: 0 },
+      league: { goals: 0, assists: 0, interventions: 0, saves: 0 }
+    });
 
     // Initialize stats and cooldowns if they don't exist
     statNames.forEach(name => {
@@ -772,6 +795,22 @@
       document.getElementById("currency").textContent = `Euros: ${currency}`;
     }
 
+    // Update career stats display
+    function updateCareerStats() {
+      document.getElementById("friendly-goals").textContent = careerStats.friendly.goals;
+      document.getElementById("friendly-assists").textContent = careerStats.friendly.assists;
+      document.getElementById("friendly-interventions").textContent = careerStats.friendly.interventions;
+      document.getElementById("friendly-saves").textContent = careerStats.friendly.saves;
+      document.getElementById("league-goals").textContent = careerStats.league.goals;
+      document.getElementById("league-assists").textContent = careerStats.league.assists;
+      document.getElementById("league-interventions").textContent = careerStats.league.interventions;
+      document.getElementById("league-saves").textContent = careerStats.league.saves;
+      document.getElementById("total-goals").textContent = careerStats.friendly.goals + careerStats.league.goals;
+      document.getElementById("total-assists").textContent = careerStats.friendly.assists + careerStats.league.assists;
+      document.getElementById("total-interventions").textContent = careerStats.friendly.interventions + careerStats.league.interventions;
+      document.getElementById("total-saves").textContent = careerStats.friendly.saves + careerStats.league.saves;
+    }
+
     // Count active cooldowns
     function activeCooldownCount() {
       return statNames.filter(name => cooldowns[name] > Date.now()).length;
@@ -828,34 +867,92 @@
       const opponentRating = Math.floor(Math.random() * (90 - 50 + 1)) + 50; // Random between 50-90
       const diff = playerRating - opponentRating;
       const rand = Math.random() * 100;
-      let result;
+      let result, yourGoals, opponentGoals;
+
+      // Determine match result and score
       if (diff > 10) {
         result = rand < 80 ? 'Win' : rand < 95 ? 'Draw' : 'Loss';
+        yourGoals = Math.floor(Math.random() * 4); // 0-3 goals
+        opponentGoals = result === 'Win' ? Math.floor(Math.random() * yourGoals) : result === 'Draw' ? yourGoals : Math.floor(Math.random() * 4) + 1;
       } else if (diff < -10) {
         result = rand < 80 ? 'Loss' : rand < 95 ? 'Draw' : 'Win';
+        yourGoals = Math.floor(Math.random() * 3); // 0-2 goals
+        opponentGoals = result === 'Loss' ? Math.floor(Math.random() * 4) + 1 : result === 'Draw' ? yourGoals : Math.floor(Math.random() * yourGoals);
       } else {
         result = rand < 33 ? 'Win' : rand < 66 ? 'Draw' : 'Loss';
+        yourGoals = Math.floor(Math.random() * 3); // 0-2 goals
+        opponentGoals = result === 'Draw' ? yourGoals : Math.floor(Math.random() * 3);
       }
+
+      // Calculate player stats based on position
+      const position = profile.position;
+      const weights = positionWeights[position];
+      const boosted = getBoostedStats();
+      let playerStats = { goals: 0, assists: 0, interventions: 0, saves: 0 };
+
+      // Base probabilities influenced by key stats
+      const goalChance = (weights.Shooting * boosted.Shooting + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
+      const assistChance = (weights.Vision * boosted.Vision + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
+      const interventionChance = (weights.Defending * boosted.Defending + weights.Pressing * boosted.Pressing) / 2000; // Max 0.5
+      const saveChance = position === 'GK' ? (weights.Agility * boosted.Agility + weights.Jumping * boosted.Jumping) / 2000 : 0; // Max 0.5 for GK
+
+      // Assign stats based on team goals and position
+      if (yourGoals > 0) {
+        if (['ST', 'LW', 'RW'].includes(position)) {
+          playerStats.goals = Math.random() < goalChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
+          playerStats.assists = Math.random() < assistChance ? Math.min(yourGoals - playerStats.goals, Math.floor(Math.random() * 2)) : 0;
+        } else if (['CAM', 'LM', 'RM'].includes(position)) {
+          playerStats.assists = Math.random() < assistChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
+          playerStats.goals = Math.random() < goalChance ? Math.min(yourGoals - playerStats.assists, Math.floor(Math.random() * 2)) : 0;
+        } else if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
+          playerStats.interventions = Math.random() < interventionChance * 1.5 ? Math.floor(Math.random() * 3) + 1 : 0;
+          playerStats.goals = Math.random() < goalChance * 0.5 ? Math.min(yourGoals, 1) : 0;
+        } else if (position === 'GK') {
+          playerStats.saves = Math.random() < saveChance * 1.5 ? Math.floor(Math.random() * opponentGoals + 1) : 0;
+        }
+      } else {
+        if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
+          playerStats.interventions = Math.random() < interventionChance ? Math.floor(Math.random() * 2) + 1 : 0;
+        } else if (position === 'GK') {
+          playerStats.saves = Math.random() < saveChance ? Math.floor(Math.random() * opponentGoals + 1) : 0;
+        }
+      }
+
+      // Update career stats
+      careerStats.friendly.goals += playerStats.goals;
+      careerStats.friendly.assists += playerStats.assists;
+      careerStats.friendly.interventions += playerStats.interventions;
+      careerStats.friendly.saves += playerStats.saves;
+
       const euros = matchRewards[result];
       currency += euros;
-      matchHistory.unshift({ opponentRating, playerRating, result, euros });
+      matchHistory.unshift({
+        score: `${yourGoals}-${opponentGoals}`,
+        opponentRating,
+        playerRating,
+        result,
+        euros,
+        stats: playerStats
+      });
       if (matchHistory.length > 5) matchHistory.pop(); // Keep only last 5
       matchCooldown = Date.now() + matchCooldownTime;
       saveData('footballCurrency', currency);
       saveData('footballMatchHistory', matchHistory);
       saveData('footballMatchCooldown', matchCooldown);
+      saveData('footballCareerStats', careerStats);
       updateCurrency();
       updateMatchHistory();
-      startCooldownUpdater();
-      alert(`Match Result: ${result}\nYour Rating: ${playerRating}\nOpponent Rating: ${opponentRating}\nEuros Earned: ${euros}`);
+      updateCareerStats();
+      alert(`Match Result: ${result}\nScore: ${yourGoals}-${opponentGoals}\nYour Rating: ${playerRating}\nOpponent Rating: ${opponentRating}\nStats: Goals: ${playerStats.goals}, Assists: ${playerStats.assists}, Interventions: ${playerStats.interventions}, Saves: ${playerStats.saves}\nEuros Earned: ${euros}`);
     }
 
     // Update match history display
     function updateMatchHistory() {
       const table = document.getElementById('match-history');
-      let html = '<tr><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th></tr>';
+      let html = '<tr><th>Score</th><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th><th>Stats</th></tr>';
       matchHistory.forEach(match => {
-        html += `<tr><td>${match.opponentRating}</td><td>${match.playerRating}</td><td>${match.result}</td><td>${match.euros}</td></tr>`;
+        const statsStr = `G: ${match.stats.goals}, A: ${match.stats.assists}, I: ${match.stats.interventions}, S: ${match.stats.saves}`;
+        html += `<tr><td>${match.score}</td><td>${match.opponentRating}</td><td>${match.playerRating}</td><td>${match.result}</td><td>${match.euros}</td><td>${statsStr}</td></tr>`;
       });
       table.innerHTML = html;
     }
@@ -915,8 +1012,9 @@
         const matchProgress = Math.min(100, ((matchCooldownTime - matchRemaining) / matchCooldownTime) * 100);
         matchCooldownProgress.style.width = `${matchProgress}%`;
         if (matchRemaining > 0) {
-          const seconds = (matchRemaining / 1000).toFixed(1);
-          matchCooldownText.textContent = `Next match in ${seconds}s`;
+          const minutes = Math.floor(matchRemaining / 60000);
+          const seconds = ((matchRemaining % 60000) / 1000).toFixed(0);
+          matchCooldownText.textContent = `Next match in ${minutes}m ${seconds}s`;
           matchButton.disabled = true;
           matchButton.setAttribute('aria-disabled', 'true');
         } else {
@@ -1072,6 +1170,7 @@
           localStorage.removeItem('footballEquipped');
           localStorage.removeItem('footballMatchCooldown');
           localStorage.removeItem('footballMatchHistory');
+          localStorage.removeItem('footballCareerStats');
         } catch (e) {
           console.error('Failed to clear localStorage:', e);
         }
@@ -1083,6 +1182,7 @@
         equipped = { Shirt: null, Shorts: null, Boots: null };
         matchCooldown = 0;
         matchHistory = [];
+        careerStats = { friendly: { goals: 0, assists: 0, interventions: 0, saves: 0 }, league: { goals: 0, assists: 0, interventions: 0, saves: 0 } };
         statNames.forEach(name => {
           stats[name] = 0;
           cooldowns[name] = 0;
@@ -1096,6 +1196,7 @@
         updateInventory();
         updateEquipSelects();
         updateMatchHistory();
+        updateCareerStats();
         startCooldownUpdater(); // Restart updater if needed
       }
     });
@@ -1107,6 +1208,7 @@
       updateInventory();
       updateEquipSelects();
       updateMatchHistory();
+      updateCareerStats();
       statNames.forEach(name => {
         const id = idify(name);
         const statBox = document.getElementById(`box-${id}`);

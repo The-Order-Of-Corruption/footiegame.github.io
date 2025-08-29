@@ -66,83 +66,87 @@
   <div class="stats-grid" id="stats-container"></div>
 
   <script>
-  // --- CONFIG ---
-  const statNames = [
-    "Shooting",
-    "Defending",
-    "Dribbling",
-    "Agility",
-    "Speed",
-    "Vision",
-    "Pressing",
-    "Jumping"
-  ];
-  const cooldownTime = 5000; // 5 seconds in ms
+    // --- CONFIG ---
+    const statNames = [
+      "Shooting",
+      "Defending",
+      "Dribbling",
+      "Agility",
+      "Speed",
+      "Vision",
+      "Pressing",
+      "Jumping"
+    ];
+    const cooldownTime = 5000; // 5 seconds
 
-  // Helper: convert "Shooting" -> "shooting"
-  function idify(name) {
-    return name.toLowerCase().replace(/\s+/g, "-");
-  }
-
-  // --- LOAD STATS OR SET DEFAULTS ---
-  let stats = JSON.parse(localStorage.getItem("footballStats")) || {};
-  statNames.forEach(name => {
-    if (!(name in stats)) stats[name] = 0;
-  });
-
-  // --- CREATE STAT BOXES ---
-  const container = document.getElementById("stats-container");
-  statNames.forEach(name => {
-    const id = idify(name);
-    const box = document.createElement("div");
-    box.className = "stat-box";
-    box.innerHTML = `
-      <h3>${name}: <span id="${id}">${stats[name]}</span></h3>
-      <button id="btn-${id}" onclick="increaseStat('${name}')">Train ${name}</button>
-    `;
-    container.appendChild(box);
-  });
-
-  // --- UPDATE DISPLAY ---
-  function updateDisplay() {
-    for (let key in stats) {
-      const id = idify(key);
-      document.getElementById(id).textContent = stats[key];
+    // Helper: safe IDs (lowercase, no spaces)
+    function idify(name) {
+      return name.toLowerCase().replace(/\s+/g, "-");
     }
-    const values = Object.values(stats);
-    const overall = Math.floor(values.reduce((a,b)=>a+b,0) / values.length);
-    document.getElementById("overall").textContent = overall;
-    localStorage.setItem("footballStats", JSON.stringify(stats));
-  }
 
-  // --- INCREASE STAT WITH COOLDOWN ---
-  function increaseStat(stat) {
-    stats[stat]++;
-    updateDisplay();
+    // --- LOAD STATS OR SET DEFAULTS ---
+    let stats = JSON.parse(localStorage.getItem("footballStats")) || {};
+    statNames.forEach(name => {
+      if (!(name in stats)) stats[name] = 0;
+    });
 
-    const id = idify(stat);
-    const button = document.getElementById("btn-" + id);
-    button.disabled = true;
-    let remaining = cooldownTime / 1000;
+    // --- CREATE STAT BOXES ---
+    const container = document.getElementById("stats-container");
+    statNames.forEach(name => {
+      const id = idify(name);
+      const box = document.createElement("div");
+      box.className = "stat-box";
+      box.innerHTML = `
+        <h3>${name}: <span id="stat-${id}">${stats[name]}</span></h3>
+        <button id="btn-${id}">Train ${name}</button>
+      `;
+      container.appendChild(box);
 
-    const originalText = `Train ${stat}`;
-    button.textContent = `Wait ${remaining}s`;
+      // attach event listener to button
+      document.getElementById("btn-" + id).addEventListener("click", () => {
+        increaseStat(name);
+      });
+    });
 
-    const countdown = setInterval(() => {
-      remaining--;
-      if (remaining > 0) {
-        button.textContent = `Wait ${remaining}s`;
-      } else {
-        clearInterval(countdown);
-        button.disabled = false;
-        button.textContent = originalText;
+    // --- UPDATE DISPLAY ---
+    function updateDisplay() {
+      for (let key in stats) {
+        const id = idify(key);
+        document.getElementById("stat-" + id).textContent = stats[key];
       }
-    }, 1000);
-  }
+      const values = Object.values(stats);
+      const overall = Math.floor(values.reduce((a,b)=>a+b,0) / values.length);
+      document.getElementById("overall").textContent = overall;
+      localStorage.setItem("footballStats", JSON.stringify(stats));
+    }
 
-  // --- INITIAL LOAD ---
-  updateDisplay();
-</script>
+    // --- INCREASE STAT WITH COOLDOWN ---
+    function increaseStat(stat) {
+      stats[stat]++;
+      updateDisplay();
 
+      const id = idify(stat);
+      const button = document.getElementById("btn-" + id);
+      button.disabled = true;
+      let remaining = cooldownTime / 1000;
+
+      const originalText = `Train ${stat}`;
+      button.textContent = `Wait ${remaining}s`;
+
+      const countdown = setInterval(() => {
+        remaining--;
+        if (remaining > 0) {
+          button.textContent = `Wait ${remaining}s`;
+        } else {
+          clearInterval(countdown);
+          button.disabled = false;
+          button.textContent = originalText;
+        }
+      }, 1000);
+    }
+
+    // --- INITIAL LOAD ---
+    updateDisplay();
+  </script>
 </body>
 </html>

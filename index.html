@@ -555,7 +555,7 @@
     <div class="instructions">
       <h3>How to Play</h3>
       <p>Click on the training buttons to improve your player's skills.</p>
-      <p>Each skill has a 5-second cooldown after training.</p>
+      <p>Each skill has a 10-second cooldown after training.</p>
       <p>You can only train up to 2 skills at the same time.</p>
       <p>Earn Euros per training based on overall rating (0-25: 5€, 26-60: 10€, 61-100: 15€, 100+: 20€).</p>
       <p>Use Euros to open different packs with varying costs and chances for items (Shirts, Shorts, Boots, Coaches).</p>
@@ -573,7 +573,7 @@
       "Shooting", "Defending", "Dribbling", "Agility",
       "Speed", "Vision", "Pressing", "Jumping"
     ];
-    const cooldownTime = 5000; // 5 seconds
+    const cooldownTime = 10000; // 10 seconds
     const matchCooldownTime = 300000; // 5 minutes
     const maxStat = 100; // Optional stat cap
     const maxConcurrentTraining = 2;
@@ -1041,13 +1041,13 @@
         const matchRemaining = Math.max(0, matchCooldown - Date.now());
         const matchProgress = Math.min(100, ((matchCooldownTime - matchRemaining) / matchCooldownTime) * 100);
         matchCooldownProgress.style.width = `${matchProgress}%`;
-        matchCooldownProgress.textContent = `${Math.floor(matchProgress)}%`;
+        matchCooldownProgress.textContent = matchRemaining > 0 ? `${Math.floor(matchProgress)}%` : '';
         if (matchRemaining > 0) {
           const minutes = Math.floor(matchRemaining / 60000);
-          const seconds = ((matchRemaining % 60000) / 1000).toFixed(0);
+          const seconds = ((matchRemaining % 60000) / 1000).toFixed(0).padStart(2, '0');
           matchCooldownText.textContent = `Next match in ${minutes}m ${seconds}s`;
           matchButton.disabled = true;
-          button.setAttribute('aria-disabled', 'true');
+          matchButton.setAttribute('aria-disabled', 'true');
         } else {
           matchCooldownText.textContent = '';
           matchCooldownProgress.textContent = '';
@@ -1262,6 +1262,27 @@
           statBox.classList.add('active');
         }
       });
+      // Initialize match button state
+      const matchButton = document.getElementById('play-match');
+      const matchCooldownText = document.getElementById('match-cooldown-text');
+      const matchCooldownProgress = document.getElementById('match-cooldown-progress');
+      const matchRemaining = Math.max(0, matchCooldown - Date.now());
+      if (matchRemaining > 0) {
+        const matchProgress = Math.min(100, ((matchCooldownTime - matchRemaining) / matchCooldownTime) * 100);
+        matchCooldownProgress.style.width = `${matchProgress}%`;
+        matchCooldownProgress.textContent = `${Math.floor(matchProgress)}%`;
+        const minutes = Math.floor(matchRemaining / 60000);
+        const seconds = ((matchRemaining % 60000) / 1000).toFixed(0).padStart(2, '0');
+        matchCooldownText.textContent = `Next match in ${minutes}m ${seconds}s`;
+        matchButton.disabled = true;
+        matchButton.setAttribute('aria-disabled', 'true');
+      } else {
+        matchCooldownText.textContent = '';
+        matchCooldownProgress.textContent = '';
+        matchCooldownProgress.style.width = '0%';
+        matchButton.disabled = false;
+        matchButton.setAttribute('aria-disabled', 'false');
+      }
       startCooldownUpdater(); // Start the cooldown updater
     }
 

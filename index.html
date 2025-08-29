@@ -104,7 +104,7 @@
    
     .rarity-common { color: #B0B0B0; }
     .rarity-uncommon { color: #00FF00; }
-    .rarity-rare { color: #ADD8E6; } /* Changed to light blue */
+    .rarity-rare { color: #ADD8E6; }
     .rarity-epic { color: #800080; }
     .rarity-legendary { color: #FFA500; }
    
@@ -153,7 +153,7 @@
       color: #BDBDBD;
     }
    
-    .inventory {
+    .inventory, .matches {
       width: 100%;
       background: rgba(0, 0, 0, 0.7);
       border-radius: 15px;
@@ -162,16 +162,16 @@
       margin-bottom: 20px;
     }
    
-    .inventory ul {
+    .inventory ul, .matches ul {
       list-style: none;
       text-align: left;
     }
    
-    .inventory li {
+    .inventory li, .matches li {
       margin-bottom: 10px;
     }
    
-    .inventory button {
+    .inventory button, .matches button {
       padding: 5px 10px;
       font-size: 0.9rem;
       background: linear-gradient(to bottom, #FF0000 0%, #B30000 100%);
@@ -180,8 +180,51 @@
       width: auto;
     }
    
-    .inventory button:hover:enabled {
+    .inventory button:hover:enabled, .matches button:hover:enabled {
       background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
+    }
+   
+    .matches table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+   
+    .matches th, .matches td {
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      text-align: left;
+    }
+   
+    .matches th {
+      background: rgba(255, 255, 255, 0.1);
+    }
+   
+    .matches tr:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+   
+    .match-cooldown-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+   
+    .match-cooldown-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #FFD700 0%, #FF9800 100%);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+   
+    .match-cooldown-text {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #BDBDBD;
     }
    
     .stat-box {
@@ -317,7 +360,7 @@
       background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
     }
    
-    #open-bronze, #open-silver, #open-gold {
+    #open-bronze, #open-silver, #open-gold, #play-match {
       max-width: none;
     }
    
@@ -343,6 +386,14 @@
    
     #open-gold:hover:enabled {
       background: linear-gradient(to bottom, #FFC400 0%, #FF6F00 100%);
+    }
+   
+    #play-match {
+      background: linear-gradient(to bottom, #4CAF50 0%, #388E3C 100%);
+    }
+   
+    #play-match:hover:enabled {
+      background: linear-gradient(to bottom, #45A049 0%, #2E7D32 100%);
     }
    
     @media (max-width: 768px) {
@@ -461,6 +512,18 @@
       <h3>Inventory</h3>
       <ul id="inventory-list"></ul>
     </div>
+    <div class="matches" id="matches-section">
+      <h3>Friendly Matches</h3>
+      <button id="play-match">Play Friendly Match</button>
+      <div class="match-cooldown-bar">
+        <div class="match-cooldown-progress" id="match-cooldown-progress"></div>
+      </div>
+      <div class="match-cooldown-text" id="match-cooldown-text"></div>
+      <h4>Match History</h4>
+      <table id="match-history">
+        <tr><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th></tr>
+      </table>
+    </div>
     <button id="reset-game">Reset Progress</button>
     <div class="instructions">
       <h3>How to Play</h3>
@@ -471,7 +534,8 @@
       <p>Use Euros to open different packs with varying costs and chances for items.</p>
       <p>Equip items for stat bonuses. Full set (3 items same country) multiplies bonuses by 1.5.</p>
       <p>Your overall rating is a weighted average of all boosted skills based on selected position (or simple average if no position selected).</p>
-      <p>Progress, profile, inventory, and currency are automatically saved to your browser.</p>
+      <p>Play friendly matches (30-second cooldown) to earn Euros based on outcome (Win: 50€, Draw: 25€, Loss: 10€).</p>
+      <p>Progress, profile, inventory, currency, and match history are automatically saved to your browser.</p>
     </div>
   </div>
   <script>
@@ -481,6 +545,7 @@
       "Speed", "Vision", "Pressing", "Jumping"
     ];
     const cooldownTime = 5000; // 5 seconds
+    const matchCooldownTime = 30000; // 30 seconds
     const maxStat = 100; // Optional stat cap
     const maxConcurrentTraining = 2;
     const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
@@ -532,6 +597,7 @@
       'LW': { Shooting: 8, Defending: 3, Dribbling: 10, Agility: 9, Speed: 10, Vision: 7, Pressing: 5, Jumping: 4 },
       'RW': { Shooting: 8, Defending: 3, Dribbling: 10, Agility: 9, Speed: 10, Vision: 7, Pressing: 5, Jumping: 4 }
     };
+    const matchRewards = { Win: 50, Draw: 25, Loss: 10 };
 
     // Helper function to create safe IDs
     function idify(name) {
@@ -555,6 +621,8 @@
     let currency = loadData("footballCurrency", 0);
     let inventory = loadData("footballInventory", {});
     let equipped = loadData("footballEquipped", { Shirt: null, Shorts: null, Boots: null });
+    let matchCooldown = loadData("footballMatchCooldown", 0);
+    let matchHistory = loadData("footballMatchHistory", []);
 
     // Initialize stats and cooldowns if they don't exist
     statNames.forEach(name => {
@@ -746,6 +814,52 @@
       startCooldownUpdater();
     }
 
+    // Simulate a friendly match
+    function simulateMatch() {
+      if (matchCooldown > Date.now()) {
+        alert('Match on cooldown! Wait until it’s ready.');
+        return;
+      }
+      if (!profile.position) {
+        alert('Please select a position to play a match!');
+        return;
+      }
+      const playerRating = getOverallRating();
+      const opponentRating = Math.floor(Math.random() * (90 - 50 + 1)) + 50; // Random between 50-90
+      const diff = playerRating - opponentRating;
+      const rand = Math.random() * 100;
+      let result;
+      if (diff > 10) {
+        result = rand < 80 ? 'Win' : rand < 95 ? 'Draw' : 'Loss';
+      } else if (diff < -10) {
+        result = rand < 80 ? 'Loss' : rand < 95 ? 'Draw' : 'Win';
+      } else {
+        result = rand < 33 ? 'Win' : rand < 66 ? 'Draw' : 'Loss';
+      }
+      const euros = matchRewards[result];
+      currency += euros;
+      matchHistory.unshift({ opponentRating, playerRating, result, euros });
+      if (matchHistory.length > 5) matchHistory.pop(); // Keep only last 5
+      matchCooldown = Date.now() + matchCooldownTime;
+      saveData('footballCurrency', currency);
+      saveData('footballMatchHistory', matchHistory);
+      saveData('footballMatchCooldown', matchCooldown);
+      updateCurrency();
+      updateMatchHistory();
+      startCooldownUpdater();
+      alert(`Match Result: ${result}\nYour Rating: ${playerRating}\nOpponent Rating: ${opponentRating}\nEuros Earned: ${euros}`);
+    }
+
+    // Update match history display
+    function updateMatchHistory() {
+      const table = document.getElementById('match-history');
+      let html = '<tr><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th></tr>';
+      matchHistory.forEach(match => {
+        html += `<tr><td>${match.opponentRating}</td><td>${match.playerRating}</td><td>${match.result}</td><td>${match.euros}</td></tr>`;
+      });
+      table.innerHTML = html;
+    }
+
     // Single interval to update all cooldowns and handle concurrent limit
     let cooldownInterval;
     function startCooldownUpdater() {
@@ -759,7 +873,8 @@
           }
         });
 
-        let allCooldownsDone = true;
+        // Update stat cooldowns
+        let allStatCooldownsDone = true;
         statNames.forEach(name => {
           const id = idify(name);
           const button = document.getElementById(`btn-${id}`);
@@ -780,9 +895,8 @@
             button.setAttribute('aria-disabled', 'true');
             statBox.classList.add('cooldown');
             statBox.classList.remove('active');
-            allCooldownsDone = false;
+            allStatCooldownsDone = false;
           } else {
-            // For stats not in cooldown, disable if active count >= max
             const shouldDisable = activeCooldowns >= maxConcurrentTraining;
             button.disabled = shouldDisable;
             button.setAttribute('aria-disabled', shouldDisable ? 'true' : 'false');
@@ -793,7 +907,26 @@
           }
         });
 
-        if (allCooldownsDone) {
+        // Update match cooldown
+        const matchButton = document.getElementById('play-match');
+        const matchCooldownText = document.getElementById('match-cooldown-text');
+        const matchCooldownProgress = document.getElementById('match-cooldown-progress');
+        const matchRemaining = Math.max(0, matchCooldown - Date.now());
+        const matchProgress = Math.min(100, ((matchCooldownTime - matchRemaining) / matchCooldownTime) * 100);
+        matchCooldownProgress.style.width = `${matchProgress}%`;
+        if (matchRemaining > 0) {
+          const seconds = (matchRemaining / 1000).toFixed(1);
+          matchCooldownText.textContent = `Next match in ${seconds}s`;
+          matchButton.disabled = true;
+          matchButton.setAttribute('aria-disabled', 'true');
+        } else {
+          matchCooldownText.textContent = '';
+          matchButton.disabled = false;
+          matchButton.setAttribute('aria-disabled', 'false');
+          matchCooldownProgress.style.width = '0%';
+        }
+
+        if (allStatCooldownsDone && matchRemaining <= 0) {
           clearInterval(cooldownInterval);
           cooldownInterval = null;
         }
@@ -843,6 +976,9 @@
     document.getElementById('open-bronze').addEventListener('click', () => openPack('bronze'));
     document.getElementById('open-silver').addEventListener('click', () => openPack('silver'));
     document.getElementById('open-gold').addEventListener('click', () => openPack('gold'));
+
+    // Add match listener
+    document.getElementById('play-match').addEventListener('click', debounce(simulateMatch, 200));
 
     // Update inventory display
     function updateInventory() {
@@ -934,6 +1070,8 @@
           localStorage.removeItem('footballCurrency');
           localStorage.removeItem('footballInventory');
           localStorage.removeItem('footballEquipped');
+          localStorage.removeItem('footballMatchCooldown');
+          localStorage.removeItem('footballMatchHistory');
         } catch (e) {
           console.error('Failed to clear localStorage:', e);
         }
@@ -943,6 +1081,8 @@
         currency = 0;
         inventory = {};
         equipped = { Shirt: null, Shorts: null, Boots: null };
+        matchCooldown = 0;
+        matchHistory = [];
         statNames.forEach(name => {
           stats[name] = 0;
           cooldowns[name] = 0;
@@ -955,6 +1095,7 @@
         updateCurrency();
         updateInventory();
         updateEquipSelects();
+        updateMatchHistory();
         startCooldownUpdater(); // Restart updater if needed
       }
     });
@@ -965,6 +1106,7 @@
       updateCurrency();
       updateInventory();
       updateEquipSelects();
+      updateMatchHistory();
       statNames.forEach(name => {
         const id = idify(name);
         const statBox = document.getElementById(`box-${id}`);

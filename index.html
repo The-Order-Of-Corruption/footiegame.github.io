@@ -104,7 +104,7 @@
    
     .rarity-common { color: #B0B0B0; }
     .rarity-uncommon { color: #00FF00; }
-    .rarity-rare { color: #0000FF; }
+    .rarity-rare { color: #ADD8E6; } /* Changed to light blue */
     .rarity-epic { color: #800080; }
     .rarity-legendary { color: #FFA500; }
    
@@ -467,7 +467,8 @@
       <p>Click on the training buttons to improve your player's skills.</p>
       <p>Each skill has a 5-second cooldown after training.</p>
       <p>You can only train up to 2 skills at the same time.</p>
-      <p>Earn 5 Euros per training. Use Euros to open different packs with varying costs and chances for items.</p>
+      <p>Earn Euros per training based on overall rating (0-25: 5€, 26-60: 10€, 61-100: 15€, 100+: 20€).</p>
+      <p>Use Euros to open different packs with varying costs and chances for items.</p>
       <p>Equip items for stat bonuses. Full set (3 items same country) multiplies bonuses by 1.5.</p>
       <p>Your overall rating is the average of all boosted skills.</p>
       <p>Progress, profile, inventory, and currency are automatically saved to your browser.</p>
@@ -482,7 +483,6 @@
     const cooldownTime = 5000; // 5 seconds
     const maxStat = 100; // Optional stat cap
     const maxConcurrentTraining = 2;
-    const coinsPerTrain = 5;
     const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
     const rarityBoosts = {Common: 5, Uncommon: 10, Rare: 20, Epic: 40, Legendary: 100};
     const sellValues = {Common: 25, Uncommon: 35, Rare: 80, Epic: 150, Legendary: 300};
@@ -512,6 +512,12 @@
         chances: [0.3, 0.3, 0.25, 0.1, 0.05],
       }
     };
+    const euroTiers = [
+      { min: 0, max: 25, euros: 5 },
+      { min: 26, max: 60, euros: 10 },
+      { min: 61, max: 100, euros: 15 },
+      { min: 101, max: Infinity, euros: 20 }
+    ];
 
     // Helper function to create safe IDs
     function idify(name) {
@@ -629,6 +635,24 @@
       return boosted;
     }
 
+    // Calculate overall rating
+    function getOverallRating() {
+      const boosted = getBoostedStats();
+      const values = Object.values(boosted);
+      return Math.floor(values.reduce((a, b) => a + b, 0) / values.length);
+    }
+
+    // Get Euros per training based on overall rating
+    function getEurosPerTrain() {
+      const overall = getOverallRating();
+      for (const tier of euroTiers) {
+        if (overall >= tier.min && overall <= tier.max) {
+          return tier.euros;
+        }
+      }
+      return 0; // Fallback, should not happen
+    }
+
     // Update display function
     function updateDisplay() {
       const boosted = getBoostedStats();
@@ -645,8 +669,7 @@
       }
 
       // Calculate and update overall rating
-      const values = Object.values(boosted);
-      const overall = Math.floor(values.reduce((a, b) => a + b, 0) / values.length);
+      const overall = getOverallRating();
       document.getElementById("overall").textContent = overall;
 
       // Save stats
@@ -681,7 +704,7 @@
         statValue.classList.add('increase');
         setTimeout(() => statValue.classList.remove('increase'), 300);
       }
-      currency += coinsPerTrain;
+      currency += getEurosPerTrain();
       saveData("footballCurrency", currency);
       updateCurrency();
       updateDisplay();

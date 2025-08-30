@@ -425,7 +425,7 @@
       .main-content {
         flex-direction: column;
       }
-     
+   
       .packs, .profile {
         width: 100%;
         margin-top: 20px;
@@ -471,7 +471,6 @@
     </div>
     <div class="news">
       <h3>News</h3>
-      <p>Game was created 29/08/25</p>
       <ul id="news-list"></ul>
     </div>
     <div class="main-content">
@@ -1394,6 +1393,34 @@
           statBox.classList.add('active');
         }
       });
+      // Initialize stat button states
+      statNames.forEach(name => {
+        const id = idify(name);
+        const button = document.getElementById(`btn-${id}`);
+        const cooldownText = document.getElementById(`cooldown-text-${id}`);
+        const cooldownProgress = document.getElementById(`cooldown-progress-${id}`);
+        const statBox = document.getElementById(`box-${id}`);
+        const remaining = Math.max(0, cooldowns[name] - Date.now());
+        const progress = Math.min(100, ((getCooldownTime() - remaining) / getCooldownTime()) * 100);
+        cooldownProgress.style.width = `${progress}%`;
+        if (remaining > 0) {
+          const seconds = (remaining / 1000).toFixed(1);
+          cooldownText.textContent = `Available in ${seconds}s`;
+          button.disabled = true;
+          button.setAttribute('aria-disabled', 'true');
+          statBox.classList.add('cooldown');
+          statBox.classList.remove('active');
+        } else {
+          const shouldDisable = activeCooldownCount() >= maxConcurrentTraining || stats[name] >= maxStat;
+          button.disabled = shouldDisable;
+          button.setAttribute('aria-disabled', shouldDisable ? 'true' : 'false');
+          cooldownText.textContent = '';
+          statBox.classList.remove('cooldown');
+          statBox.classList.add('active');
+          cooldownProgress.style.width = '0%';
+        }
+      });
+
       // Initialize match button state
       const matchButton = document.getElementById('play-match');
       const matchCooldownText = document.getElementById('match-cooldown-text');
@@ -1407,7 +1434,7 @@
         const seconds = ((matchRemaining % 60000) / 1000).toFixed(0).padStart(2, '0');
         matchCooldownText.textContent = `Next match in ${minutes}m ${seconds}s`;
         matchButton.disabled = true;
-        button.setAttribute('aria-disabled', 'true');
+        matchButton.setAttribute('aria-disabled', 'true');
       } else {
         matchCooldownText.textContent = '';
         matchCooldownProgress.textContent = '';

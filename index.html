@@ -10,7 +10,7 @@
       margin: 0;
       padding: 0;
     }
-   
+  
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
@@ -22,12 +22,12 @@
       flex-direction: column;
       align-items: center;
     }
-   
+  
     .container {
       max-width: 1200px;
       width: 100%;
     }
-   
+  
     header {
       margin-bottom: 30px;
       padding: 20px;
@@ -35,18 +35,18 @@
       border-radius: 15px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
-   
+  
     h1 {
       font-size: 2.8rem;
       margin-bottom: 10px;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
-   
+  
     h2 {
       font-size: 1.8rem;
       margin-bottom: 20px;
     }
-   
+  
     .overall-display,
     .currency-display {
       font-size: 2.2rem;
@@ -55,66 +55,66 @@
       margin: 15px 0;
       text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
     }
-   
+  
     .main-content {
       display: flex;
       width: 100%;
       gap: 25px;
       margin-bottom: 20px;
     }
-   
+  
     .packs {
       width: 250px;
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
-   
+  
     .pack {
       background: rgba(0, 0, 0, 0.7);
       border-radius: 15px;
       padding: 15px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     }
-   
+  
     .pack h3 {
       margin-bottom: 10px;
       color: #FFD700;
     }
-   
+  
     .pack table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 10px;
     }
-   
+  
     .pack th, .pack td {
       padding: 8px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       text-align: left;
     }
-   
+  
     .pack th {
       background: rgba(255, 255, 255, 0.1);
     }
-   
+  
     .pack tr:hover {
       background: rgba(255, 255, 255, 0.05);
     }
-   
+  
     .rarity-common { color: #B0B0B0; }
     .rarity-uncommon { color: #00FF00; }
     .rarity-rare { color: #ADD8E6; }
     .rarity-epic { color: #800080; }
     .rarity-legendary { color: #FFA500; }
-   
+  
     .stats-grid {
       flex: 1;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 25px;
     }
-   
+  
     .profile {
       width: 300px;
       background: rgba(0, 0, 0, 0.7);
@@ -122,20 +122,20 @@
       padding: 25px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     }
-   
+  
     .profile h3, .profile h4 {
       font-size: 1.6rem;
       color: #FFD700;
       margin-bottom: 20px;
     }
-   
+  
     .profile label {
       display: block;
       text-align: left;
       margin-bottom: 5px;
       font-size: 1.1rem;
     }
-   
+  
     .profile input,
     .profile select {
       width: 100%;
@@ -147,13 +147,13 @@
       color: white;
       font-size: 1rem;
     }
-   
+  
     .profile input::placeholder,
     .profile select {
       color: #BDBDBD;
     }
-   
-    .inventory, .matches, .stats-section, .upgrades {
+  
+    .inventory, .matches, .stats-section, .upgrades, .league, .achievements {
       width: 100%;
       background: rgba(0, 0, 0, 0.7);
       border-radius: 15px;
@@ -161,31 +161,17 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
       margin-bottom: 20px;
     }
-   
-    .inventory-section {
-      margin-bottom: 20px;
-    }
-   
-    .inventory-section h4 {
-      font-size: 1.4rem;
-      color: #FFD700;
-      margin: 15px 0 10px;
-    }
-   
-    .inventory-section ul {
+  
+    .inventory ul, .matches ul, .news ul, .achievements ul {
       list-style: none;
       text-align: left;
-      max-height: 200px;
-      overflow-y: auto;
-      padding-right: 10px;
     }
-   
-    .inventory-section li {
-      margin-bottom: 8px;
-      font-size: 0.9rem;
+  
+    .inventory li, .matches li, .news li, .achievements li {
+      margin-bottom: 10px;
     }
-   
-    .inventory button, .matches button, .upgrades button {
+  
+    .inventory button, .matches button, .upgrades button, .league button {
       padding: 5px 10px;
       font-size: 0.9rem;
       background: linear-gradient(to bottom, #FF0000 0%, #B30000 100%);
@@ -197,36 +183,40 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-   
-    .inventory button:hover:enabled, .matches button:hover:enabled, .upgrades button:hover:enabled {
+  
+    .inventory button:hover:enabled, .matches button:hover:enabled, .upgrades button:hover:enabled, .league button:hover:enabled {
       background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
     }
-   
-    .upgrades button:disabled {
+  
+    .upgrades button:disabled, .league button:disabled {
       background: linear-gradient(to bottom, #9E9E9E 0%, #616161 100%);
       cursor: not-allowed;
     }
-   
-    .matches table, .stats-section table, .upgrades table {
+  
+    .matches table, .stats-section table, .upgrades table, .league table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
     }
-   
-    .matches th, .matches td, .stats-section th, .stats-section td, .upgrades th, .upgrades td {
+  
+    .matches th, .matches td, .stats-section th, .stats-section td, .upgrades th, .upgrades td, .league th, .league td {
       padding: 8px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       text-align: left;
     }
-   
-    .matches th, .stats-section th, .upgrades th {
+  
+    .matches th, .stats-section th, .upgrades th, .league th {
       background: rgba(255, 255, 255, 0.1);
     }
-   
-    .matches tr:hover, .stats-section tr:hover, .upgrades tr:hover {
+  
+    .matches tr:hover, .stats-section tr:hover, .upgrades tr:hover, .league tr:hover {
       background: rgba(255, 255, 255, 0.05);
     }
-   
+  
+    .league tr.player-team {
+      background: rgba(255, 215, 0, 0.2);
+    }
+  
     .match-cooldown-bar {
       width: 100%;
       height: 20px;
@@ -236,7 +226,7 @@
       overflow: hidden;
       position: relative;
     }
-   
+  
     .match-cooldown-progress {
       height: 100%;
       background: linear-gradient(90deg, #FFD700 0%, #FF9800 100%);
@@ -250,13 +240,13 @@
       font-weight: bold;
       color: #333;
     }
-   
+  
     .match-cooldown-text {
       margin-top: 10px;
       font-size: 0.9rem;
       color: #BDBDBD;
     }
-   
+  
     .stat-box {
       background: rgba(0, 0, 0, 0.7);
       border-radius: 15px;
@@ -269,48 +259,48 @@
       position: relative;
       overflow: hidden;
     }
-   
+  
     .stat-box.active {
       background: rgba(0, 0, 0, 0.7);
     }
-   
+  
     .stat-box.cooldown {
       background: rgba(60, 60, 60, 0.7);
       opacity: 0.8;
     }
-   
+  
     .stat-box:hover {
       transform: translateY(-5px);
       box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
     }
-   
+  
     .stat-title {
       font-size: 1.4rem;
       margin-bottom: 15px;
       color: #FFD700;
     }
-   
+  
     .stat-value {
       font-size: 2.2rem;
       font-weight: bold;
       margin-bottom: 20px;
       color: #4CAF50;
     }
-   
+  
     .bonus {
       color: #00FF00;
       font-size: 1.5rem;
     }
-   
+  
     .stat-value.increase {
       animation: flash 0.3s ease;
     }
-   
+  
     @keyframes flash {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.2); }
     }
-   
+  
     .cooldown-bar {
       width: 100%;
       height: 8px;
@@ -320,7 +310,7 @@
       overflow: hidden;
       position: relative;
     }
-   
+  
     .cooldown-progress {
       height: 100%;
       background: linear-gradient(90deg, #FFD700 0%, #FF9800 100%);
@@ -328,7 +318,7 @@
       width: 0%;
       transition: width 0.1s linear;
     }
-   
+  
     button {
       padding: 12px 25px;
       font-size: 1.1rem;
@@ -343,26 +333,26 @@
       width: 100%;
       max-width: 200px;
     }
-   
+  
     button:hover:enabled {
       background: linear-gradient(to bottom, #FFC400 0%, #FF6F00 100%);
       transform: scale(1.05);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     }
-   
+  
     button:disabled {
       background: linear-gradient(to bottom, #9E9E9E 0%, #616161 100%);
       cursor: not-allowed;
       transform: scale(0.98);
     }
-   
+  
     .cooldown-text {
       margin-top: 10px;
       font-size: 0.9rem;
       color: #BDBDBD;
     }
-   
-    .instructions, .news, .upgrades {
+  
+    .instructions, .news, .upgrades, .league, .achievements {
       margin: 30px auto;
       padding: 20px;
       background: rgba(0, 0, 0, 0.4);
@@ -370,91 +360,99 @@
       max-width: 800px;
       text-align: center;
     }
-   
-    .instructions h3, .news h3, .upgrades h3 {
+  
+    .instructions h3, .news h3, .upgrades h3, .league h3, .achievements h3 {
       margin-bottom: 15px;
       color: #FFD700;
     }
-   
-    .instructions p, .news li {
+  
+    .instructions p, .news li, .achievements li {
       margin-bottom: 10px;
       line-height: 1.5;
     }
-   
+  
     #reset-game {
       margin-top: 20px;
       background: linear-gradient(to bottom, #FF0000 0%, #B30000 100%);
       color: white;
     }
-   
+  
     #reset-game:hover:enabled {
       background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
     }
-   
-    #open-bronze, #open-silver, #open-gold, #play-match {
+  
+    #open-bronze, #open-silver, #open-gold, #play-match, #play-league-match, #skip-cooldown {
       max-width: none;
     }
-   
+  
     #open-bronze {
       background: linear-gradient(to bottom, #CD7F32 0%, #A57128 100%);
     }
-   
+  
     #open-bronze:hover:enabled {
       background: linear-gradient(to bottom, #B8732E 0%, #8C5F23 100%);
     }
-   
+  
     #open-silver {
       background: linear-gradient(to bottom, #C0C0C0 0%, #A9A9A9 100%);
     }
-   
+  
     #open-silver:hover:enabled {
       background: linear-gradient(to bottom, #B0B0B0 0%, #999999 100%);
     }
-   
+  
     #open-gold {
       background: linear-gradient(to bottom, #FFD700 0%, #FFA000 100%);
     }
-   
+  
     #open-gold:hover:enabled {
       background: linear-gradient(to bottom, #FFC400 0%, #FF6F00 100%);
     }
-   
-    #play-match {
+  
+    #play-match, #play-league-match {
       background: linear-gradient(to bottom, #4CAF50 0%, #388E3C 100%);
     }
-   
-    #play-match:hover:enabled {
+  
+    #play-match:hover:enabled, #play-league-match:hover:enabled {
       background: linear-gradient(to bottom, #45A049 0%, #2E7D32 100%);
     }
-   
+  
+    #skip-cooldown {
+      background: linear-gradient(to bottom, #2196F3 0%, #1976D2 100%);
+    }
+  
+    #skip-cooldown:hover:enabled {
+      background: linear-gradient(to bottom, #1E88E5 0%, #1565C0 100%);
+    }
+  
     @media (max-width: 768px) {
       h1 {
         font-size: 2.2rem;
       }
-     
+    
       h2 {
         font-size: 1.5rem;
       }
-     
+    
       .main-content {
         flex-direction: column;
       }
-   
+  
       .packs, .profile {
         width: 100%;
         margin-top: 20px;
       }
-     
+    
       .stats-grid {
         grid-template-columns: 1fr;
         gap: 15px;
       }
-     
+    
       .stat-box {
         padding: 20px 15px;
       }
-     
-      .instructions, .news, .upgrades {
+    
+      .instructions, .news, .upgrades, .league, .achievements {
         margin: 20px auto;
       }
     }
@@ -466,26 +464,28 @@
       <h1>⚽ Football Training Clicker ⚽</h1>
       <h2>Improve your player's skills</h2>
       <div class="overall-display">Overall Rating: <span id="overall">0</span></div>
-      <div class="currency-display" id="currency">Euros: 0</div>
+      <div class="currency-display" id="currency" aria-live="polite">Euros: 0</div>
     </header>
     <div class="instructions">
       <h3>How to Play</h3>
-      <p>Click on the training buttons to improve your player's skills.</p>
-      <p>Each skill has a 10-second cooldown after training (reducible with upgrades).</p>
-      <p>You can only train up to 2 skills at the same time.</p>
+      <p>Click training buttons to improve skills (max 100 each).</p>
+      <p>Each skill has a 10-second cooldown (reducible with upgrades), max 2 concurrent trainings.</p>
       <p>Earn Euros per training based on overall rating (0-25: 5€, 26-60: 10€, 61-100: 15€, 100+: 20€, increased by upgrades).</p>
-      <p>Use Euros to open different packs with varying costs and chances for items (Shirts, Shorts, Boots, Coaches).</p>
-      <p>Equip items for stat bonuses. Full set (3 items same country) multiplies bonuses by 1.5.</p>
-      <p>Your overall rating is a weighted average of all boosted skills based on selected position (or simple average if no position selected).</p>
-      <p>Play friendly matches (3-minute cooldown) to earn Euros (Win: 100€, Draw: 50€, Loss: 20€) and accumulate stats (Goals, Assists, Interventions, Saves).</p>
-      <p>Match stats depend on your position (e.g., only GKs get Saves). Scores are realistic based on ratings.</p>
-      <p>Equip a Coach to boost specific stats (e.g., Dylan for +100 Shooting).</p>
-      <p>Purchase upgrades to reduce training cooldown or increase Euro earnings.</p>
-      <p>Progress, profile, inventory, currency, match history, stats, and upgrades are automatically saved to your browser.</p>
+      <p>Use Euros to open packs (Bronze: 50€, Silver: 150€, Gold: 500€) for items (Shirts, Shorts, Boots, Coaches).</p>
+      <p>Equip items for stat bonuses; full set (3 items same country) multiplies bonuses by 1.5.</p>
+      <p>Overall rating (max 1000) is a weighted average of boosted stats based on position (or simple average if none selected).</p>
+      <p>Play friendly matches (3-min cooldown) or league matches (2-hour cooldown) to earn Euros and stats (Goals, Assists, Interventions, Saves).</p>
+      <p>Compete in 5 leagues (League 5 to 1) with increasing difficulty. Win top spots to promote; bottom teams relegate.</p>
+      <p>Earn achievements for milestones (e.g., winning a league).</p>
+      <p>Progress saves to your browser’s localStorage.</p>
     </div>
     <div class="news">
       <h3>News</h3>
       <ul id="news-list"></ul>
+    </div>
+    <div class="achievements">
+      <h3>Achievements</h3>
+      <ul id="achievements-list"></ul>
     </div>
     <div class="main-content">
       <div class="packs">
@@ -564,24 +564,24 @@
         <select id="equip-coach"></select>
       </div>
     </div>
+    <div class="league" id="league-section">
+      <h3>League</h3>
+      <h4 id="league-title">League 5</h4>
+      <p id="next-match"></p>
+      <button id="play-league-match">Play League Match</button>
+      <button id="skip-cooldown">Skip Cooldown (50 Euros)</button>
+      <div class="match-cooldown-bar">
+        <div class="match-cooldown-progress" id="league-cooldown-progress"></div>
+      </div>
+      <div class="match-cooldown-text" id="league-cooldown-text"></div>
+      <h4>League Table</h4>
+      <table id="league-table">
+        <tr><th>Team</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr>
+      </table>
+    </div>
     <div class="inventory" id="inventory-section">
       <h3>Inventory</h3>
-      <div class="inventory-section">
-        <h4>Shirts</h4>
-        <ul id="inventory-shirts"></ul>
-      </div>
-      <div class="inventory-section">
-        <h4>Shorts</h4>
-        <ul id="inventory-shorts"></ul>
-      </div>
-      <div class="inventory-section">
-        <h4>Boots</h4>
-        <ul id="inventory-boots"></ul>
-      </div>
-      <div class="inventory-section">
-        <h4>Coaches</h4>
-        <ul id="inventory-coaches"></ul>
-      </div>
+      <ul id="inventory-list"></ul>
     </div>
     <div class="upgrades">
       <h3>Upgrades</h3>
@@ -633,8 +633,9 @@
       "Speed", "Vision", "Pressing", "Jumping", "Stamina", "Determination"
     ];
     const baseCooldownTime = 10000; // 10 seconds base
-    const matchCooldownTime = 180000; // 3 minutes
-    const maxStat = 100; // Optional stat cap
+    const matchCooldownTime = 180000; // 3 minutes for friendly
+    const leagueCooldownTime = 7200000; // 2 hours for league
+    const maxStat = 100; // Individual stat cap
     const maxConcurrentTraining = 2;
     const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
     const rarityBoosts = {Common: 5, Uncommon: 10, Rare: 20, Epic: 40, Legendary: 100};
@@ -708,6 +709,7 @@
       { name: 'Euro Boost V', effect: 'Increase Euro gain by 5%', cost: 900 }
     ];
     const matchRewards = { Win: 100, Draw: 50, Loss: 20 };
+    const leagueMatchRewards = { Win: 150, Draw: 75, Loss: 30 };
     const positionWeights = {
       GK: { Agility: 2, Jumping: 2, Defending: 1, Vision: 1, Speed: 0.5, Shooting: 0, Dribbling: 0, Pressing: 0, Stamina: 1, Determination: 1 },
       LB: { Defending: 2, Speed: 1.5, Pressing: 1, Agility: 1, Vision: 0.5, Shooting: 0.5, Dribbling: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
@@ -723,12 +725,84 @@
       RW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0, Stamina: 1, Determination: 1 }
     };
     const teams = [
-      { name: 'Ashford College', rating: 20 },
-      { name: 'Thomond Spark', rating: 45 },
-      { name: "McDonald's United", rating: 60 },
-      { name: 'Moyross Lads', rating: 100 }
+      // League 5: 8 teams, 20-60
+      { name: 'Ashford Rovers', rating: 20, league: 5 },
+      { name: 'Thomond Town', rating: 25, league: 5 },
+      { name: 'Limerick Lads', rating: 30, league: 5 },
+      { name: 'Cork City', rating: 35, league: 5 },
+      { name: 'Galway United', rating: 40, league: 5 },
+      { name: 'Dundalk Dynamos', rating: 45, league: 5 },
+      { name: 'Sligo Strikers', rating: 50, league: 5 },
+      { name: 'Waterford Wanderers', rating: 60, league: 5 },
+      // League 4: 10 teams, 50-100
+      { name: 'Bray Braves', rating: 50, league: 4 },
+      { name: 'Derry Defenders', rating: 55, league: 4 },
+      { name: 'Finn Harps', rating: 60, league: 4 },
+      { name: 'Bohemians', rating: 65, league: 4 },
+      { name: 'Shamrock Shooters', rating: 70, league: 4 },
+      { name: 'Drogheda Dragons', rating: 75, league: 4 },
+      { name: 'Longford Legends', rating: 80, league: 4 },
+      { name: 'Athlone Aces', rating: 85, league: 4 },
+      { name: 'Cobh Crusaders', rating: 90, league: 4 },
+      { name: 'Wexford Warriors', rating: 100, league: 4 },
+      // League 3: 14 teams, 120-250
+      { name: 'Munster Mavericks', rating: 120, league: 3 },
+      { name: 'Leinster Lions', rating: 130, league: 3 },
+      { name: 'Ulster United', rating: 140, league: 3 },
+      { name: 'Connacht Comets', rating: 150, league: 3 },
+      { name: 'Kerry Kings', rating: 160, league: 3 },
+      { name: 'Clare Crusaders', rating: 170, league: 3 },
+      { name: 'Donegal Dynamos', rating: 180, league: 3 },
+      { name: 'Mayo Marauders', rating: 190, league: 3 },
+      { name: 'Roscommon Rovers', rating: 200, league: 3 },
+      { name: 'Offaly Olympians', rating: 210, league: 3 },
+      { name: 'Laois Legends', rating: 220, league: 3 },
+      { name: 'Kildare Knights', rating: 230, league: 3 },
+      { name: 'Meath Mavericks', rating: 240, league: 3 },
+      { name: 'Monaghan Monarchs', rating: 250, league: 3 },
+      // League 2: 16 teams, 300-500
+      { name: 'Premier Panthers', rating: 300, league: 2 },
+      { name: 'Elite Eagles', rating: 320, league: 2 },
+      { name: 'Victory Vipers', rating: 340, league: 2 },
+      { name: 'Glory Gunners', rating: 350, league: 2 },
+      { name: 'Triumph Titans', rating: 360, league: 2 },
+      { name: 'Champions City', rating: 370, league: 2 },
+      { name: 'Star Strikers', rating: 380, league: 2 },
+      { name: 'Pinnacle Pirates', rating: 390, league: 2 },
+      { name: 'Summit Spartans', rating: 400, league: 2 },
+      { name: 'Apex Avengers', rating: 410, league: 2 },
+      { name: 'Zenith Zealots', rating: 420, league: 2 },
+      { name: 'Prime Predators', rating: 430, league: 2 },
+      { name: 'Crest Crusaders', rating: 440, league: 2 },
+      { name: 'Peak Phantoms', rating: 450, league: 2 },
+      { name: 'Vertex Vikings', rating: 460, league: 2 },
+      { name: 'Nexus Nomads', rating: 500, league: 2 },
+      // League 1: 18 teams, 700-1000
+      { name: 'Global Giants', rating: 700, league: 1 },
+      { name: 'World Warriors', rating: 720, league: 1 },
+      { name: 'Elite Emperors', rating: 740, league: 1 },
+      { name: 'Supreme Sultans', rating: 760, league: 1 },
+      { name: 'Legendary Lions', rating: 780, league: 1 },
+      { name: 'Master Mavericks', rating: 800, league: 1 },
+      { name: 'Prime Princes', rating: 820, league: 1 },
+      { name: 'Royal Rangers', rating: 840, league: 1 },
+      { name: 'Titanic Titans', rating: 860, league: 1 },
+      { name: 'Epic Eagles', rating: 880, league: 1 },
+      { name: 'Mythic Marauders', rating: 900, league: 1 },
+      { name: 'Godly Gladiators', rating: 910, league: 1 },
+      { name: 'Celestial Crusaders', rating: 920, league: 1 },
+      { name: 'Divine Dynamos', rating: 930, league: 1 },
+      { name: 'Immortal Icons', rating: 940, league: 1 },
+      { name: 'Eternal Enforcers', rating: 950, league: 1 },
+      { name: 'Cosmic Champions', rating: 960, league: 1 },
+      { name: 'Galaxy Guardians', rating: 1000, league: 1 }
     ];
-
+    const achievements = [
+      { id: 'goals_50', name: 'Score 50 Goals', condition: () => careerStats.friendly.goals + careerStats.league.goals >= 50, reward: '100 Euros', euros: 100 },
+      { id: 'matches_100', name: 'Play 100 Matches', condition: () => careerStats.friendly.matchesPlayed + careerStats.league.matchesPlayed >= 100, reward: 'Silver Pack', pack: 'silver' },
+      { id: 'league_4', name: 'Win League 4', condition: () => currentLeague === 4 && getLeagueStanding() === 1, reward: '500 Euros', euros: 500 },
+      { id: 'league_1', name: 'Win League 1', condition: () => currentLeague === 1 && getLeagueStanding() === 1, reward: 'Champions Trophy (Legendary Item)', pack: 'gold' }
+    ];
     // Load data from localStorage with error handling
     function loadData(key, defaultValue) {
       try {
@@ -736,10 +810,10 @@
         return data ? JSON.parse(data) : defaultValue;
       } catch (e) {
         console.error(`Failed to load ${key} from localStorage:`, e);
+        alert('Failed to load game data. Check if localStorage is enabled.');
         return defaultValue;
       }
     }
-
     let stats = loadData("footballStats", {});
     let cooldowns = loadData("footballCooldowns", {});
     let profile = loadData("footballProfile", { name: "", age: "", club: "", position: "" });
@@ -747,6 +821,7 @@
     let inventory = loadData("footballInventory", {});
     let equipped = loadData("footballEquipped", { Shirt: null, Shorts: null, Boots: null, Coach: null });
     let matchCooldown = loadData("footballMatchCooldown", 0);
+    let leagueCooldown = loadData("footballLeagueCooldown", 0);
     let matchHistory = loadData("footballMatchHistory", []);
     let careerStats = loadData("footballCareerStats", {
       friendly: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 },
@@ -754,30 +829,38 @@
     });
     let trainingUpgradesPurchased = loadData("footballTrainingUpgrades", 0);
     let euroUpgradesPurchased = loadData("footballEuroUpgrades", 0);
-
+    let currentLeague = loadData("footballCurrentLeague", 5);
+    let leagueSchedule = loadData("footballLeagueSchedule", []);
+    let leagueStandings = loadData("footballLeagueStandings", []);
+    let matchday = loadData("footballMatchday", 0);
+    let completedMatches = loadData("footballCompletedMatches", []);
+    let achievementsUnlocked = loadData("footballAchievementsUnlocked", []);
     // Initialize stats and cooldowns if they don't exist
     statNames.forEach(name => {
       if (!(name in stats)) stats[name] = 0;
       if (!(name in cooldowns)) cooldowns[name] = 0;
     });
-
+    // Initialize league if needed
+    function initializeLeague() {
+      if (!leagueStandings.length || !leagueSchedule.length) {
+        resetLeague();
+      }
+    }
     // Calculate effective cooldown time
     function getCooldownTime() {
-      return Math.max(5000, baseCooldownTime - trainingUpgradesPurchased * 1000); // Reduce by 1s per upgrade, minimum 5s
+      return Math.max(5000, baseCooldownTime - trainingUpgradesPurchased * 1000); // Minimum 5s
     }
-
     // Save data to localStorage with error handling
     function saveData(key, data) {
       try {
         localStorage.setItem(key, JSON.stringify(data));
       } catch (e) {
         console.error(`Failed to save ${key} to localStorage:`, e);
+        alert('Failed to save game data. Check if localStorage is enabled or not full.');
       }
     }
-
     // Create stat boxes
     const container = document.getElementById("stats-container");
-
     statNames.forEach(name => {
       const id = idify(name);
       const box = document.createElement("div");
@@ -796,18 +879,14 @@
         <div class="cooldown-text" id="cooldown-text-${id}"></div>
       `;
       container.appendChild(box);
-
-      // Add event listener with debounce
       const button = document.getElementById(`btn-${id}`);
       button.addEventListener("click", debounce(() => increaseStat(name), 200));
     });
-
     // Load profile data into inputs
     document.getElementById("player-name").value = profile.name;
     document.getElementById("player-age").value = profile.age;
     document.getElementById("player-club").value = profile.club;
     document.getElementById("player-position").value = profile.position;
-
     // Save profile on input change and update display
     const profileInputs = ["player-name", "player-age", "player-club", "player-position"];
     profileInputs.forEach(id => {
@@ -818,10 +897,9 @@
         profile.club = document.getElementById("player-club").value;
         profile.position = document.getElementById("player-position").value;
         saveData("footballProfile", profile);
-        updateDisplay(); // Update overall when position changes
+        updateDisplay();
       });
     });
-
     // Debounce function
     function debounce(func, wait) {
       let timeout;
@@ -834,7 +912,6 @@
         timeout = setTimeout(later, wait);
       };
     }
-
     // Get boosted stats
     function getBoostedStats() {
       let boosted = { ...stats };
@@ -845,17 +922,16 @@
         setCounts[setName] = (setCounts[setName] || 0) + 1;
       });
       equippedItems.forEach(itemKey => {
-        const [rarity, , itemType] = itemKey.split(' ');
-        const setName = coaches[rarity]?.find(c => itemKey.includes(c.name))?.set || itemKey.split(' ')[1];
+        const [rarity, name, itemType] = itemKey.split(' ');
+        const setName = coaches[rarity]?.find(c => itemKey.includes(c.name))?.set || name;
         const boostStat = coaches[rarity]?.find(c => itemKey.includes(c.name))?.stat || itemBoosts[setName][itemType];
         const baseBoost = rarityBoosts[rarity];
         const multiplier = (setCounts[setName] >= 3) ? 1.5 : 1;
-        boosted[boostStat] = (boosted[boostStat] || 0) + Math.floor(baseBoost * multiplier);
+        boosted[boostStat] = Math.min(100, (boosted[boostStat] || 0) + Math.floor(baseBoost * multiplier));
       });
       return boosted;
     }
-
-    // Calculate overall rating
+    // Calculate overall rating (max 1000)
     function getOverallRating() {
       const boosted = getBoostedStats();
       const position = profile.position;
@@ -864,13 +940,12 @@
       let totalWeight = 0;
       for (let stat in boosted) {
         const w = weights[stat] || 0;
-        sum += boosted[stat] * w;
+        sum += boosted[stat] * w * 10; // Scale to 1000
         totalWeight += w;
       }
       return totalWeight > 0 ? Math.floor(sum / totalWeight) : 0;
     }
-
-    // Get Euros per training based on overall rating and upgrades
+    // Get Euros per training
     function getEurosPerTrain() {
       const overall = getOverallRating();
       let baseEuros = 0;
@@ -880,14 +955,12 @@
           break;
         }
       }
-      const multiplier = 1 + 0.05 * euroUpgradesPurchased; // 5% per upgrade
+      const multiplier = 1 + 0.05 * euroUpgradesPurchased;
       return Math.floor(baseEuros * multiplier);
     }
-
     // Update display function
     function updateDisplay() {
       const boosted = getBoostedStats();
-      // Update all stat values
       for (let key in stats) {
         const id = idify(key);
         const baseElement = document.getElementById(`base-${id}`);
@@ -898,20 +971,14 @@
           bonusElement.textContent = bonus > 0 ? ` (+${bonus})` : '';
         }
       }
-
-      // Calculate and update overall rating
       const overall = getOverallRating();
       document.getElementById("overall").textContent = overall;
-
-      // Save stats
       saveData("footballStats", stats);
     }
-
     // Update currency display
     function updateCurrency() {
       document.getElementById("currency").textContent = `Euros: ${currency}`;
     }
-
     // Update career stats display
     function updateCareerStats() {
       document.getElementById("friendly-matches-played").textContent = careerStats.friendly.matchesPlayed;
@@ -930,22 +997,21 @@
       document.getElementById("total-interventions").textContent = careerStats.friendly.interventions + careerStats.league.interventions;
       document.getElementById("total-saves").textContent = careerStats.friendly.saves + careerStats.league.saves;
     }
-
     // Count active cooldowns
     function activeCooldownCount() {
       return statNames.filter(name => cooldowns[name] > Date.now()).length;
     }
-
-    // Increase stat function with cooldown and debug alerts
+    // Increase stat function
     function increaseStat(stat) {
       const id = idify(stat);
       const button = document.getElementById(`btn-${id}`);
       const statValue = document.querySelector(`#box-${id} .stat-value`);
-      const statBox =document.getElementById(`box-${id}`);
-
-      // Check if training is possible and provide feedback
+      const statBox = document.getElementById(`box-${id}`);
       if (stats[stat] >= maxStat) {
         alert(`Cannot train ${stat}: Maximum value (${maxStat}) reached!`);
+        button.textContent = `${stat} Maxed`;
+        button.disabled = true;
+        button.setAttribute('aria-disabled', 'true');
         return;
       }
       if (cooldowns[stat] > Date.now()) {
@@ -954,11 +1020,9 @@
         return;
       }
       if (activeCooldownCount() >= maxConcurrentTraining) {
-        alert(`Cannot train ${stat}: Maximum concurrent trainings (${maxConcurrentTraining}) already active!`);
+        alert(`Cannot train ${stat}: Maximum concurrent trainings (${maxConcurrentTraining}) active!`);
         return;
       }
-
-      // Increase the stat with visual feedback
       stats[stat]++;
       if (statValue) {
         statValue.classList.add('increase');
@@ -968,67 +1032,148 @@
       saveData("footballCurrency", currency);
       updateCurrency();
       updateDisplay();
-
-      // Set cooldown
       cooldowns[stat] = Date.now() + getCooldownTime();
       saveData("footballCooldowns", cooldowns);
-
-      // Disable button and update ARIA
       button.disabled = true;
       button.setAttribute('aria-disabled', 'true');
       statBox.classList.remove('active');
       statBox.classList.add('cooldown');
-
-      // Ensure updater is running
       startCooldownUpdater();
     }
-
-    // Simulate a friendly match
-    function simulateMatch() {
-      if (matchCooldown > Date.now()) {
-        alert('Match on cooldown! Wait until it’s ready.');
+    // Generate league schedule
+    function generateSchedule() {
+      const leagueTeams = teams.filter(t => t.league === currentLeague).concat([{ name: profile.club || 'Your Team', rating: getOverallRating(), league: currentLeague }]);
+      const schedule = [];
+      for (let i = 0; i < leagueTeams.length; i++) {
+        for (let j = 0; j < leagueTeams.length; j++) {
+          if (i !== j) {
+            schedule.push({ home: leagueTeams[i], away: leagueTeams[j] });
+            schedule.push({ home: leagueTeams[j], away: leagueTeams[i] });
+          }
+        }
+      }
+      return schedule.sort(() => Math.random() - 0.5); // Shuffle
+    }
+    // Reset league standings
+    function resetLeague() {
+      leagueSchedule = generateSchedule();
+      leagueStandings = teams.filter(t => t.league === currentLeague).map(t => ({
+        name: t.name,
+        rating: t.rating,
+        matchesPlayed: 0,
+        wins: 0,
+        draws: 0,
+        losses: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        points: 0
+      }));
+      leagueStandings.push({
+        name: profile.club || 'Your Team',
+        rating: getOverallRating(),
+        matchesPlayed: 0,
+        wins: 0,
+        draws: 0,
+        losses: 0,
+        goalsFor: 0,
+        goalsAgainst: 0,
+        points: 0
+      });
+      matchday = 0;
+      completedMatches = [];
+      saveData('footballLeagueSchedule', leagueSchedule);
+      saveData('footballLeagueStandings', leagueStandings);
+      saveData('footballMatchday', matchday);
+      saveData('footballCompletedMatches', completedMatches);
+    }
+    // Simulate AI vs AI match
+    function simulateAIMatch(team1, team2) {
+      const diff = team1.rating - team2.rating;
+      const rand = Math.random() * 100;
+      let result, team1Goals, team2Goals;
+      if (diff > 10) {
+        result = rand < 80 ? 'Win' : rand < 95 ? 'Draw' : 'Loss';
+        team1Goals = Math.floor(Math.random() * 4);
+        team2Goals = result === 'Win' ? Math.floor(Math.random() * team1Goals) : result === 'Draw' ? team1Goals : Math.floor(Math.random() * 4) + 1;
+      } else if (diff < -10) {
+        result = rand < 80 ? 'Loss' : rand < 95 ? 'Draw' : 'Win';
+        team1Goals = Math.floor(Math.random() * 3);
+        team2Goals = result === 'Loss' ? Math.floor(Math.random() * 4) + 1 : result === 'Draw' ? team1Goals : Math.floor(Math.random() * team1Goals);
+      } else {
+        result = rand < 33 ? 'Win' : rand < 66 ? 'Draw' : 'Loss';
+        team1Goals = Math.floor(Math.random() * 3);
+        team2Goals = result === 'Draw' ? team1Goals : Math.floor(Math.random() * 3);
+      }
+      const team1Standing = leagueStandings.find(s => s.name === team1.name);
+      const team2Standing = leagueStandings.find(s => s.name === team2.name);
+      team1Standing.matchesPlayed++;
+      team2Standing.matchesPlayed++;
+      team1Standing.goalsFor += team1Goals;
+      team1Standing.goalsAgainst += team2Goals;
+      team2Standing.goalsFor += team2Goals;
+      team2Standing.goalsAgainst += team1Goals;
+      if (result === 'Win') {
+        team1Standing.wins++;
+        team1Standing.points += 3;
+        team2Standing.losses++;
+      } else if (result === 'Draw') {
+        team1Standing.draws++;
+        team1Standing.points += 1;
+        team2Standing.draws++;
+        team2Standing.points += 1;
+      } else {
+        team1Standing.losses++;
+        team2Standing.wins++;
+        team2Standing.points += 3;
+      }
+    }
+    // Simulate player league match
+    function simulateLeagueMatch() {
+      if (leagueCooldown > Date.now()) {
+        alert('League match on cooldown! Wait or skip with Euros.');
         return;
       }
       if (!profile.position) {
         alert('Please select a position to play a match!');
         return;
       }
+      const playerTeam = profile.club || 'Your Team';
       const playerRating = getOverallRating();
-      const opponent = teams[Math.floor(Math.random() * teams.length)];
+      const playerStanding = leagueStandings.find(s => s.name === playerTeam);
+      playerStanding.rating = playerRating; // Update rating
+      const remainingMatches = leagueSchedule.filter(m => !completedMatches.includes(m.home.name + '-' + m.away.name) && (m.home.name === playerTeam || m.away.name === playerTeam));
+      if (!remainingMatches.length) {
+        endSeason();
+        return;
+      }
+      const match = remainingMatches[0];
+      const opponent = match.home.name === playerTeam ? match.away : match.home;
       const opponentName = opponent.name;
       const opponentRating = opponent.rating;
       const diff = playerRating - opponentRating;
       const rand = Math.random() * 100;
       let result, yourGoals, opponentGoals;
-
-      // Determine match result and score
       if (diff > 10) {
         result = rand < 80 ? 'Win' : rand < 95 ? 'Draw' : 'Loss';
-        yourGoals = Math.floor(Math.random() * 4); // 0-3 goals
+        yourGoals = Math.floor(Math.random() * 4);
         opponentGoals = result === 'Win' ? Math.floor(Math.random() * yourGoals) : result === 'Draw' ? yourGoals : Math.floor(Math.random() * 4) + 1;
       } else if (diff < -10) {
         result = rand < 80 ? 'Loss' : rand < 95 ? 'Draw' : 'Win';
-        yourGoals = Math.floor(Math.random() * 3); // 0-2 goals
+        yourGoals = Math.floor(Math.random() * 3);
         opponentGoals = result === 'Loss' ? Math.floor(Math.random() * 4) + 1 : result === 'Draw' ? yourGoals : Math.floor(Math.random() * yourGoals);
       } else {
         result = rand < 33 ? 'Win' : rand < 66 ? 'Draw' : 'Loss';
-        yourGoals = Math.floor(Math.random() * 3); // 0-2 goals
+        yourGoals = Math.floor(Math.random() * 3);
         opponentGoals = result === 'Draw' ? yourGoals : Math.floor(Math.random() * 3);
       }
-
-      // Calculate player stats based on position
       const position = profile.position;
       const weights = positionWeights[position];
       const boosted = getBoostedStats();
       let playerStats = { goals: 0, assists: 0, interventions: 0, saves: 0 };
-
-      // Base probabilities influenced by key stats
-      const goalChance = (weights.Shooting * boosted.Shooting + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
-      const assistChance = (weights.Vision * boosted.Vision + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
-      const interventionChance = (weights.Defending * boosted.Defending + weights.Pressing * boosted.Pressing) / 2000; // Max 0.5
-      const saveChance = position === 'GK' ? (weights.Agility * boosted.Agility + weights.Jumping * boosted.Jumping) / 2000 : 0; // Max 0.5 for GK
-
-      // Assign stats based on team goals and position
+      const goalChance = (weights.Shooting * boosted.Shooting + weights.Dribbling * boosted.Dribbling) / 2000;
+      const assistChance = (weights.Vision * boosted.Vision + weights.Dribbling * boosted.Dribbling) / 2000;
+      const interventionChance = (weights.Defending * boosted.Defending + weights.Pressing * boosted.Pressing) / 2000;
+      const saveChance = position === 'GK' ? (weights.Agility * boosted.Agility + weights.Jumping * boosted.Jumping) / 2000 : 0;
       if (yourGoals > 0) {
         if (['ST', 'LW', 'RW'].includes(position)) {
           playerStats.goals = Math.random() < goalChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
@@ -1049,14 +1194,181 @@
           playerStats.saves = Math.random() < saveChance ? Math.floor(Math.random() * opponentGoals + 1) : 0;
         }
       }
-
-      // Update career stats
+      careerStats.league.matchesPlayed += 1;
+      careerStats.league.goals += playerStats.goals;
+      careerStats.league.assists += playerStats.assists;
+      careerStats.league.interventions += playerStats.interventions;
+      careerStats.league.saves += playerStats.saves;
+      const euros = leagueMatchRewards[result];
+      currency += euros;
+      const isHome = match.home.name === playerTeam;
+      playerStanding.matchesPlayed++;
+      playerStanding.goalsFor += yourGoals;
+      playerStanding.goalsAgainst += opponentGoals;
+      const opponentStanding = leagueStandings.find(s => s.name === opponentName);
+      opponentStanding.matchesPlayed++;
+      opponentStanding.goalsFor += opponentGoals;
+      opponentStanding.goalsAgainst += yourGoals;
+      if (result === 'Win') {
+        playerStanding.wins++;
+        playerStanding.points += 3;
+        opponentStanding.losses++;
+      } else if (result === 'Draw') {
+        playerStanding.draws++;
+        playerStanding.points += 1;
+        opponentStanding.draws++;
+        opponentStanding.points += 1;
+      } else {
+        playerStanding.losses++;
+        opponentStanding.wins++;
+        opponentStanding.points += 3;
+      }
+      completedMatches.push(match.home.name + '-' + match.away.name);
+      matchday++;
+      // Simulate other matches for this matchday
+      const matchesPerDay = { 5: 4, 4: 5, 3: 7, 2: 8, 1: 9 }[currentLeague];
+      const otherMatches = leagueSchedule.filter(m => !completedMatches.includes(m.home.name + '-' + m.away.name) && m.home.name !== playerTeam && m.away.name !== playerTeam).slice(0, matchesPerDay - 1);
+      otherMatches.forEach(m => {
+        simulateAIMatch(m.home, m.away);
+        completedMatches.push(m.home.name + '-' + m.away.name);
+      });
+      matchHistory.unshift({
+        opponentName,
+        score: `${yourGoals}-${opponentGoals}`,
+        opponentRating,
+        playerRating,
+        result,
+        euros,
+        stats: playerStats,
+        type: 'league'
+      });
+      if (matchHistory.length > 5) matchHistory.pop();
+      leagueCooldown = Date.now() + leagueCooldownTime;
+      saveData('footballCurrency', currency);
+      saveData('footballMatchHistory', matchHistory);
+      saveData('footballLeagueCooldown', leagueCooldown);
+      saveData('footballCareerStats', careerStats);
+      saveData('footballLeagueStandings', leagueStandings);
+      saveData('footballMatchday', matchday);
+      saveData('footballCompletedMatches', completedMatches);
+      updateCurrency();
+      updateMatchHistory();
+      updateCareerStats();
+      updateLeague();
+      updateNews();
+      checkAchievements();
+      alert(`League Match Result: ${result}\nOpponent: ${opponentName} (Rating: ${opponentRating})\nScore: ${yourGoals}-${opponentGoals}\nYour Rating: ${playerRating}\nStats: Goals: ${playerStats.goals}, Assists: ${playerStats.assists}, Interventions: ${playerStats.interventions}, Saves: ${playerStats.saves}\nEuros Earned: ${euros}`);
+    }
+    // End season and handle promotion/relegation
+    function endSeason() {
+      const standing = getLeagueStanding();
+      const leagueSize = { 5: 8, 4: 10, 3: 14, 2: 16, 1: 18 }[currentLeague];
+      const promoteSpots = currentLeague === 1 ? 0 : currentLeague === 5 ? 2 : 3;
+      const relegateSpots = currentLeague === 5 ? 0 : currentLeague === 1 ? 3 : 3;
+      let reward = 0;
+      let pack = null;
+      if (standing === 1) {
+        reward = currentLeague === 1 ? 1000 : 750;
+        pack = currentLeague === 1 ? 'gold' : 'silver';
+      } else if (standing <= Math.ceil(leagueSize / 2)) {
+        reward = 500 - (standing - 2) * 50;
+        pack = currentLeague <= 3 ? 'silver' : 'bronze';
+      } else {
+        reward = 100;
+      }
+      if (pack) openPack(pack);
+      currency += reward;
+      let message = `Season ended! Your position: ${standing}/${leagueSize}\nEuros Earned: ${reward}`;
+      if (pack) message += `\nReward: ${pack.charAt(0).toUpperCase() + pack.slice(1)} Pack`;
+      if (standing <= promoteSpots && currentLeague > 1) {
+        currentLeague--;
+        message += `\nPromoted to League ${currentLeague}! Bonus: 500 Euros`;
+        currency += 500;
+      } else if (standing > leagueSize - relegateSpots && currentLeague < 5) {
+        currentLeague++;
+        message += `\nRelegated to League ${currentLeague}.`;
+      } else if (currentLeague === 1 && standing === 1) {
+        message += `\nYou won the Champions Trophy!`;
+      }
+      resetLeague();
+      saveData('footballCurrentLeague', currentLeague);
+      saveData('footballCurrency', currency);
+      updateCurrency();
+      updateLeague();
+      updateNews();
+      checkAchievements();
+      alert(message);
+    }
+    // Get player's league standing
+    function getLeagueStanding() {
+      const sorted = [...leagueStandings].sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        return (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst);
+      });
+      return sorted.findIndex(s => s.name === (profile.club || 'Your Team')) + 1;
+    }
+    // Simulate friendly match
+    function simulateMatch() {
+      if (matchCooldown > Date.now()) {
+        alert('Friendly match on cooldown! Wait until it’s ready.');
+        return;
+              if (!profile.position) {
+        alert('Please select a position to play a match!');
+        return;
+      }
+      const opponentNames = ['Moyross Lads', 'Ballynanty Rovers', 'Aisling Annacotty', 'Janesboro Juniors', 'Caherdavin Celtic', 'Pike Rovers', 'Fairview Rangers', 'Regional United'];
+      const opponentName = opponentNames[Math.floor(Math.random() * opponentNames.length)];
+      const opponentRating = Math.floor(Math.random() * (getOverallRating() + 50)) + 50;
+      const playerRating = getOverallRating();
+      const diff = playerRating - opponentRating;
+      const rand = Math.random() * 100;
+      let result, yourGoals, opponentGoals;
+      if (diff > 10) {
+        result = rand < 80 ? 'Win' : rand < 95 ? 'Draw' : 'Loss';
+        yourGoals = Math.floor(Math.random() * 4);
+        opponentGoals = result === 'Win' ? Math.floor(Math.random() * yourGoals) : result === 'Draw' ? yourGoals : Math.floor(Math.random() * 4) + 1;
+      } else if (diff < -10) {
+        result = rand < 80 ? 'Loss' : rand < 95 ? 'Draw' : 'Win';
+        yourGoals = Math.floor(Math.random() * 3);
+        opponentGoals = result === 'Loss' ? Math.floor(Math.random() * 4) + 1 : result === 'Draw' ? yourGoals : Math.floor(Math.random() * yourGoals);
+      } else {
+        result = rand < 33 ? 'Win' : rand < 66 ? 'Draw' : 'Loss';
+        yourGoals = Math.floor(Math.random() * 3);
+        opponentGoals = result === 'Draw' ? yourGoals : Math.floor(Math.random() * 3);
+      }
+      const position = profile.position;
+      const weights = positionWeights[position];
+      const boosted = getBoostedStats();
+      let playerStats = { goals: 0, assists: 0, interventions: 0, saves: 0 };
+      const goalChance = (weights.Shooting * boosted.Shooting + weights.Dribbling * boosted.Dribbling) / 2000;
+      const assistChance = (weights.Vision * boosted.Vision + weights.Dribbling * boosted.Dribbling) / 2000;
+      const interventionChance = (weights.Defending * boosted.Defending + weights.Pressing * boosted.Pressing) / 2000;
+      const saveChance = position === 'GK' ? (weights.Agility * boosted.Agility + weights.Jumping * boosted.Jumping) / 2000 : 0;
+      if (yourGoals > 0) {
+        if (['ST', 'LW', 'RW'].includes(position)) {
+          playerStats.goals = Math.random() < goalChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
+          playerStats.assists = Math.random() < assistChance ? Math.min(yourGoals - playerStats.goals, Math.floor(Math.random() * 2)) : 0;
+        } else if (['CAM', 'LM', 'RM'].includes(position)) {
+          playerStats.assists = Math.random() < assistChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
+          playerStats.goals = Math.random() < goalChance ? Math.min(yourGoals - playerStats.assists, Math.floor(Math.random() * 2)) : 0;
+        } else if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
+          playerStats.interventions = Math.random() < interventionChance * 1.5 ? Math.floor(Math.random() * 3) + 1 : 0;
+          playerStats.goals = Math.random() < goalChance * 0.5 ? Math.min(yourGoals, 1) : 0;
+        } else if (position === 'GK') {
+          playerStats.saves = Math.random() < saveChance * 1.5 ? Math.floor(Math.random() * opponentGoals + 1) : 0;
+        }
+      } else {
+        if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
+          playerStats.interventions = Math.random() < interventionChance ? Math.floor(Math.random() * 2) + 1 : 0;
+        } else if (position === 'GK') {
+          playerStats.saves = Math.random() < saveChance ? Math.floor(Math.random() * opponentGoals + 1) : 0;
+        }
+      }
       careerStats.friendly.matchesPlayed += 1;
       careerStats.friendly.goals += playerStats.goals;
       careerStats.friendly.assists += playerStats.assists;
       careerStats.friendly.interventions += playerStats.interventions;
       careerStats.friendly.saves += playerStats.saves;
-
       const euros = matchRewards[result];
       currency += euros;
       matchHistory.unshift({
@@ -1066,9 +1378,10 @@
         playerRating,
         result,
         euros,
-        stats: playerStats
+        stats: playerStats,
+        type: 'friendly'
       });
-      if (matchHistory.length > 5) matchHistory.pop(); // Keep only last 5
+      if (matchHistory.length > 5) matchHistory.pop();
       matchCooldown = Date.now() + matchCooldownTime;
       saveData('footballCurrency', currency);
       saveData('footballMatchHistory', matchHistory);
@@ -1077,63 +1390,348 @@
       updateCurrency();
       updateMatchHistory();
       updateCareerStats();
-      alert(`Match Result: ${result}\nOpponent: ${opponentName} (Rating: ${opponentRating})\nScore: ${yourGoals}-${opponentGoals}\nYour Rating: ${playerRating}\nStats: Goals: ${playerStats.goals}, Assists: ${playerStats.assists}, Interventions: ${playerStats.interventions}, Saves: ${playerStats.saves}\nEuros Earned: ${euros}`);
+      updateNews();
+      checkAchievements();
+      alert(`Friendly Match Result: ${result}\nOpponent: ${opponentName} (Rating: ${opponentRating})\nScore: ${yourGoals}-${opponentGoals}\nYour Rating: ${playerRating}\nStats: Goals: ${playerStats.goals}, Assists: ${playerStats.assists}, Interventions: ${playerStats.interventions}, Saves: ${playerStats.saves}\nEuros Earned: ${euros}`);
     }
-
     // Update match history display
     function updateMatchHistory() {
       const table = document.getElementById('match-history');
-      let html = '<tr><th>Opponent</th><th>Score</th><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th><th>Stats</th></tr>';
+      table.innerHTML = '<tr><th>Opponent</th><th>Score</th><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th><th>Stats</th></tr>';
       matchHistory.forEach(match => {
+        const row = document.createElement('tr');
         const statsStr = `G: ${match.stats.goals}, A: ${match.stats.assists}, I: ${match.stats.interventions}, S: ${match.stats.saves}`;
-        html += `<tr><td>${match.opponentName}</td><td>${match.score}</td><td>${match.opponentRating}</td><td>${match.playerRating}</td><td>${match.result}</td><td>${match.euros}</td><td>${statsStr}</td></tr>`;
+        row.innerHTML = `
+          <td>${match.opponentName} (${match.type.charAt(0).toUpperCase() + match.type.slice(1)})</td>
+          <td>${match.score}</td>
+          <td>${match.opponentRating}</td>
+          <td>${match.playerRating}</td>
+          <td>${match.result}</td>
+          <td>${match.euros}</td>
+          <td>${statsStr}</td>
+        `;
+        table.appendChild(row);
       });
-      table.innerHTML = html;
     }
-
-    // Update upgrades display
+    // Update league table
+    function updateLeague() {
+      document.getElementById('league-title').textContent = `League ${currentLeague}`;
+      const table = document.getElementById('league-table');
+      table.innerHTML = '<tr><th>Team</th><th>MP</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr>';
+      const sortedStandings = [...leagueStandings].sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        return (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst);
+      });
+      sortedStandings.forEach(s => {
+        const row = document.createElement('tr');
+        if (s.name === (profile.club || 'Your Team')) row.classList.add('player-team');
+        row.innerHTML = `
+          <td>${s.name}</td>
+          <td>${s.matchesPlayed}</td>
+          <td>${s.wins}</td>
+          <td>${s.draws}</td>
+          <td>${s.losses}</td>
+          <td>${s.goalsFor}</td>
+          <td>${s.goalsAgainst}</td>
+          <td>${s.goalsFor - s.goalsAgainst}</td>
+          <td>${s.points}</td>
+        `;
+        table.appendChild(row);
+      });
+      const remainingMatches = leagueSchedule.filter(m => !completedMatches.includes(m.home.name + '-' + m.away.name) && (m.home.name === (profile.club || 'Your Team') || m.away.name === (profile.club || 'Your Team')));
+      const nextMatch = remainingMatches[0];
+      document.getElementById('next-match').textContent = nextMatch ? `Next Match: vs ${nextMatch.home.name === (profile.club || 'Your Team') ? nextMatch.away.name : nextMatch.home.name} (Rating: ${nextMatch.home.name === (profile.club || 'Your Team') ? nextMatch.away.rating : nextMatch.home.rating})` : 'Season Ended';
+      document.getElementById('play-league-match').disabled = !nextMatch || leagueCooldown > Date.now();
+      document.getElementById('skip-cooldown').disabled = leagueCooldown <= Date.now() || currency < 50;
+    }
+    // Update news
+    function updateNews() {
+      const newsList = document.getElementById('news-list');
+      const news = [];
+      const standing = getLeagueStanding();
+      const leagueSize = { 5: 8, 4: 10, 3: 14, 2: 16, 1: 18 }[currentLeague];
+      if (standing === 1) {
+        news.push(`You're leading League ${currentLeague}! Keep it up!`);
+      } else if (standing <= 3) {
+        news.push(`You're ${standing}${standing === 1 ? 'st' : standing === 2 ? 'nd' : 'rd'} in League ${currentLeague}. Push for promotion!`);
+      } else if (standing > leagueSize - 3 && currentLeague < 5) {
+        news.push(`You're ${standing}${standing % 10 === 1 ? 'st' : standing % 10 === 2 ? 'nd' : standing % 10 === 3 ? 'rd' : 'th'} in League ${currentLeague}. Avoid relegation!`);
+      }
+      if (careerStats.league.matchesPlayed > 0) {
+        const lastMatch = matchHistory.find(m => m.type === 'league');
+        if (lastMatch) {
+          news.push(`Last League Match: ${lastMatch.result} vs ${lastMatch.opponentName} (${lastMatch.score})`);
+        }
+      }
+      if (Math.random() < 0.1) {
+        news.push('Special Event: Double Euros from matches today!');
+      }
+      newsList.innerHTML = news.slice(0, 5).map(item => `<li>${item}</li>`).join('');
+    }
+    // Update achievements
+    function checkAchievements() {
+      achievements.forEach(a => {
+        if (!achievementsUnlocked.includes(a.id) && a.condition()) {
+          achievementsUnlocked.push(a.id);
+          if (a.euros) currency += a.euros;
+          if (a.pack) openPack(a.pack);
+          alert(`Achievement Unlocked: ${a.name}\nReward: ${a.reward}`);
+          saveData('footballAchievementsUnlocked', achievementsUnlocked);
+          saveData('footballCurrency', currency);
+          updateCurrency();
+        }
+      });
+      const list = document.getElementById('achievements-list');
+      list.innerHTML = achievements.map(a => `<li>${a.name}: ${achievementsUnlocked.includes(a.id) ? 'Unlocked' : 'Locked'}</li>`).join('');
+    }
+    // Generate item
+    function generateItem(packType) {
+      const chances = packConfigs[packType].chances;
+      const rand = Math.random();
+      let cumulative = 0;
+      let rarity;
+      for (let i = 0; i < rarities.length; i++) {
+        cumulative += chances[i];
+        if (rand < cumulative) {
+          rarity = rarities[i];
+          break;
+        }
+      }
+      let itemType;
+      if (rarity === 'Common' && Math.random() < 0.2 || rarity === 'Uncommon' && Math.random() < 0.15 || rarity === 'Rare' && Math.random() < 0.1 || rarity === 'Epic' && Math.random() < 0.05 || rarity === 'Legendary') {
+        itemType = 'Coach';
+      } else {
+        itemType = itemTypes[Math.floor(Math.random() * (itemTypes.length - 1))];
+      }
+      let item;
+      if (itemType === 'Coach') {
+        const availableCoaches = coaches[rarity];
+        item = availableCoaches[Math.floor(Math.random() * availableCoaches.length)];
+        return `${rarity} ${item.name} Coach`;
+      } else {
+        const set = sets[Math.floor(Math.random() * sets.length)];
+        return `${rarity} ${set} ${itemType}`;
+      }
+    }
+    // Open pack
+    function openPack(packType) {
+      const cost = packConfigs[packType].cost;
+      if (currency < cost) {
+        alert(`Not enough Euros! Need ${cost} Euros for ${packType.charAt(0).toUpperCase() + packType.slice(1)} Pack.`);
+        return;
+      }
+      currency -= cost;
+      const items = [];
+      const numItems = packType === 'gold' ? 5 : packType === 'silver' ? 3 : 1;
+      for (let i = 0; i < numItems; i++) {
+        const item = generateItem(packType);
+        inventory[item] = (inventory[item] || 0) + 1;
+        items.push(item);
+      }
+      saveData('footballCurrency', currency);
+      saveData('footballInventory', inventory);
+      updateCurrency();
+      updateInventory();
+      alert(`Opened ${packType.charAt(0).toUpperCase() + packType.slice(1)} Pack!\nItems: ${items.join(', ')}`);
+    }
+    // Sell item
+    function sellItem(key, count) {
+      if (!inventory[key] || inventory[key] < count) {
+        alert('Invalid number of items to sell!');
+        return;
+      }
+      const [rarity] = key.split(' ');
+      const value = sellValues[rarity] * count;
+      if (equipped.Shirt === key || equipped.Shorts === key || equipped.Boots === key || equipped.Coach === key) {
+        const equippedCount = Object.values(equipped).filter(v => v === key).length;
+        if (equippedCount > inventory[key] - count) {
+          alert('Cannot sell item: It is equipped!');
+          return;
+        }
+      }
+      inventory[key] -= count;
+      if (inventory[key] === 0) delete inventory[key];
+      currency += value;
+      saveData('footballInventory', inventory);
+      saveData('footballCurrency', currency);
+      updateInventory();
+      updateCurrency();
+      updateDisplay();
+      alert(`Sold ${count} x ${key} for ${value} Euros!`);
+    }
+    // Update inventory
+    function updateInventory() {
+      const inventoryList = document.getElementById('inventory-list');
+      inventoryList.innerHTML = '';
+      const equipSelects = {
+        Shirt: document.getElementById('equip-shirt'),
+        Shorts: document.getElementById('equip-shorts'),
+        Boots: document.getElementById('equip-boots'),
+        Coach: document.getElementById('equip-coach')
+      };
+      for (let type in equipSelects) {
+        equipSelects[type].innerHTML = '<option value="">None</option>';
+      }
+      for (let key in inventory) {
+        const [rarity, set, type] = key.split(' ');
+        const li = document.createElement('li');
+        const count = inventory[key];
+        const className = `rarity-${rarity.toLowerCase()}`;
+        li.innerHTML = `<span class="${className}">${key} (x${count})</span>`;
+        if (count > 0) {
+          const button = document.createElement('button');
+          button.className = 'equip';
+          button.dataset.key = key;
+          button.textContent = equipped[type] === key ? 'Unequip' : 'Equip';
+          button.addEventListener('click', () => {
+            if (equipped[type] === key) {
+              equipped[type] = null;
+            } else {
+              equipped[type] = key;
+            }
+            saveData('footballEquipped', equipped);
+            updateInventory();
+            updateDisplay();
+          });
+          li.appendChild(button);
+          if (count > 1 || (count === 1 && equipped[type] !== key)) {
+            const sellButton = document.createElement('button');
+            sellButton.className = 'sell';
+            sellButton.dataset.key = key;
+            sellButton.textContent = 'Sell';
+            sellButton.addEventListener('click', () => {
+              if (count > 1) {
+                const num = parseInt(prompt(`How many ${key} to sell? (Available: ${count})`));
+                if (!isNaN(num) && num >= 1 && num <= count) {
+                  sellItem(key, num);
+                } else {
+                  alert('Invalid number!');
+                }
+              } else {
+                if (confirm(`Sell ${key}?`)) sellItem(key, 1);
+              }
+            });
+            li.appendChild(sellButton);
+          }
+        }
+        inventoryList.appendChild(li);
+        if (itemTypes.includes(type)) {
+          const option = document.createElement('option');
+          option.value = key;
+          option.textContent = key;
+          equipSelects[type].appendChild(option);
+        }
+      }
+      for (let type in equipSelects) {
+        equipSelects[type].value = equipped[type] || '';
+      }
+    }
+    // Cooldown updater
+    let cooldownInterval = null;
+    function startCooldownUpdater() {
+      if (cooldownInterval) return;
+      cooldownInterval = setInterval(() => {
+        let anyActive = false;
+        statNames.forEach(name => {
+          const id = idify(name);
+          const button = document.getElementById(`btn-${id}`);
+          const progress = document.getElementById(`cooldown-progress-${id}`);
+          const text = document.getElementById(`cooldown-text-${id}`);
+          const statBox = document.getElementById(`box-${id}`);
+          if (cooldowns[name] > Date.now()) {
+            anyActive = true;
+            const remaining = Math.max(0, cooldowns[name] - Date.now());
+            const percentage = (1 - remaining / getCooldownTime()) * 100;
+            progress.style.width = `${percentage}%`;
+            text.textContent = `Cooldown: ${(remaining / 1000).toFixed(1)}s`;
+            button.disabled = true;
+            button.setAttribute('aria-disabled', 'true');
+            statBox.classList.remove('active');
+            statBox.classList.add('cooldown');
+          } else {
+            progress.style.width = '0%';
+            text.textContent = '';
+            if (stats[name] >= maxStat) {
+              button.textContent = `${name} Maxed`;
+              button.disabled = true;
+              button.setAttribute('aria-disabled', 'true');
+            } else {
+              button.textContent = `Train ${name}`;
+              button.disabled = false;
+              button.setAttribute('aria-disabled', 'false');
+              statBox.classList.remove('cooldown');
+              statBox.classList.add('active');
+            }
+          }
+        });
+        const matchProgress = document.getElementById('match-cooldown-progress');
+        const matchText = document.getElementById('match-cooldown-text');
+        if (matchCooldown > Date.now()) {
+          anyActive = true;
+          const remaining = Math.max(0, matchCooldown - Date.now());
+          const percentage = (1 - remaining / matchCooldownTime) * 100;
+          matchProgress.style.width = `${percentage}%`;
+          matchText.textContent = `Friendly Cooldown: ${(remaining / 1000).toFixed(1)}s`;
+          document.getElementById('play-match').disabled = true;
+        } else {
+          matchProgress.style.width = '0%';
+          matchText.textContent = '';
+          document.getElementById('play-match').disabled = false;
+        }
+        const leagueProgress = document.getElementById('league-cooldown-progress');
+        const leagueText = document.getElementById('league-cooldown-text');
+        if (leagueCooldown > Date.now()) {
+          anyActive = true;
+          const remaining = Math.max(0, leagueCooldown - Date.now());
+          const percentage = (1 - remaining / leagueCooldownTime) * 100;
+          leagueProgress.style.width = `${percentage}%`;
+          leagueText.textContent = `League Cooldown: ${(remaining / 3600000).toFixed(1)}h`;
+          document.getElementById('play-league-match').disabled = true;
+          document.getElementById('skip-cooldown').disabled = currency < 50;
+        } else {
+          leagueProgress.style.width = '0%';
+          leagueText.textContent = '';
+          document.getElementById('play-league-match').disabled = leagueSchedule.every(m => completedMatches.includes(m.home.name + '-' + m.away.name));
+          document.getElementById('skip-cooldown').disabled = true;
+        }
+        if (!anyActive) {
+          clearInterval(cooldownInterval);
+          cooldownInterval = null;
+        }
+      }, 100);
+    }
+    // Update upgrades
     function updateUpgrades() {
-      // Training Upgrades
       const trainingTable = document.getElementById('training-upgrades');
-      let trainingHtml = '<tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>';
-      trainingUpgrades.forEach((upgrade, index) => {
-        const isPurchased = index < trainingUpgradesPurchased;
-        const canAfford = currency >= upgrade.cost;
-        const buttonDisabled = isPurchased || !canAfford ? 'disabled' : '';
-        trainingHtml += `
-          <tr>
-            <td>${upgrade.name}</td>
-            <td>${upgrade.effect}</td>
-            <td>${upgrade.cost}€</td>
-            <td><button class="buy-training-upgrade" data-index="${index}" ${buttonDisabled}>${isPurchased ? 'Purchased' : 'Buy'}</button></td>
-          </tr>
-        `;
-      });
-      trainingTable.innerHTML = trainingHtml;
-
-      // Euro Upgrades
       const euroTable = document.getElementById('euro-upgrades');
-      let euroHtml = '<tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>';
-      euroUpgrades.forEach((upgrade, index) => {
-        const isPurchased = index < euroUpgradesPurchased;
-        const canAfford = currency >= upgrade.cost;
-        const buttonDisabled = isPurchased || !canAfford ? 'disabled' : '';
-        euroHtml += `
-          <tr>
-            <td>${upgrade.name}</td>
-            <td>${upgrade.effect}</td>
-            <td>${upgrade.cost}€</td>
-            <td><button class="buy-euro-upgrade" data-index="${index}" ${buttonDisabled}>${isPurchased ? 'Purchased' : 'Buy'}</button></td>
-          </tr>
+      trainingTable.innerHTML = '<tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>';
+      euroTable.innerHTML = '<tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>';
+      trainingUpgrades.forEach((upgrade, index) => {
+        const row = document.createElement('tr');
+        const purchased = index < trainingUpgradesPurchased;
+        row.innerHTML = `
+          <td>${upgrade.name}</td>
+          <td>${upgrade.effect}</td>
+          <td>${upgrade.cost}</td>
+          <td><button class="upgrade-training" data-index="${index}" ${purchased || currency < upgrade.cost ? 'disabled' : ''}>${purchased ? 'Purchased' : 'Buy'}</button></td>
         `;
+        trainingTable.appendChild(row);
       });
-      euroTable.innerHTML = euroHtml;
-
-      // Add event listeners for buy buttons
-      document.querySelectorAll('.buy-training-upgrade').forEach(btn => {
+      euroUpgrades.forEach((upgrade, index) => {
+        const row = document.createElement('tr');
+        const purchased = index < euroUpgradesPurchased;
+        row.innerHTML = `
+          <td>${upgrade.name}</td>
+          <td>${upgrade.effect}</td>
+          <td>${upgrade.cost}</td>
+          <td><button class="upgrade-euro" data-index="${index}" ${purchased || currency < upgrade.cost ? 'disabled' : ''}>${purchased ? 'Purchased' : 'Buy'}</button></td>
+        `;
+        euroTable.appendChild(row);
+      });
+      document.querySelectorAll('.upgrade-training').forEach(btn => {
         btn.addEventListener('click', () => {
           const index = parseInt(btn.dataset.index);
-          if (index >= trainingUpgradesPurchased && currency >= trainingUpgrades[index].cost) {
+          if (index === trainingUpgradesPurchased && currency >= trainingUpgrades[index].cost) {
             currency -= trainingUpgrades[index].cost;
             trainingUpgradesPurchased++;
             saveData('footballCurrency', currency);
@@ -1143,11 +1741,10 @@
           }
         });
       });
-
-      document.querySelectorAll('.buy-euro-upgrade').forEach(btn => {
+      document.querySelectorAll('.upgrade-euro').forEach(btn => {
         btn.addEventListener('click', () => {
           const index = parseInt(btn.dataset.index);
-          if (index >= euroUpgradesPurchased && currency >= euroUpgrades[index].cost) {
+          if (index === euroUpgradesPurchased && currency >= euroUpgrades[index].cost) {
             currency -= euroUpgrades[index].cost;
             euroUpgradesPurchased++;
             saveData('footballCurrency', currency);
@@ -1158,386 +1755,102 @@
         });
       });
     }
-
-    // Helper function to create safe IDs
-    function idify(name) {
-      return name.toLowerCase().replace(/\s+/g, "-");
-    }
-
-    // Single interval to update all cooldowns and handle concurrent limit
-    let cooldownInterval;
-    function startCooldownUpdater() {
-      if (cooldownInterval) return; // Already running
-
-      cooldownInterval = setInterval(() => {
-        let activeCooldowns = 0;
-        statNames.forEach(name => {
-          if (cooldowns[name] > Date.now()) {
-            activeCooldowns++;
-          }
-        });
-
-        // Update stat cooldowns
-        let allStatCooldownsDone = true;
-        statNames.forEach(name => {
-          const id = idify(name);
-          const button = document.getElementById(`btn-${id}`);
-          const cooldownText = document.getElementById(`cooldown-text-${id}`);
-          const cooldownProgress = document.getElementById(`cooldown-progress-${id}`);
-          const statBox = document.getElementById(`box-${id}`);
-          if (!button || !cooldownText || !cooldownProgress || !statBox) return;
-
-          const remaining = Math.max(0, cooldowns[name] - Date.now());
-          const progress = Math.min(100, ((getCooldownTime() - remaining) / getCooldownTime()) * 100);
-
-          cooldownProgress.style.width = `${progress}%`;
-
-          if (remaining > 0) {
-            const seconds = (remaining / 1000).toFixed(1);
-            cooldownText.textContent = `Available in ${seconds}s`;
-            button.disabled = true;
-            button.setAttribute('aria-disabled', 'true');
-            statBox.classList.add('cooldown');
-            statBox.classList.remove('active');
-            allStatCooldownsDone = false;
-          } else {
-            const shouldDisable = activeCooldowns >= maxConcurrentTraining || stats[name] >= maxStat;
-            button.disabled = shouldDisable;
-            button.setAttribute('aria-disabled', shouldDisable ? 'true' : 'false');
-            cooldownText.textContent = '';
-            statBox.classList.remove('cooldown');
-            statBox.classList.add('active');
-            cooldownProgress.style.width = '0%';
-          }
-        });
-
-        // Update match cooldown
-        const matchButton = document.getElementById('play-match');
-        const matchCooldownText = document.getElementById('match-cooldown-text');
-        const matchCooldownProgress = document.getElementById('match-cooldown-progress');
-        const matchRemaining = Math.max(0, matchCooldown - Date.now());
-        const matchProgress = Math.min(100, ((matchCooldownTime - matchRemaining) / matchCooldownTime) * 100);
-        matchCooldownProgress.style.width = `${matchProgress}%`;
-        matchCooldownProgress.textContent = matchRemaining > 0 ? `${Math.floor(matchProgress)}%` : '';
-        if (matchRemaining > 0) {
-          const minutes = Math.floor(matchRemaining / 60000);
-          const seconds = ((matchRemaining % 60000) / 1000).toFixed(0).padStart(2, '0');
-          matchCooldownText.textContent = `Next match in ${minutes}m ${seconds}s`;
-          matchButton.disabled = true;
-          matchButton.setAttribute('aria-disabled', 'true');
-        } else {
-          matchCooldownText.textContent = '';
-          matchCooldownProgress.textContent = '';
-          matchButton.disabled = false;
-          matchButton.setAttribute('aria-disabled', 'false');
-          matchCooldownProgress.style.width = '0%';
-        }
-
-        if (allStatCooldownsDone && matchRemaining <= 0) {
-          clearInterval(cooldownInterval);
-          cooldownInterval = null;
-        }
-      }, 50);
-    }
-
-    // Get random item based on pack type
-    function getRandomItem(packType) {
-      const chances = packConfigs[packType].chances;
-      let rand = Math.random();
-      let cumulative = 0;
-      let rarityIndex = 0;
-      for (let i = 0; i < chances.length; i++) {
-        cumulative += chances[i];
-        if (rand < cumulative) {
-          rarityIndex = i;
-          break;
-        }
-      }
-      const rarity = rarities[rarityIndex];
-      const typeIndex = Math.floor(Math.random() * itemTypes.length);
-      const type = itemTypes[typeIndex];
-      if (type === 'Coach') {
-        const coachList = coaches[rarity];
-        if (!coachList || coachList.length === 0) {
-          // Fallback to another item type if no coach for this rarity
-          const fallbackType = itemTypes[Math.floor(Math.random() * (itemTypes.length - 1))];
-          const setIndex = Math.floor(Math.random() * sets.length);
-          const set = sets[setIndex];
-          return `${rarity} ${set} ${fallbackType}`;
-        }
-        const coach = coachList[Math.floor(Math.random() * coachList.length)];
-        return `${rarity} ${coach.name} Coach`;
-      } else {
-        const setIndex = Math.floor(Math.random() * sets.length);
-        const set = sets[setIndex];
-        return `${rarity} ${set} ${type}`;
-      }
-    }
-
-    // Open pack function
-    function openPack(packType) {
-      const config = packConfigs[packType];
-      if (currency < config.cost) {
-        alert('Not enough Euros!');
+    // Skip league cooldown
+    function skipLeagueCooldown() {
+      if (currency < 50) {
+        alert('Not enough Euros to skip cooldown!');
         return;
       }
-      currency -= config.cost;
-      const item = getRandomItem(packType);
-      inventory[item] = (inventory[item] || 0) + 1;
+      currency -= 50;
+      leagueCooldown = 0;
       saveData('footballCurrency', currency);
-      saveData('footballInventory', inventory);
-      alert(`You got: ${item}!`);
+      saveData('footballLeagueCooldown', leagueCooldown);
       updateCurrency();
-      updateInventory();
-      updateEquipSelects();
+      updateLeague();
     }
-
-    // Add pack open listeners
-    document.getElementById('open-bronze').addEventListener('click', () => openPack('bronze'));
-    document.getElementById('open-silver').addEventListener('click', () => openPack('silver'));
-    document.getElementById('open-gold').addEventListener('click', () => openPack('gold'));
-
-    // Add match listener
-    document.getElementById('play-match').addEventListener('click', debounce(simulateMatch, 200));
-
-    // Update inventory display
-    function updateInventory() {
-      const sections = {
-        Shirt: document.getElementById('inventory-shirts'),
-        Shorts: document.getElementById('inventory-shorts'),
-        Boots: document.getElementById('inventory-boots'),
-        Coach: document.getElementById('inventory-coaches')
-      };
-      
-      // Initialize arrays for each item type
-      const itemsByType = {
-        Shirt: [],
-        Shorts: [],
-        Boots: [],
-        Coach: []
-      };
-      
-      // Categorize and collect items
-      for (let key in inventory) {
-        const [rarity, name, itemType] = key.split(' ');
-        if (itemTypes.includes(itemType)) {
-          itemsByType[itemType].push({ key, rarity, name, count: inventory[key] });
-        }
-      }
-      
-      // Sort items by rarity (Legendary to Common)
-      const rarityOrder = rarities.reduce((acc, rarity, index) => {
-        acc[rarity] = rarities.length - index;
-        return acc;
-      }, {});
-      
-      Object.keys(itemsByType).forEach(type => {
-        itemsByType[type].sort((a, b) => {
-          const rarityA = rarityOrder[a.rarity] || 0;
-          const rarityB = rarityOrder[b.rarity] || 0;
-          return rarityB - rarityA || a.name.localeCompare(b.name);
-        });
-      });
-      
-      // Generate HTML for each section
-      Object.keys(sections).forEach(type => {
-        let html = '';
-        itemsByType[type].forEach(item => {
-          const { key, rarity, name, count } = item;
-          const setName = coaches[rarity]?.find(c => key.includes(c.name))?.set || name;
-          const boostStat = type === 'Coach' ? coaches[rarity].find(c => c.name === name).stat : itemBoosts[setName][type];
-          const baseBoost = rarityBoosts[rarity];
-          html += `<li class="rarity-${idify(rarity)}">${key} (Boosts ${boostStat} by ${baseBoost})${count > 1 ? ` x${count}` : ''} <button class="sell" data-key="${key}">Sell</button></li>`;
-        });
-        sections[type].innerHTML = html;
-      });
-      
-      // Add sell listeners
-      document.querySelectorAll('.sell').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const key = btn.dataset.key;
-          const count = inventory[key];
-          let num = 1;
-          if (count > 1) {
-            const input = prompt(`How many to sell? (1-${count})`);
-            num = parseInt(input);
-            if (isNaN(num) || num < 1 || num > count) {
-              alert('Invalid number!');
-              return;
-            }
-          } else {
-            if (!confirm('Sell this item?')) return;
-          }
-          sellItem(key, num);
-        });
-      });
+    // Convert stat name to ID
+    function idify(str) {
+      return str.toLowerCase().replace(/\s+/g, '-');
     }
-
-    // Sell item
-    function sellItem(key, num) {
-      const [rarity] = key.split(' ');
-      const value = sellValues[rarity] * num;
-      currency += value;
-      inventory[key] -= num;
-      if (inventory[key] <= 0) delete inventory[key];
-      // Unequip if necessary
-      itemTypes.forEach(type => {
-        if (equipped[type] === key && !inventory[key]) {
-          equipped[type] = null;
-        }
-      });
-      saveData('footballInventory', inventory);
-      saveData('footballEquipped', equipped);
-      saveData('footballCurrency', currency);
-      updateCurrency();
-      updateInventory();
-      updateEquipSelects();
-      updateDisplay();
-    }
-
-    // Update equip selects
-    function updateEquipSelects() {
-      itemTypes.forEach(type => {
-        const select = document.getElementById(`equip-${idify(type)}`);
-        let html = '<option value="">None</option>';
-        for (let key in inventory) {
-          if (inventory[key] > 0 && key.endsWith(type)) {
-            html += `<option value="${key}" ${equipped[type] === key ? 'selected' : ''}>${key}</option>`;
-          }
-        }
-        select.innerHTML = html;
-      });
-    }
-
-    // Equip change listeners
-    itemTypes.forEach(type => {
-      const select = document.getElementById(`equip-${idify(type)}`);
-      select.addEventListener('change', e => {
-        equipped[type] = e.target.value || null;
-        saveData('footballEquipped', equipped);
-        updateDisplay();
-      });
-    });
-
-    // Reset game function
-    document.getElementById('reset-game').addEventListener('click', () => {
-      if (confirm('Are you sure you want to reset all progress?')) {
-        try {
-          localStorage.removeItem('footballStats');
-          localStorage.removeItem('footballCooldowns');
-          localStorage.removeItem('footballProfile');
-          localStorage.removeItem('footballCurrency');
-          localStorage.removeItem('footballInventory');
-          localStorage.removeItem('footballEquipped');
-          localStorage.removeItem('footballMatchCooldown');
-          localStorage.removeItem('footballMatchHistory');
-          localStorage.removeItem('footballCareerStats');
-          localStorage.removeItem('footballTrainingUpgrades');
-          localStorage.removeItem('footballEuroUpgrades');
-        } catch (e) {
-          console.error('Failed to clear localStorage:', e);
-        }
-        stats = {};
-        cooldowns = {};
-        profile = { name: "", age: "", club: "", position: "" };
-        currency = 0;
-        inventory = {};
-        equipped = { Shirt: null, Shorts: null, Boots: null, Coach: null };
-        matchCooldown = 0;
-        matchHistory = [];
-        careerStats = {
-          friendly: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 },
-          league: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 }
-        };
-        trainingUpgradesPurchased = 0;
-        euroUpgradesPurchased = 0;
-        statNames.forEach(name => {
-          stats[name] = 0;
-          cooldowns[name] = 0;
-        });
-        document.getElementById("player-name").value = "";
-        document.getElementById("player-age").value = "";
-        document.getElementById("player-club").value = "";
-        document.getElementById("player-position").value = "";
-        updateDisplay();
-        updateCurrency();
-        updateInventory();
-        updateEquipSelects();
-        updateMatchHistory();
-        updateCareerStats();
-        updateUpgrades();
-        startCooldownUpdater(); // Restart updater if needed
-      }
-    });
-
-    // Initialize the game
+    // Initialize game
     function initGame() {
+      initializeLeague();
       updateDisplay();
       updateCurrency();
       updateInventory();
-      updateEquipSelects();
       updateMatchHistory();
       updateCareerStats();
       updateUpgrades();
-      statNames.forEach(name => {
-        const id = idify(name);
-        const statBox = document.getElementById(`box-${id}`);
-        if (statBox) {
-          statBox.classList.add('active');
+      updateLeague();
+      updateNews();
+      checkAchievements();
+      startCooldownUpdater();
+      document.getElementById('open-bronze').addEventListener('click', () => openPack('bronze'));
+      document.getElementById('open-silver').addEventListener('click', () => openPack('silver'));
+      document.getElementById('open-gold').addEventListener('click', () => openPack('gold'));
+      document.getElementById('play-match').addEventListener('click', simulateMatch);
+      document.getElementById('play-league-match').addEventListener('click', simulateLeagueMatch);
+      document.getElementById('skip-cooldown').addEventListener('click', skipLeagueCooldown);
+      document.getElementById('reset-game').addEventListener('click', () => {
+        if (confirm('Are you sure you want to reset all progress?')) {
+          stats = {};
+          statNames.forEach(name => stats[name] = 0);
+          cooldowns = {};
+          statNames.forEach(name => cooldowns[name] = 0);
+          profile = { name: '', age: '', club: '', position: '' };
+          currency = 0;
+          inventory = {};
+          equipped = { Shirt: null, Shorts: null, Boots: null, Coach: null };
+          matchCooldown = 0;
+          leagueCooldown = 0;
+          matchHistory = [];
+          careerStats = {
+            friendly: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 },
+            league: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 }
+          };
+          trainingUpgradesPurchased = 0;
+          euroUpgradesPurchased = 0;
+          currentLeague = 5;
+          leagueSchedule = [];
+          leagueStandings = [];
+          matchday = 0;
+          completedMatches = [];
+          achievementsUnlocked = [];
+          saveData('footballStats', stats);
+          saveData('footballCooldowns', cooldowns);
+          saveData('footballProfile', profile);
+          saveData('footballCurrency', currency);
+          saveData('footballInventory', inventory);
+          saveData('footballEquipped', equipped);
+          saveData('footballMatchCooldown', matchCooldown);
+          saveData('footballLeagueCooldown', leagueCooldown);
+          saveData('footballMatchHistory', matchHistory);
+          saveData('footballCareerStats', careerStats);
+          saveData('footballTrainingUpgrades', trainingUpgradesPurchased);
+          saveData('footballEuroUpgrades', euroUpgradesPurchased);
+          saveData('footballCurrentLeague', currentLeague);
+          saveData('footballLeagueSchedule', leagueSchedule);
+          saveData('footballLeagueStandings', leagueStandings);
+          saveData('footballMatchday', matchday);
+          saveData('footballCompletedMatches', completedMatches);
+          saveData('footballAchievementsUnlocked', achievementsUnlocked);
+          document.getElementById('player-name').value = '';
+          document.getElementById('player-age').value = '';
+          document.getElementById('player-club').value = '';
+          document.getElementById('player-position').value = '';
+          statNames.forEach(name => {
+            const id = idify(name);
+            const button = document.getElementById(`btn-${id}`);
+            button.textContent = `Train ${name}`;
+            button.disabled = false;
+            button.setAttribute('aria-disabled', 'false');
+            document.getElementById(`box-${id}`).classList.add('active');
+            document.getElementById(`box-${id}`).classList.remove('cooldown');
+          });
+          initGame();
         }
       });
-      // Initialize stat button states
-      statNames.forEach(name => {
-        const id = idify(name);
-        const button = document.getElementById(`btn-${id}`);
-        const cooldownText = document.getElementById(`cooldown-text-${id}`);
-        const cooldownProgress = document.getElementById(`cooldown-progress-${id}`);
-        const statBox = document.getElementById(`box-${id}`);
-        const remaining = Math.max(0, cooldowns[name] - Date.now());
-        const progress = Math.min(100, ((getCooldownTime() - remaining) / getCooldownTime()) * 100);
-        cooldownProgress.style.width = `${progress}%`;
-        if (remaining > 0) {
-          const seconds = (remaining / 1000).toFixed(1);
-          cooldownText.textContent = `Available in ${seconds}s`;
-          button.disabled = true;
-          button.setAttribute('aria-disabled', 'true');
-          statBox.classList.add('cooldown');
-          statBox.classList.remove('active');
-        } else {
-          const shouldDisable = activeCooldownCount() >= maxConcurrentTraining || stats[name] >= maxStat;
-          button.disabled = shouldDisable;
-          button.setAttribute('aria-disabled', shouldDisable ? 'true' : 'false');
-          cooldownText.textContent = '';
-          statBox.classList.remove('cooldown');
-          statBox.classList.add('active');
-          cooldownProgress.style.width = '0%';
-        }
-      });
-
-      // Initialize match button state
-      const matchButton = document.getElementById('play-match');
-      const matchCooldownText = document.getElementById('match-cooldown-text');
-      const matchCooldownProgress = document.getElementById('match-cooldown-progress');
-      const matchRemaining = Math.max(0, matchCooldown - Date.now());
-      if (matchRemaining > 0) {
-        const matchProgress = Math.min(100, ((matchCooldownTime - matchRemaining) / matchCooldownTime) * 100);
-        matchCooldownProgress.style.width = `${matchProgress}%`;
-        matchCooldownProgress.textContent = `${Math.floor(matchProgress)}%`;
-        const minutes = Math.floor(matchRemaining / 60000);
-        const seconds = ((matchRemaining % 60000) / 1000).toFixed(0).padStart(2, '0');
-        matchCooldownText.textContent = `Next match in ${minutes}m ${seconds}s`;
-        matchButton.disabled = true;
-        matchButton.setAttribute('aria-disabled', 'true');
-      } else {
-        matchCooldownText.textContent = '';
-        matchCooldownProgress.textContent = '';
-        matchCooldownProgress.style.width = '0%';
-        matchButton.disabled = false;
-        matchButton.setAttribute('aria-disabled', 'false');
-      }
-      startCooldownUpdater(); // Start the cooldown updater
     }
-
     // Start the game
     initGame();
   </script>

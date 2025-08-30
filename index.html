@@ -463,7 +463,7 @@
       <p>Use Euros to open different packs with varying costs and chances for items (Shirts, Shorts, Boots, Coaches).</p>
       <p>Equip items for stat bonuses. Full set (3 items same country) multiplies bonuses by 1.5.</p>
       <p>Your overall rating is a weighted average of all boosted skills based on selected position (or simple average if no position selected).</p>
-      <p>Play friendly matches (5-minute cooldown) to earn Euros (Win: 100€, Draw: 50€, Loss: 20€) and accumulate stats (Goals, Assists, Interventions, Saves).</p>
+      <p>Play friendly matches (3-minute cooldown) to earn Euros (Win: 100€, Draw: 50€, Loss: 20€) and accumulate stats (Goals, Assists, Interventions, Saves).</p>
       <p>Match stats depend on your position (e.g., only GKs get Saves). Scores are realistic based on ratings.</p>
       <p>Equip a Coach to boost specific stats (e.g., Dylan for +100 Shooting).</p>
       <p>Purchase upgrades to reduce training cooldown or increase Euro earnings.</p>
@@ -471,7 +471,6 @@
     </div>
     <div class="news">
       <h3>News</h3>
-      <p>Game was created 29/08/25</p>
       <ul id="news-list"></ul>
     </div>
     <div class="main-content">
@@ -575,7 +574,7 @@
       <div class="match-cooldown-text" id="match-cooldown-text"></div>
       <h4>Match History</h4>
       <table id="match-history">
-        <tr><th>Score</th><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th><th>Stats</th></tr>
+        <tr><th>Opponent</th><th>Score</th><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th><th>Stats</th></tr>
       </table>
     </div>
     <div class="stats-section" id="stats-section">
@@ -605,7 +604,7 @@
       "Speed", "Vision", "Pressing", "Jumping"
     ];
     const baseCooldownTime = 10000; // 10 seconds base
-    const matchCooldownTime = 300000; // 5 minutes
+    const matchCooldownTime = 180000; // 3 minutes
     const maxStat = 100; // Optional stat cap
     const maxConcurrentTraining = 2;
     const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
@@ -691,6 +690,12 @@
       LW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0 },
       RW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0 }
     };
+    const teams = [
+      { name: 'Ashford College', rating: 20 },
+      { name: 'Thomond Spark', rating: 45 },
+      { name: "McDonald's United", rating: 60 },
+      { name: 'Moyross Lads', rating: 100 }
+    ];
 
     // Load data from localStorage with error handling
     function loadData(key, defaultValue) {
@@ -957,7 +962,9 @@
         return;
       }
       const playerRating = getOverallRating();
-      const opponentRating = Math.floor(Math.random() * (90 - 50 + 1)) + 50; // Random between 50-90
+      const opponent = teams[Math.floor(Math.random() * teams.length)];
+      const opponentName = opponent.name;
+      const opponentRating = opponent.rating;
       const diff = playerRating - opponentRating;
       const rand = Math.random() * 100;
       let result, yourGoals, opponentGoals;
@@ -1021,6 +1028,7 @@
       const euros = matchRewards[result];
       currency += euros;
       matchHistory.unshift({
+        opponentName,
         score: `${yourGoals}-${opponentGoals}`,
         opponentRating,
         playerRating,
@@ -1037,16 +1045,16 @@
       updateCurrency();
       updateMatchHistory();
       updateCareerStats();
-      alert(`Match Result: ${result}\nScore: ${yourGoals}-${opponentGoals}\nYour Rating: ${playerRating}\nOpponent Rating: ${opponentRating}\nStats: Goals: ${playerStats.goals}, Assists: ${playerStats.assists}, Interventions: ${playerStats.interventions}, Saves: ${playerStats.saves}\nEuros Earned: ${euros}`);
+      alert(`Match Result: ${result}\nOpponent: ${opponentName} (Rating: ${opponentRating})\nScore: ${yourGoals}-${opponentGoals}\nYour Rating: ${playerRating}\nStats: Goals: ${playerStats.goals}, Assists: ${playerStats.assists}, Interventions: ${playerStats.interventions}, Saves: ${playerStats.saves}\nEuros Earned: ${euros}`);
     }
 
     // Update match history display
     function updateMatchHistory() {
       const table = document.getElementById('match-history');
-      let html = '<tr><th>Score</th><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th><th>Stats</th></tr>';
+      let html = '<tr><th>Opponent</th><th>Score</th><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th><th>Stats</th></tr>';
       matchHistory.forEach(match => {
         const statsStr = `G: ${match.stats.goals}, A: ${match.stats.assists}, I: ${match.stats.interventions}, S: ${match.stats.saves}`;
-        html += `<tr><td>${match.score}</td><td>${match.opponentRating}</td><td>${match.playerRating}</td><td>${match.result}</td><td>${match.euros}</td><td>${statsStr}</td></tr>`;
+        html += `<tr><td>${match.opponentName}</td><td>${match.score}</td><td>${match.opponentRating}</td><td>${match.playerRating}</td><td>${match.result}</td><td>${match.euros}</td><td>${statsStr}</td></tr>`;
       });
       table.innerHTML = html;
     }

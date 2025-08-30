@@ -162,13 +162,27 @@
       margin-bottom: 20px;
     }
    
-    .inventory ul, .matches ul, .news ul {
-      list-style: none;
-      text-align: left;
+    .inventory-section {
+      margin-bottom: 20px;
     }
    
-    .inventory li, .matches li, .news li {
-      margin-bottom: 10px;
+    .inventory-section h4 {
+      font-size: 1.4rem;
+      color: #FFD700;
+      margin: 15px 0 10px;
+    }
+   
+    .inventory-section ul {
+      list-style: none;
+      text-align: left;
+      max-height: 200px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+   
+    .inventory-section li {
+      margin-bottom: 8px;
+      font-size: 0.9rem;
     }
    
     .inventory button, .matches button, .upgrades button {
@@ -552,7 +566,22 @@
     </div>
     <div class="inventory" id="inventory-section">
       <h3>Inventory</h3>
-      <ul id="inventory-list"></ul>
+      <div class="inventory-section">
+        <h4>Shirts</h4>
+        <ul id="inventory-shirts"></ul>
+      </div>
+      <div class="inventory-section">
+        <h4>Shorts</h4>
+        <ul id="inventory-shorts"></ul>
+      </div>
+      <div class="inventory-section">
+        <h4>Boots</h4>
+        <ul id="inventory-boots"></ul>
+      </div>
+      <div class="inventory-section">
+        <h4>Coaches</h4>
+        <ul id="inventory-coaches"></ul>
+      </div>
     </div>
     <div class="upgrades">
       <h3>Upgrades</h3>
@@ -1273,18 +1302,56 @@
 
     // Update inventory display
     function updateInventory() {
-      const list = document.getElementById('inventory-list');
-      let html = '';
+      const sections = {
+        Shirt: document.getElementById('inventory-shirts'),
+        Shorts: document.getElementById('inventory-shorts'),
+        Boots: document.getElementById('inventory-boots'),
+        Coach: document.getElementById('inventory-coaches')
+      };
+      
+      // Initialize arrays for each item type
+      const itemsByType = {
+        Shirt: [],
+        Shorts: [],
+        Boots: [],
+        Coach: []
+      };
+      
+      // Categorize and collect items
       for (let key in inventory) {
         const [rarity, name, itemType] = key.split(' ');
-        const setName = coaches[rarity]?.find(c => c.name === name)?.set || name;
-        const boostStat = itemType === 'Coach' ? coaches[rarity].find(c => c.name === name).stat : itemBoosts[setName][itemType];
-        const baseBoost = rarityBoosts[rarity];
-        const count = inventory[key];
-        html += `<li>${key} (Boosts ${boostStat} by ${baseBoost})${count > 1 ? ` x${count}` : ''} <button class="sell" data-key="${key}">Sell</button></li>`;
+        if (itemTypes.includes(itemType)) {
+          itemsByType[itemType].push({ key, rarity, name, count: inventory[key] });
+        }
       }
-      list.innerHTML = html;
-
+      
+      // Sort items by rarity (Legendary to Common)
+      const rarityOrder = rarities.reduce((acc, rarity, index) => {
+        acc[rarity] = rarities.length - index;
+        return acc;
+      }, {});
+      
+      Object.keys(itemsByType).forEach(type => {
+        itemsByType[type].sort((a, b) => {
+          const rarityA = rarityOrder[a.rarity] || 0;
+          const rarityB = rarityOrder[b.rarity] || 0;
+          return rarityB - rarityA || a.name.localeCompare(b.name);
+        });
+      });
+      
+      // Generate HTML for each section
+      Object.keys(sections).forEach(type => {
+        let html = '';
+        itemsByType[type].forEach(item => {
+          const { key, rarity, name, count } = item;
+          const setName = coaches[rarity]?.find(c => key.includes(c.name))?.set || name;
+          const boostStat = type === 'Coach' ? coaches[rarity].find(c => c.name === name).stat : itemBoosts[setName][type];
+          const baseBoost = rarityBoosts[rarity];
+          html += `<li class="rarity-${idify(rarity)}">${key} (Boosts ${boostStat} by ${baseBoost})${count > 1 ? ` x${count}` : ''} <button class="sell" data-key="${key}">Sell</button></li>`;
+        });
+        sections[type].innerHTML = html;
+      });
+      
       // Add sell listeners
       document.querySelectorAll('.sell').forEach(btn => {
         btn.addEventListener('click', () => {

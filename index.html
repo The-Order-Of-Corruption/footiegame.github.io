@@ -676,6 +676,20 @@
       { name: 'Euro Boost V', effect: 'Increase Euro gain by 5%', cost: 900 }
     ];
     const matchRewards = { Win: 100, Draw: 50, Loss: 20 };
+    const positionWeights = {
+      GK: { Agility: 2, Jumping: 2, Defending: 1, Vision: 1, Speed: 0.5, Shooting: 0, Dribbling: 0, Pressing: 0 },
+      LB: { Defending: 2, Speed: 1.5, Pressing: 1, Agility: 1, Vision: 0.5, Shooting: 0.5, Dribbling: 0.5, Jumping: 0.5 },
+      CB: { Defending: 2.5, Jumping: 1.5, Pressing: 1, Agility: 0.5, Speed: 0.5, Vision: 0.5, Shooting: 0, Dribbling: 0 },
+      RB: { Defending: 2, Speed: 1.5, Pressing: 1, Agility: 1, Vision: 0.5, Shooting: 0.5, Dribbling: 0.5, Jumping: 0.5 },
+      CDM: { Defending: 2, Pressing: 1.5, Vision: 1, Agility: 0.5, Speed: 0.5, Jumping: 0.5, Shooting: 0.5, Dribbling: 0.5 },
+      DM: { Defending: 2, Pressing: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Speed: 0.5, Jumping: 0.5, Dribbling: 0.5 },
+      CAM: { Vision: 2, Dribbling: 1.5, Shooting: 1, Agility: 0.5, Speed: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5 },
+      LM: { Speed: 2, Dribbling: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5 },
+      RM: { Speed: 2, Dribbling: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5 },
+      ST: { Shooting: 2, Dribbling: 1.5, Speed: 1, Jumping: 0.5, Agility: 0.5, Vision: 0.5, Pressing: 0.5, Defending: 0 },
+      LW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0 },
+      RW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0 }
+    };
 
     // Load data from localStorage with error handling
     function loadData(key, defaultValue) {

@@ -471,19 +471,8 @@
     </div>
     <div class="news">
       <h3>News</h3>
-      <p>Game was created. 29/08/25</p>
+      <p>Game was created 29/08/25</p>
       <ul id="news-list"></ul>
-    </div>
-    <div class="upgrades">
-      <h3>Upgrades</h3>
-      <h4>Training Upgrades</h4>
-      <table id="training-upgrades">
-        <tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>
-      </table>
-      <h4>Euro Upgrades</h4>
-      <table id="euro-upgrades">
-        <tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>
-      </table>
     </div>
     <div class="main-content">
       <div class="packs">
@@ -565,6 +554,17 @@
     <div class="inventory" id="inventory-section">
       <h3>Inventory</h3>
       <ul id="inventory-list"></ul>
+    </div>
+    <div class="upgrades">
+      <h3>Upgrades</h3>
+      <h4>Training Upgrades</h4>
+      <table id="training-upgrades">
+        <tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>
+      </table>
+      <h4>Euro Upgrades</h4>
+      <table id="euro-upgrades">
+        <tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>
+      </table>
     </div>
     <div class="matches" id="matches-section">
       <h3>Friendly Matches</h3>
@@ -712,7 +712,7 @@
 
     // Calculate effective cooldown time
     function getCooldownTime() {
-      return baseCooldownTime - trainingUpgradesPurchased * 1000; // Reduce by 1s per upgrade
+      return Math.max(5000, baseCooldownTime - trainingUpgradesPurchased * 1000); // Reduce by 1s per upgrade, minimum 5s
     }
 
     // Save data to localStorage with error handling
@@ -885,15 +885,25 @@
       return statNames.filter(name => cooldowns[name] > Date.now()).length;
     }
 
-    // Increase stat function with cooldown
+    // Increase stat function with cooldown and debug alerts
     function increaseStat(stat) {
       const id = idify(stat);
       const button = document.getElementById(`btn-${id}`);
       const statValue = document.querySelector(`#box-${id} .stat-value`);
       const statBox = document.getElementById(`box-${id}`);
 
-      // Check if at max, in cooldown, or max concurrent reached
-      if (stats[stat] >= maxStat || cooldowns[stat] > Date.now() || activeCooldownCount() >= maxConcurrentTraining) {
+      // Check if training is possible and provide feedback
+      if (stats[stat] >= maxStat) {
+        alert(`Cannot train ${stat}: Maximum value (${maxStat}) reached!`);
+        return;
+      }
+      if (cooldowns[stat] > Date.now()) {
+        const remaining = Math.max(0, (cooldowns[stat] - Date.now()) / 1000).toFixed(1);
+        alert(`Cannot train ${stat}: Skill is on cooldown for ${remaining} seconds!`);
+        return;
+      }
+      if (activeCooldownCount() >= maxConcurrentTraining) {
+        alert(`Cannot train ${stat}: Maximum concurrent trainings (${maxConcurrentTraining}) already active!`);
         return;
       }
 
@@ -1137,7 +1147,7 @@
             statBox.classList.remove('active');
             allStatCooldownsDone = false;
           } else {
-            const shouldDisable = activeCooldowns >= maxConcurrentTraining;
+            const shouldDisable = activeCooldowns >= maxConcurrentTraining || stats[name] >= maxStat;
             button.disabled = shouldDisable;
             button.setAttribute('aria-disabled', shouldDisable ? 'true' : 'false');
             cooldownText.textContent = '';
@@ -1397,7 +1407,7 @@
         const seconds = ((matchRemaining % 60000) / 1000).toFixed(0).padStart(2, '0');
         matchCooldownText.textContent = `Next match in ${minutes}m ${seconds}s`;
         matchButton.disabled = true;
-        matchButton.setAttribute('aria-disabled', 'true');
+        button.setAttribute('aria-disabled', 'true');
       } else {
         matchCooldownText.textContent = '';
         matchCooldownProgress.textContent = '';

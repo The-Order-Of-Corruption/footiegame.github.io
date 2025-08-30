@@ -601,7 +601,7 @@
     // Game configuration
     const statNames = [
       "Shooting", "Defending", "Dribbling", "Agility",
-      "Speed", "Vision", "Pressing", "Jumping"
+      "Speed", "Vision", "Pressing", "Jumping", "Stamina", "Determination"
     ];
     const baseCooldownTime = 10000; // 10 seconds base
     const matchCooldownTime = 180000; // 3 minutes
@@ -610,7 +610,7 @@
     const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
     const rarityBoosts = {Common: 5, Uncommon: 10, Rare: 20, Epic: 40, Legendary: 100};
     const sellValues = {Common: 25, Uncommon: 35, Rare: 80, Epic: 150, Legendary: 300};
-    const sets = ['Poland', 'Ireland', 'Germany', 'France', 'Portugal', 'Spain', 'England', 'Bulgaria'];
+    const sets = ['Poland', 'Ireland', 'Germany', 'France', 'Portugal', 'Spain', 'England', 'Bulgaria', 'Mexico', 'Netherlands', 'Brazil'];
     const itemTypes = ['Shirt', 'Shorts', 'Boots', 'Coach'];
     const itemBoosts = {
       Poland: {Shirt: 'Shooting', Shorts: 'Dribbling', Boots: 'Speed', Coach: 'Shooting'},
@@ -621,6 +621,9 @@
       Spain: {Shirt: 'Vision', Shorts: 'Pressing', Boots: 'Speed', Coach: 'Speed'},
       England: {Shirt: 'Jumping', Shorts: 'Defending', Boots: 'Pressing', Coach: 'Jumping'},
       Bulgaria: {Shirt: 'Agility', Shorts: 'Shooting', Boots: 'Vision', Coach: 'Vision'},
+      Mexico: {Shirt: 'Stamina', Shorts: 'Speed', Boots: 'Agility', Coach: 'Stamina'},
+      Netherlands: {Shirt: 'Vision', Shorts: 'Determination', Boots: 'Pressing', Coach: 'Vision'},
+      Brazil: {Shirt: 'Dribbling', Shorts: 'Shooting', Boots: 'Stamina', Coach: 'Dribbling'}
     };
     const coaches = {
       Common: [
@@ -677,18 +680,18 @@
     ];
     const matchRewards = { Win: 100, Draw: 50, Loss: 20 };
     const positionWeights = {
-      GK: { Agility: 2, Jumping: 2, Defending: 1, Vision: 1, Speed: 0.5, Shooting: 0, Dribbling: 0, Pressing: 0 },
-      LB: { Defending: 2, Speed: 1.5, Pressing: 1, Agility: 1, Vision: 0.5, Shooting: 0.5, Dribbling: 0.5, Jumping: 0.5 },
-      CB: { Defending: 2.5, Jumping: 1.5, Pressing: 1, Agility: 0.5, Speed: 0.5, Vision: 0.5, Shooting: 0, Dribbling: 0 },
-      RB: { Defending: 2, Speed: 1.5, Pressing: 1, Agility: 1, Vision: 0.5, Shooting: 0.5, Dribbling: 0.5, Jumping: 0.5 },
-      CDM: { Defending: 2, Pressing: 1.5, Vision: 1, Agility: 0.5, Speed: 0.5, Jumping: 0.5, Shooting: 0.5, Dribbling: 0.5 },
-      DM: { Defending: 2, Pressing: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Speed: 0.5, Jumping: 0.5, Dribbling: 0.5 },
-      CAM: { Vision: 2, Dribbling: 1.5, Shooting: 1, Agility: 0.5, Speed: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5 },
-      LM: { Speed: 2, Dribbling: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5 },
-      RM: { Speed: 2, Dribbling: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5 },
-      ST: { Shooting: 2, Dribbling: 1.5, Speed: 1, Jumping: 0.5, Agility: 0.5, Vision: 0.5, Pressing: 0.5, Defending: 0 },
-      LW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0 },
-      RW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0 }
+      GK: { Agility: 2, Jumping: 2, Defending: 1, Vision: 1, Speed: 0.5, Shooting: 0, Dribbling: 0, Pressing: 0, Stamina: 1, Determination: 1 },
+      LB: { Defending: 2, Speed: 1.5, Pressing: 1, Agility: 1, Vision: 0.5, Shooting: 0.5, Dribbling: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
+      CB: { Defending: 2.5, Jumping: 1.5, Pressing: 1, Agility: 0.5, Speed: 0.5, Vision: 0.5, Shooting: 0, Dribbling: 0, Stamina: 1, Determination: 1 },
+      RB: { Defending: 2, Speed: 1.5, Pressing: 1, Agility: 1, Vision: 0.5, Shooting: 0.5, Dribbling: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
+      CDM: { Defending: 2, Pressing: 1.5, Vision: 1, Agility: 0.5, Speed: 0.5, Jumping: 0.5, Shooting: 0.5, Dribbling: 0.5, Stamina: 1, Determination: 1 },
+      DM: { Defending: 2, Pressing: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Speed: 0.5, Jumping: 0.5, Dribbling: 0.5, Stamina: 1, Determination: 1 },
+      CAM: { Vision: 2, Dribbling: 1.5, Shooting: 1, Agility: 0.5, Speed: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
+      LM: { Speed: 2, Dribbling: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
+      RM: { Speed: 2, Dribbling: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
+      ST: { Shooting: 2, Dribbling: 1.5, Speed: 1, Jumping: 0.5, Agility: 0.5, Vision: 0.5, Pressing: 0.5, Defending: 0, Stamina: 1, Determination: 1 },
+      LW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0, Stamina: 1, Determination: 1 },
+      RW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0, Stamina: 1, Determination: 1 }
     };
     const teams = [
       { name: 'Ashford College', rating: 20 },
@@ -909,7 +912,7 @@
       const id = idify(stat);
       const button = document.getElementById(`btn-${id}`);
       const statValue = document.querySelector(`#box-${id} .stat-value`);
-      const statBox = document.getElementById(`box-${id}`);
+      const statBox =document.getElementById(`box-${id}`);
 
       // Check if training is possible and provide feedback
       if (stats[stat] >= maxStat) {

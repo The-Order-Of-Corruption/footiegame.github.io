@@ -10,7 +10,6 @@
       margin: 0;
       padding: 0;
     }
-
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
@@ -24,13 +23,11 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
-
     .container {
       width: 100%;
       max-width: 100%;
       padding: 0 10px;
     }
-
     header {
       margin-bottom: 20px;
       padding: 15px;
@@ -38,18 +35,15 @@
       border-radius: 10px;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     }
-
     h1 {
       font-size: 1.8rem;
       margin-bottom: 8px;
       text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
     }
-
     h2 {
       font-size: 1.3rem;
       margin-bottom: 15px;
     }
-
     .overall-display,
     .currency-display {
       font-size: 1.5rem;
@@ -58,7 +52,6 @@
       margin: 10px 0;
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
     }
-
     .main-content {
       display: flex;
       flex-direction: column;
@@ -66,61 +59,51 @@
       gap: 15px;
       margin-bottom: 15px;
     }
-
     .packs {
       width: 100%;
       display: flex;
       flex-direction: column;
       gap: 15px;
     }
-
     .pack {
       background: rgba(0, 0, 0, 0.7);
       border-radius: 10px;
       padding: 10px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
     }
-
     .pack h3 {
       margin-bottom: 8px;
       color: #FFD700;
       font-size: 1.2rem;
     }
-
     .pack table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 8px;
       font-size: 0.9rem;
     }
-
     .pack th, .pack td {
       padding: 6px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       text-align: left;
     }
-
     .pack th {
       background: rgba(255, 255, 255, 0.1);
     }
-
     .pack tr:hover {
       background: rgba(255, 255, 255, 0.05);
     }
-
     .rarity-common { color: #B0B0B0; }
     .rarity-uncommon { color: #00FF00; }
     .rarity-rare { color: #ADD8E6; }
     .rarity-epic { color: #800080; }
     .rarity-legendary { color: #FFA500; }
-
     .stats-grid {
       width: 100%;
       display: grid;
       grid-template-columns: 1fr;
       gap: 15px;
     }
-
     .profile {
       width: 100%;
       background: rgba(0, 0, 0, 0.7);
@@ -128,20 +111,17 @@
       padding: 15px;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
     }
-
     .profile h3, .profile h4 {
       font-size: 1.3rem;
       color: #FFD700;
       margin-bottom: 15px;
     }
-
     .profile label {
       display: block;
       text-align: left;
       margin-bottom: 5px;
       font-size: 0.9rem;
     }
-
     .profile input,
     .profile select {
       width: 100%;
@@ -154,12 +134,10 @@
       font-size: 0.9rem;
       touch-action: manipulation;
     }
-
     .profile input::placeholder,
     .profile select {
       color: #BDBDBD;
     }
-
     .inventory, .matches, .stats-section, .upgrades {
       width: 100%;
       background: rgba(0, 0, 0, 0.7);
@@ -168,17 +146,14 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
       margin-bottom: 15px;
     }
-
     .inventory ul, .matches ul, .news ul {
       list-style: none;
       text-align: left;
     }
-
     .inventory li, .matches li, .news li {
       margin-bottom: 8px;
       font-size: 0.9rem;
     }
-
     .inventory button, .matches button, .upgrades button {
       padding: 8px 12px;
       font-size: 0.8rem;
@@ -191,37 +166,30 @@
       min-height: 44px;
       touch-action: manipulation;
     }
-
     .inventory button:hover:enabled, .matches button:hover:enabled, .upgrades button:hover:enabled {
       background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
     }
-
     .upgrades button:disabled {
       background: linear-gradient(to bottom, #9E9E9E 0%, #616161 100%);
       cursor: not-allowed;
     }
-
     .matches table, .stats-section table, .upgrades table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 8px;
       font-size: 0.8rem;
     }
-
     .matches th, .matches td, .stats-section th, .stats-section td, .upgrades th, .upgrades td {
       padding: 6px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       text-align: left;
     }
-
     .matches th, .stats-section th, .upgrades th {
       background: rgba(255, 255, 255, 0.1);
     }
-
     .matches tr:hover, .stats-section tr:hover, .upgrades tr:hover {
       background: rgba(255, 255, 255, 0.05);
     }
-
     .match-cooldown-bar {
       width: 100%;
       height: 15px;
@@ -230,7 +198,6 @@
       margin-top: 8px;
       overflow: hidden;
     }
-
     .match-cooldown-progress {
       height: 100%;
       background: linear-gradient(90deg, #FFD700 0%, #FF9800 100%);
@@ -244,13 +211,11 @@
       font-weight: bold;
       color: #333;
     }
-
     .match-cooldown-text {
       margin-top: 8px;
       font-size: 0.8rem;
       color: #BDBDBD;
     }
-
     .stat-box {
       background: rgba(0, 0, 0, 0.7);
       border-radius: 10px;
@@ -263,48 +228,39 @@
       position: relative;
       overflow: hidden;
     }
-
     .stat-box.active {
       background: rgba(0, 0, 0, 0.7);
     }
-
     .stat-box.cooldown {
       background: rgba(60, 60, 60, 0.7);
       opacity: 0.8;
     }
-
     .stat-box:hover {
       transform: translateY(-3px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
     }
-
     .stat-title {
       font-size: 1.1rem;
       margin-bottom: 10px;
       color: #FFD700;
     }
-
     .stat-value {
       font-size: 1.6rem;
       font-weight: bold;
       margin-bottom: 15px;
       color: #4CAF50;
     }
-
     .bonus {
       color: #00FF00;
       font-size: 1.2rem;
     }
-
     .stat-value.increase {
       animation: flash 0.3s ease;
     }
-
     @keyframes flash {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.2); }
     }
-
     .cooldown-bar {
       width: 100%;
       height: 6px;
@@ -313,7 +269,6 @@
       margin-bottom: 15px;
       overflow: hidden;
     }
-
     .cooldown-progress {
       height: 100%;
       background: linear-gradient(90deg, #FFD700 0%, #FF9800 100%);
@@ -321,7 +276,6 @@
       width: 0%;
       transition: width 0.1s linear;
     }
-
     button {
       padding: 10px 20px;
       font-size: 0.9rem;
@@ -338,25 +292,21 @@
       min-height: 44px;
       touch-action: manipulation;
     }
-
     button:hover:enabled {
       background: linear-gradient(to bottom, #FFC400 0%, #FF6F00 100%);
       transform: scale(1.03);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
-
     button:disabled {
       background: linear-gradient(to bottom, #9E9E9E 0%, #616161 100%);
       cursor: not-allowed;
       transform: scale(0.98);
     }
-
     .cooldown-text {
       margin-top: 8px;
       font-size: 0.8rem;
       color: #BDBDBD;
     }
-
     .instructions, .news, .upgrades {
       margin: 20px auto;
       padding: 15px;
@@ -365,210 +315,164 @@
       max-width: 100%;
       text-align: center;
     }
-
     .instructions h3, .news h3, .upgrades h3 {
       margin-bottom: 10px;
       color: #FFD700;
       font-size: 1.2rem;
     }
-
     .instructions p, .news li {
       margin-bottom: 8px;
       line-height: 1.4;
       font-size: 0.9rem;
     }
-
     #reset-game {
       margin-top: 15px;
       background: linear-gradient(to bottom, #FF0000 0%, #B30000 100%);
       color: white;
     }
-
     #reset-game:hover:enabled {
       background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
     }
-
     #open-bronze, #open-silver, #open-gold, #play-match {
       max-width: none;
       width: 100%;
     }
-
     #open-bronze {
       background: linear-gradient(to bottom, #CD7F32 0%, #A57128 100%);
     }
-
     #open-bronze:hover:enabled {
       background: linear-gradient(to bottom, #B8732E 0%, #8C5F23 100%);
     }
-
     #open-silver {
       background: linear-gradient(to bottom, #C0C0C0 0%, #A9A9A9 100%);
     }
-
     #open-silver:hover:enabled {
       background: linear-gradient(to bottom, #B0B0B0 0%, #999999 100%);
     }
-
     #open-gold {
       background: linear-gradient(to bottom, #FFD700 0%, #FFA000 100%);
     }
-
     #open-gold:hover:enabled {
       background: linear-gradient(to bottom, #FFC400 0%, #FF6F00 100%);
     }
-
     #play-match {
       background: linear-gradient(to bottom, #4CAF50 0%, #388E3C 100%);
     }
-
     #play-match:hover:enabled {
       background: linear-gradient(to bottom, #45A049 0%, #2E7D32 100%);
     }
-
     /* Mobile-first adjustments */
     @media (max-width: 768px) {
       h1 {
         font-size: 1.6rem;
       }
-
       h2 {
         font-size: 1.2rem;
       }
-
       .overall-display,
       .currency-display {
         font-size: 1.3rem;
       }
-
       .pack table {
         font-size: 0.8rem;
       }
-
       .pack th, .pack td {
         padding: 5px;
       }
-
       .stats-grid {
         gap: 10px;
       }
-
       .stat-box {
         padding: 12px;
       }
-
       .stat-title {
         font-size: 1rem;
       }
-
       .stat-value {
         font-size: 1.4rem;
       }
-
       button {
         padding: 8px 15px;
         font-size: 0.8rem;
         max-width: 160px;
       }
-
       .instructions, .news, .upgrades {
         padding: 12px;
       }
-
       .matches table, .stats-section table, .upgrades table {
         font-size: 0.75rem;
       }
-
       .matches th, .matches td, .stats-section th, .stats-section td, .upgrades th, .upgrades td {
         padding: 5px;
       }
     }
-
     /* Extra small screens */
     @media (max-width: 480px) {
       body {
         padding: 8px;
       }
-
       .container {
         padding: 0 5px;
       }
-
       h1 {
         font-size: 1.4rem;
       }
-
       h2 {
         font-size: 1rem;
       }
-
       .overall-display,
       .currency-display {
         font-size: 1.1rem;
       }
-
       .pack {
         padding: 8px;
       }
-
       .pack h3 {
         font-size: 1rem;
       }
-
       .pack table {
         font-size: 0.7rem;
       }
-
       .profile {
         padding: 12px;
       }
-
       .profile h3, .profile h4 {
         font-size: 1.1rem;
       }
-
       .profile label {
         font-size: 0.8rem;
       }
-
       .profile input,
       .profile select {
         padding: 6px;
         font-size: 0.8rem;
       }
-
       .stat-box {
         padding: 10px;
       }
-
       .stat-title {
         font-size: 0.9rem;
       }
-
       .stat-value {
         font-size: 1.2rem;
       }
-
       button {
         padding: 6px 12px;
         font-size: 0.7rem;
         max-width: 140px;
         min-height: 40px;
       }
-
       .inventory button, .matches button, .upgrades button {
         padding: 6px 10px;
         font-size: 0.7rem;
       }
-
       .instructions, .news, .upgrades {
         margin: 15px auto;
         padding: 10px;
       }
-
       .instructions h3, .news h3, .upgrades h3 {
         font-size: 1rem;
       }
-
       .instructions p, .news li {
         font-size: 0.8rem;
       }
@@ -638,12 +542,10 @@
         <label for="equip-coach">Coach:</label>
         <select id="equip-coach"></select>
       </div>
-      
+     
       <div class="stats-grid" id="stats-container">
         <!-- Stats will be generated by JavaScript -->
       </div>
-
-
       <div class="packs">
         <div class="pack">
           <h3>Bronze Pack</h3>
@@ -682,7 +584,7 @@
           <button id="open-gold">Open Gold Pack (500 Euros)</button>
         </div>
       </div>
-      
+     
     </div>
     <div class="inventory" id="inventory-section">
       <h3>Inventory</h3>
@@ -1097,42 +999,34 @@
         opponentGoals = result === 'Draw' ? yourGoals : Math.floor(Math.random() * 3);
       }
       // Calculate player stats based on position
-     // Calculate player stats based on position
-        const position = profile.position;
-        const weights = positionWeights[position];
-        const boosted = getBoostedStats();
-        let playerStats = { goals: 0, assists: 0, interventions: 0, saves: 0 };
-        
-        // Base probabilities influenced by key stats (increased by changing divisor from 2000 to 1000)
-        const goalChance = Math.min(0.75, (weights.Shooting * boosted.Shooting + weights.Dribbling * boosted.Dribbling) / 1000); // Max 0.75
-        const assistChance = Math.min(0.75, (weights.Vision * boosted.Vision + weights.Dribbling * boosted.Dribbling) / 1000); // Max 0.75
-        const interventionChance = Math.min(0.75, (weights.Defending * boosted.Defending + weights.Pressing * boosted.Pressing) / 1000); // Max 0.75
-        const saveChance = position === 'GK' ? Math.min(0.75, (weights.Agility * boosted.Agility + weights.Jumping * boosted.Jumping) / 1000) : 0; // Max 0.75 for GK
-        
-        // Result-based multiplier
-        const resultMultiplier = result === 'Win' ? 1.5 : result === 'Draw' ? 1.2 : 1.0;
-        
-        // Assign stats based on team goals and position
-        if (yourGoals > 0) {
-          if (['ST', 'LW', 'RW'].includes(position)) {
-            // Guarantee at least one goal or assist in a win or draw
-            playerStats.goals = Math.random() < goalChance * resultMultiplier ? Math.min(yourGoals, Math.floor(Math.random() * 4) + (result === 'Win' || result === 'Draw' ? 1 : 0)) : (result === 'Win' ? 1 : 0);
-            playerStats.assists = Math.random() < assistChance * resultMultiplier ? Math.min(yourGoals - playerStats.goals, Math.floor(Math.random() * 3) + (result === 'Win' || result === 'Draw' ? 1 : 0)) : 0;
-          } else if (['CAM', 'LM', 'RM'].includes(position)) {
-            playerStats.assists = Math.random() < assistChance * resultMultiplier * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 3) + (result === 'Win' || result === 'Draw' ? 1 : 0)) : (result === 'Win' ? 1 : 0);
-            playerStats.goals = Math.random() < goalChance * resultMultiplier ? Math.min(yourGoals - playerStats.assists, Math.floor(Math.random() * 2) + 1) : 0;
-          } else if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
-            playerStats.interventions = Math.random() < interventionChance * resultMultiplier * 1.5 ? Math.floor(Math.random() * 4) + (result !== 'Loss' ? 1 : 0) : (result !== 'Loss' ? 1 : 0);
-            playerStats.goals = Math.random() < goalChance * resultMultiplier * 0.5 ? Math.min(yourGoals, 1) : 0;
-          } else if (position === 'GK') {
-            playerStats.saves = Math.random() < saveChance * resultMultiplier * 1.5 ? Math.floor(Math.random() * (opponentGoals + 2)) + (opponentGoals > 0 ? 1 : 0) : (opponentGoals > 0 ? 1 : 0);
-          }
-        } else {
-          if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
-            playerStats.interventions = Math.random() < interventionChance * resultMultiplier ? Math.floor(Math.random() * 3) + (result !== 'Loss' ? 1 : 0) : (result !== 'Loss' ? 1 : 0);
-          } else if (position === 'GK') {
-            playerStats.saves = Math.random() < saveChance * resultMultiplier ? Math.floor(Math.random() * (opponentGoals + 2)) + (opponentGoals > 0 ? 1 : 0) : (opponentGoals > 0 ? 1 : 0);
-          }
+      const position = profile.position;
+      const weights = positionWeights[position];
+      const boosted = getBoostedStats();
+      let playerStats = { goals: 0, assists: 0, interventions: 0, saves: 0 };
+      // Base probabilities influenced by key stats
+      const goalChance = (weights.Shooting * boosted.Shooting + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
+      const assistChance = (weights.Vision * boosted.Vision + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
+      const interventionChance = (weights.Defending * boosted.Defending + weights.Pressing * boosted.Pressing) / 2000; // Max 0.5
+      const saveChance = position === 'GK' ? (weights.Agility * boosted.Agility + weights.Jumping * boosted.Jumping) / 2000 : 0; // Max 0.5 for GK
+      // Assign stats based on team goals and position
+      if (yourGoals > 0) {
+        if (['ST', 'LW', 'RW'].includes(position)) {
+          playerStats.goals = Math.random() < goalChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
+          playerStats.assists = Math.random() < assistChance ? Math.min(yourGoals - playerStats.goals, Math.floor(Math.random() * 2)) : 0;
+        } else if (['CAM', 'LM', 'RM'].includes(position)) {
+          playerStats.assists = Math.random() < assistChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
+          playerStats.goals = Math.random() < goalChance ? Math.min(yourGoals - playerStats.assists, Math.floor(Math.random() * 2)) : 0;
+        } else if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
+          playerStats.interventions = Math.random() < interventionChance * 1.5 ? Math.floor(Math.random() * 3) + 1 : 0;
+          playerStats.goals = Math.random() < goalChance * 0.5 ? Math.min(yourGoals, 1) : 0;
+        } else if (position === 'GK') {
+          playerStats.saves = Math.random() < saveChance * 1.5 ? Math.floor(Math.random() * opponentGoals + 1) : 0;
+        }
+      } else {
+        if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
+          playerStats.interventions = Math.random() < interventionChance ? Math.floor(Math.random() * 2) + 1 : 0;
+        } else if (position === 'GK') {
+          playerStats.saves = Math.random() < saveChance ? Math.floor(Math.random() * opponentGoals + 1) : 0;
         }
       }
       // Update career stats
@@ -1561,9 +1455,9 @@
         startCooldownUpdater();
       }
     }
-
     // Run initialization
     initGame();
   </script>
 </body>
 </html>
+What do I need to change to make getting stats in a match easier

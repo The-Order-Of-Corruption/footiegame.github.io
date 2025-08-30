@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Football Training Clicker</title>
   <style>
     * {
@@ -10,438 +10,567 @@
       margin: 0;
       padding: 0;
     }
-  
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
       background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
       color: white;
       min-height: 100vh;
-      padding: 20px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
-  
+
     .container {
-      max-width: 1200px;
       width: 100%;
+      max-width: 100%;
+      padding: 0 10px;
     }
-  
+
     header {
-      margin-bottom: 30px;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-  
-    h1 {
-      font-size: 2.8rem;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
-  
-    h2 {
-      font-size: 1.8rem;
       margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     }
-  
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+    }
+
     .overall-display,
     .currency-display {
-      font-size: 2.2rem;
+      font-size: 1.5rem;
       font-weight: bold;
       color: #FFD700;
-      margin: 15px 0;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+      margin: 10px 0;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
     }
-  
+
     .main-content {
       display: flex;
+      flex-direction: column;
       width: 100%;
-      gap: 25px;
-      margin-bottom: 20px;
+      gap: 15px;
+      margin-bottom: 15px;
     }
-  
+
     .packs {
-      width: 250px;
+      width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 15px;
     }
-  
+
     .pack {
       background: rgba(0, 0, 0, 0.7);
-      border-radius: 15px;
-      padding: 15px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
     }
-  
+
     .pack h3 {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       color: #FFD700;
+      font-size: 1.2rem;
     }
-  
+
     .pack table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
     }
-  
+
     .pack th, .pack td {
-      padding: 8px;
+      padding: 6px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       text-align: left;
     }
-  
+
     .pack th {
       background: rgba(255, 255, 255, 0.1);
     }
-  
+
     .pack tr:hover {
       background: rgba(255, 255, 255, 0.05);
     }
-  
+
     .rarity-common { color: #B0B0B0; }
     .rarity-uncommon { color: #00FF00; }
     .rarity-rare { color: #ADD8E6; }
     .rarity-epic { color: #800080; }
     .rarity-legendary { color: #FFA500; }
-  
+
     .stats-grid {
-      flex: 1;
+      width: 100%;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 25px;
+      grid-template-columns: 1fr;
+      gap: 15px;
     }
-  
+
     .profile {
-      width: 300px;
+      width: 100%;
       background: rgba(0, 0, 0, 0.7);
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
     }
-  
+
     .profile h3, .profile h4 {
-      font-size: 1.6rem;
+      font-size: 1.3rem;
       color: #FFD700;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
-  
+
     .profile label {
       display: block;
       text-align: left;
       margin-bottom: 5px;
-      font-size: 1.1rem;
+      font-size: 0.9rem;
     }
-  
+
     .profile input,
     .profile select {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
+      padding: 8px;
+      margin-bottom: 10px;
       border: none;
       border-radius: 5px;
       background: rgba(255, 255, 255, 0.1);
       color: white;
-      font-size: 1rem;
+      font-size: 0.9rem;
+      touch-action: manipulation;
     }
-  
+
     .profile input::placeholder,
     .profile select {
       color: #BDBDBD;
     }
-  
+
     .inventory, .matches, .stats-section, .upgrades {
       width: 100%;
       background: rgba(0, 0, 0, 0.7);
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-      margin-bottom: 20px;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+      margin-bottom: 15px;
     }
-  
+
     .inventory ul, .matches ul, .news ul {
       list-style: none;
       text-align: left;
     }
-  
+
     .inventory li, .matches li, .news li {
-      margin-bottom: 10px;
-    }
-  
-    .inventory button, .matches button, .upgrades button {
-      padding: 5px 10px;
+      margin-bottom: 8px;
       font-size: 0.9rem;
+    }
+
+    .inventory button, .matches button, .upgrades button {
+      padding: 8px 12px;
+      font-size: 0.8rem;
       background: linear-gradient(to bottom, #FF0000 0%, #B30000 100%);
       color: white;
-      max-width: none;
-      width: auto;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
+      min-height: 44px;
+      touch-action: manipulation;
     }
-  
+
     .inventory button:hover:enabled, .matches button:hover:enabled, .upgrades button:hover:enabled {
       background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
     }
-  
+
     .upgrades button:disabled {
       background: linear-gradient(to bottom, #9E9E9E 0%, #616161 100%);
       cursor: not-allowed;
     }
-  
+
     .matches table, .stats-section table, .upgrades table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 8px;
+      font-size: 0.8rem;
     }
-  
+
     .matches th, .matches td, .stats-section th, .stats-section td, .upgrades th, .upgrades td {
-      padding: 8px;
+      padding: 6px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       text-align: left;
     }
-  
+
     .matches th, .stats-section th, .upgrades th {
       background: rgba(255, 255, 255, 0.1);
     }
-  
+
     .matches tr:hover, .stats-section tr:hover, .upgrades tr:hover {
       background: rgba(255, 255, 255, 0.05);
     }
-  
+
     .match-cooldown-bar {
       width: 100%;
-      height: 20px;
+      height: 15px;
       background: rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      margin-top: 10px;
+      border-radius: 8px;
+      margin-top: 8px;
       overflow: hidden;
-      position: relative;
     }
-  
+
     .match-cooldown-progress {
       height: 100%;
       background: linear-gradient(90deg, #FFD700 0%, #FF9800 100%);
-      border-radius: 10px;
+      border-radius: 8px;
       width: 0%;
       transition: width 0.1s linear;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       font-weight: bold;
       color: #333;
     }
-  
+
     .match-cooldown-text {
-      margin-top: 10px;
-      font-size: 0.9rem;
+      margin-top: 8px;
+      font-size: 0.8rem;
       color: #BDBDBD;
     }
-  
+
     .stat-box {
       background: rgba(0, 0, 0, 0.7);
-      border-radius: 15px;
-      padding: 25px 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-      transition: all 0.3s ease;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
       overflow: hidden;
     }
-  
+
     .stat-box.active {
       background: rgba(0, 0, 0, 0.7);
     }
-  
+
     .stat-box.cooldown {
       background: rgba(60, 60, 60, 0.7);
       opacity: 0.8;
     }
-  
+
     .stat-box:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
     }
-  
+
     .stat-title {
-      font-size: 1.4rem;
-      margin-bottom: 15px;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
       color: #FFD700;
     }
-  
+
     .stat-value {
-      font-size: 2.2rem;
+      font-size: 1.6rem;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       color: #4CAF50;
     }
-  
+
     .bonus {
       color: #00FF00;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
     }
-  
+
     .stat-value.increase {
       animation: flash 0.3s ease;
     }
-  
+
     @keyframes flash {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.2); }
     }
-  
+
     .cooldown-bar {
       width: 100%;
-      height: 8px;
+      height: 6px;
       background: rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      margin-bottom: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
       overflow: hidden;
-      position: relative;
     }
-  
+
     .cooldown-progress {
       height: 100%;
       background: linear-gradient(90deg, #FFD700 0%, #FF9800 100%);
-      border-radius: 10px;
+      border-radius: 8px;
       width: 0%;
       transition: width 0.1s linear;
     }
-  
+
     button {
-      padding: 12px 25px;
-      font-size: 1.1rem;
+      padding: 10px 20px;
+      font-size: 0.9rem;
       font-weight: bold;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       background: linear-gradient(to bottom, #FFD700 0%, #FFA000 100%);
       color: #333;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
       width: 100%;
-      max-width: 200px;
+      max-width: 180px;
+      min-height: 44px;
+      touch-action: manipulation;
     }
-  
+
     button:hover:enabled {
       background: linear-gradient(to bottom, #FFC400 0%, #FF6F00 100%);
-      transform: scale(1.05);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      transform: scale(1.03);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
-  
+
     button:disabled {
       background: linear-gradient(to bottom, #9E9E9E 0%, #616161 100%);
       cursor: not-allowed;
       transform: scale(0.98);
     }
-  
+
     .cooldown-text {
-      margin-top: 10px;
-      font-size: 0.9rem;
+      margin-top: 8px;
+      font-size: 0.8rem;
       color: #BDBDBD;
     }
-  
+
     .instructions, .news, .upgrades {
-      margin: 30px auto;
-      padding: 20px;
+      margin: 20px auto;
+      padding: 15px;
       background: rgba(0, 0, 0, 0.4);
-      border-radius: 15px;
-      max-width: 800px;
+      border-radius: 10px;
+      max-width: 100%;
       text-align: center;
     }
-  
+
     .instructions h3, .news h3, .upgrades h3 {
-      margin-bottom: 15px;
-      color: #FFD700;
-    }
-  
-    .instructions p, .news li {
       margin-bottom: 10px;
-      line-height: 1.5;
+      color: #FFD700;
+      font-size: 1.2rem;
     }
-  
+
+    .instructions p, .news li {
+      margin-bottom: 8px;
+      line-height: 1.4;
+      font-size: 0.9rem;
+    }
+
     #reset-game {
-      margin-top: 20px;
+      margin-top: 15px;
       background: linear-gradient(to bottom, #FF0000 0%, #B30000 100%);
       color: white;
     }
-  
+
     #reset-game:hover:enabled {
       background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
     }
-  
+
     #open-bronze, #open-silver, #open-gold, #play-match {
       max-width: none;
+      width: 100%;
     }
-  
+
     #open-bronze {
       background: linear-gradient(to bottom, #CD7F32 0%, #A57128 100%);
     }
-  
+
     #open-bronze:hover:enabled {
       background: linear-gradient(to bottom, #B8732E 0%, #8C5F23 100%);
     }
-  
+
     #open-silver {
       background: linear-gradient(to bottom, #C0C0C0 0%, #A9A9A9 100%);
     }
-  
+
     #open-silver:hover:enabled {
       background: linear-gradient(to bottom, #B0B0B0 0%, #999999 100%);
     }
-  
+
     #open-gold {
       background: linear-gradient(to bottom, #FFD700 0%, #FFA000 100%);
     }
-  
+
     #open-gold:hover:enabled {
       background: linear-gradient(to bottom, #FFC400 0%, #FF6F00 100%);
     }
-  
+
     #play-match {
       background: linear-gradient(to bottom, #4CAF50 0%, #388E3C 100%);
     }
-  
+
     #play-match:hover:enabled {
       background: linear-gradient(to bottom, #45A049 0%, #2E7D32 100%);
     }
-  
+
+    /* Mobile-first adjustments */
     @media (max-width: 768px) {
       h1 {
-        font-size: 2.2rem;
+        font-size: 1.6rem;
       }
-    
+
       h2 {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
       }
-    
-      .main-content {
-        flex-direction: column;
+
+      .overall-display,
+      .currency-display {
+        font-size: 1.3rem;
       }
-  
-      .packs, .profile {
-        width: 100%;
-        margin-top: 20px;
+
+      .pack table {
+        font-size: 0.8rem;
       }
-    
+
+      .pack th, .pack td {
+        padding: 5px;
+      }
+
       .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
+        gap: 10px;
       }
-    
+
       .stat-box {
-        padding: 20px 15px;
+        padding: 12px;
       }
-    
+
+      .stat-title {
+        font-size: 1rem;
+      }
+
+      .stat-value {
+        font-size: 1.4rem;
+      }
+
+      button {
+        padding: 8px 15px;
+        font-size: 0.8rem;
+        max-width: 160px;
+      }
+
       .instructions, .news, .upgrades {
-        margin: 20px auto;
+        padding: 12px;
+      }
+
+      .matches table, .stats-section table, .upgrades table {
+        font-size: 0.75rem;
+      }
+
+      .matches th, .matches td, .stats-section th, .stats-section td, .upgrades th, .upgrades td {
+        padding: 5px;
+      }
+    }
+
+    /* Extra small screens */
+    @media (max-width: 480px) {
+      body {
+        padding: 8px;
+      }
+
+      .container {
+        padding: 0 5px;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+
+      h2 {
+        font-size: 1rem;
+      }
+
+      .overall-display,
+      .currency-display {
+        font-size: 1.1rem;
+      }
+
+      .pack {
+        padding: 8px;
+      }
+
+      .pack h3 {
+        font-size: 1rem;
+      }
+
+      .pack table {
+        font-size: 0.7rem;
+      }
+
+      .profile {
+        padding: 12px;
+      }
+
+      .profile h3, .profile h4 {
+        font-size: 1.1rem;
+      }
+
+      .profile label {
+        font-size: 0.8rem;
+      }
+
+      .profile input,
+      .profile select {
+        padding: 6px;
+        font-size: 0.8rem;
+      }
+
+      .stat-box {
+        padding: 10px;
+      }
+
+      .stat-title {
+        font-size: 0.9rem;
+      }
+
+      .stat-value {
+        font-size: 1.2rem;
+      }
+
+      button {
+        padding: 6px 12px;
+        font-size: 0.7rem;
+        max-width: 140px;
+        min-height: 40px;
+      }
+
+      .inventory button, .matches button, .upgrades button {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+      }
+
+      .instructions, .news, .upgrades {
+        margin: 15px auto;
+        padding: 10px;
+      }
+
+      .instructions h3, .news h3, .upgrades h3 {
+        font-size: 1rem;
+      }
+
+      .instructions p, .news li {
+        font-size: 0.8rem;
       }
     }
   </style>
@@ -1192,7 +1321,7 @@
         const coach = coachList[Math.floor(Math.random() * coachList.length)];
         return `${rarity} ${coach.name} Coach`;
       } else {
-        const setIndex = Math.floor(Math.random() * sets.length);
+       cryIndex = Math.floor(Math.random() * sets.length);
         const set = sets[setIndex];
         return `${rarity} ${set} ${type}`;
       }
@@ -1410,9 +1539,14 @@
         matchButton.disabled = false;
         matchButton.setAttribute('aria-disabled', 'false');
       }
-      startCooldownUpdater(); // Start the cooldown updater
+      startCooldownUpdater();
+            // Start the cooldown updater if there are active cooldowns
+      if (activeCooldownCount() > 0 || matchRemaining > 0) {
+        startCooldownUpdater();
+      }
     }
-    // Start the game
+
+    // Run initialization
     initGame();
   </script>
 </body>

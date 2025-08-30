@@ -1236,31 +1236,22 @@
         return `${rarity} ${set} ${type}`;
       }
     }
-      function openPack(packType) {
-        const config = packConfigs[packType];
-        if (!config) {
-          alert('Error: Invalid pack type!');
-          return;
-        }
-        if (isNaN(currency) || currency < 0) {
-          alert('Error: Invalid currency value!');
-          return;
-        }
-        if (currency < config.cost) {
-          alert(`Not enough Euros! Need ${config.cost} Euros, you have ${currency}.`);
-          return;
-        }
-        currency -= config.cost;
-        const item = getRandomItem(packType);
-        inventory[item] = (inventory[item] || 0) + 1;
-        saveData('footballCurrency', currency);
-        saveData('footballInventory', inventory);
-        alert(`You got: ${item}!`);
-        updateCurrency();
-        updateInventory();
-        updateEquipSelects();
-        updatePackButtonStates(); // Update button states after currency change
+    // Open pack function
+    function openPack(packType) {
+      const config = packConfigs[packType];
+      if (currency < config.cost) {
+        alert('Not enough Euros!');
+        return;
       }
+      currency -= config.cost;
+      const item = getRandomItem(packType);
+      inventory[item] = (inventory[item] || 0) + 1;
+      saveData('footballCurrency', currency);
+      saveData('footballInventory', inventory);
+      alert(`You got: ${item}!`);
+      updateCurrency();
+      updateInventory();
+      updateEquipSelects();
     }
     // Add pack open listeners
     document.getElementById('open-bronze').addEventListener('click', () => openPack('bronze'));

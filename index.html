@@ -1097,34 +1097,42 @@
         opponentGoals = result === 'Draw' ? yourGoals : Math.floor(Math.random() * 3);
       }
       // Calculate player stats based on position
-      const position = profile.position;
-      const weights = positionWeights[position];
-      const boosted = getBoostedStats();
-      let playerStats = { goals: 0, assists: 0, interventions: 0, saves: 0 };
-      // Base probabilities influenced by key stats
-      const goalChance = (weights.Shooting * boosted.Shooting + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
-      const assistChance = (weights.Vision * boosted.Vision + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
-      const interventionChance = (weights.Defending * boosted.Defending + weights.Pressing * boosted.Pressing) / 2000; // Max 0.5
-      const saveChance = position === 'GK' ? (weights.Agility * boosted.Agility + weights.Jumping * boosted.Jumping) / 2000 : 0; // Max 0.5 for GK
-      // Assign stats based on team goals and position
-      if (yourGoals > 0) {
-        if (['ST', 'LW', 'RW'].includes(position)) {
-          playerStats.goals = Math.random() < goalChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
-          playerStats.assists = Math.random() < assistChance ? Math.min(yourGoals - playerStats.goals, Math.floor(Math.random() * 2)) : 0;
-        } else if (['CAM', 'LM', 'RM'].includes(position)) {
-          playerStats.assists = Math.random() < assistChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
-          playerStats.goals = Math.random() < goalChance ? Math.min(yourGoals - playerStats.assists, Math.floor(Math.random() * 2)) : 0;
-        } else if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
-          playerStats.interventions = Math.random() < interventionChance * 1.5 ? Math.floor(Math.random() * 3) + 1 : 0;
-          playerStats.goals = Math.random() < goalChance * 0.5 ? Math.min(yourGoals, 1) : 0;
-        } else if (position === 'GK') {
-          playerStats.saves = Math.random() < saveChance * 1.5 ? Math.floor(Math.random() * opponentGoals + 1) : 0;
-        }
-      } else {
-        if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
-          playerStats.interventions = Math.random() < interventionChance ? Math.floor(Math.random() * 2) + 1 : 0;
-        } else if (position === 'GK') {
-          playerStats.saves = Math.random() < saveChance ? Math.floor(Math.random() * opponentGoals + 1) : 0;
+     // Calculate player stats based on position
+        const position = profile.position;
+        const weights = positionWeights[position];
+        const boosted = getBoostedStats();
+        let playerStats = { goals: 0, assists: 0, interventions: 0, saves: 0 };
+        
+        // Base probabilities influenced by key stats (increased by changing divisor from 2000 to 1000)
+        const goalChance = Math.min(0.75, (weights.Shooting * boosted.Shooting + weights.Dribbling * boosted.Dribbling) / 1000); // Max 0.75
+        const assistChance = Math.min(0.75, (weights.Vision * boosted.Vision + weights.Dribbling * boosted.Dribbling) / 1000); // Max 0.75
+        const interventionChance = Math.min(0.75, (weights.Defending * boosted.Defending + weights.Pressing * boosted.Pressing) / 1000); // Max 0.75
+        const saveChance = position === 'GK' ? Math.min(0.75, (weights.Agility * boosted.Agility + weights.Jumping * boosted.Jumping) / 1000) : 0; // Max 0.75 for GK
+        
+        // Result-based multiplier
+        const resultMultiplier = result === 'Win' ? 1.5 : result === 'Draw' ? 1.2 : 1.0;
+        
+        // Assign stats based on team goals and position
+        if (yourGoals > 0) {
+          if (['ST', 'LW', 'RW'].includes(position)) {
+            // Guarantee at least one goal or assist in a win or draw
+            playerStats.goals = Math.random() < goalChance * resultMultiplier ? Math.min(yourGoals, Math.floor(Math.random() * 4) + (result === 'Win' || result === 'Draw' ? 1 : 0)) : (result === 'Win' ? 1 : 0);
+            playerStats.assists = Math.random() < assistChance * resultMultiplier ? Math.min(yourGoals - playerStats.goals, Math.floor(Math.random() * 3) + (result === 'Win' || result === 'Draw' ? 1 : 0)) : 0;
+          } else if (['CAM', 'LM', 'RM'].includes(position)) {
+            playerStats.assists = Math.random() < assistChance * resultMultiplier * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 3) + (result === 'Win' || result === 'Draw' ? 1 : 0)) : (result === 'Win' ? 1 : 0);
+            playerStats.goals = Math.random() < goalChance * resultMultiplier ? Math.min(yourGoals - playerStats.assists, Math.floor(Math.random() * 2) + 1) : 0;
+          } else if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
+            playerStats.interventions = Math.random() < interventionChance * resultMultiplier * 1.5 ? Math.floor(Math.random() * 4) + (result !== 'Loss' ? 1 : 0) : (result !== 'Loss' ? 1 : 0);
+            playerStats.goals = Math.random() < goalChance * resultMultiplier * 0.5 ? Math.min(yourGoals, 1) : 0;
+          } else if (position === 'GK') {
+            playerStats.saves = Math.random() < saveChance * resultMultiplier * 1.5 ? Math.floor(Math.random() * (opponentGoals + 2)) + (opponentGoals > 0 ? 1 : 0) : (opponentGoals > 0 ? 1 : 0);
+          }
+        } else {
+          if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
+            playerStats.interventions = Math.random() < interventionChance * resultMultiplier ? Math.floor(Math.random() * 3) + (result !== 'Loss' ? 1 : 0) : (result !== 'Loss' ? 1 : 0);
+          } else if (position === 'GK') {
+            playerStats.saves = Math.random() < saveChance * resultMultiplier ? Math.floor(Math.random() * (opponentGoals + 2)) + (opponentGoals > 0 ? 1 : 0) : (opponentGoals > 0 ? 1 : 0);
+          }
         }
       }
       // Update career stats

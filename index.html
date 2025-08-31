@@ -525,821 +525,856 @@
     </table>
   </div>
   <button id="reset-game">Reset Progress</button>
-  <script>
-    // Game configuration
-    const statNames = [
-      "Shooting", "Defending", "Dribbling", "Agility",
-      "Speed", "Vision", "Pressing", "Jumping", "Stamina", "Determination"
-    ];
-    const baseCooldownTime = 10000; // 10 seconds base
-    const matchCooldownTime = 180000; // 3 minutes
-    const maxStat = 100; // Optional stat cap
-    const maxConcurrentTraining = 2;
-    const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
-    const rarityBoosts = {Common: 5, Uncommon: 10, Rare: 20, Epic: 40, Legendary: 100};
-    const sellValues = {Common: 25, Uncommon: 35, Rare: 80, Epic: 150, Legendary: 300};
-    const sets = ['Poland', 'Ireland', 'Germany', 'France', 'Portugal', 'Spain', 'England', 'Bulgaria', 'Mexico', 'Netherlands', 'Brazil'];
-    const itemTypes = ['Shirt', 'Shorts', 'Boots', 'Coach'];
-    const itemBoosts = {
-      Poland: {Shirt: 'Shooting', Shorts: 'Dribbling', Boots: 'Speed', Coach: 'Shooting'},
-      Ireland: {Shirt: 'Defending', Shorts: 'Agility', Boots: 'Jumping', Coach: 'Defending'},
-      Germany: {Shirt: 'Pressing', Shorts: 'Vision', Boots: 'Defending', Coach: 'Pressing'},
-      France: {Shirt: 'Vision', Shorts: 'Dribbling', Boots: 'Agility', Coach: 'Vision'},
-      Portugal: {Shirt: 'Shooting', Shorts: 'Speed', Boots: 'Dribbling', Coach: 'Shooting'},
-      Spain: {Shirt: 'Vision', Shorts: 'Pressing', Boots: 'Speed', Coach: 'Speed'},
-      England: {Shirt: 'Jumping', Shorts: 'Defending', Boots: 'Pressing', Coach: 'Jumping'},
-      Bulgaria: {Shirt: 'Agility', Shorts: 'Shooting', Boots: 'Vision', Coach: 'Vision'},
-      Mexico: {Shirt: 'Stamina', Shorts: 'Speed', Boots: 'Agility', Coach: 'Stamina'},
-      Netherlands: {Shirt: 'Vision', Shorts: 'Determination', Boots: 'Pressing', Coach: 'Vision'},
-      Brazil: {Shirt: 'Dribbling', Shorts: 'Shooting', Boots: 'Stamina', Coach: 'Dribbling'}
+ <script>
+// Game configuration (unchanged)
+const statNames = [
+  "Shooting", "Defending", "Dribbling", "Agility",
+  "Speed", "Vision", "Pressing", "Jumping", "Stamina", "Determination"
+];
+const baseCooldownTime = 10000; // 10 seconds base
+const matchCooldownTime = 180000; // 3 minutes
+const maxStat = 100; // Optional stat cap
+const maxConcurrentTraining = 2;
+const rarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
+const rarityBoosts = {Common: 5, Uncommon: 10, Rare: 20, Epic: 40, Legendary: 100};
+const sellValues = {Common: 25, Uncommon: 35, Rare: 80, Epic: 150, Legendary: 300};
+const sets = ['Poland', 'Ireland', 'Germany', 'France', 'Portugal', 'Spain', 'England', 'Bulgaria', 'Mexico', 'Netherlands', 'Brazil'];
+const itemTypes = ['Shirt', 'Shorts', 'Boots', 'Coach'];
+const itemBoosts = {
+  Poland: {Shirt: 'Shooting', Shorts: 'Dribbling', Boots: 'Speed', Coach: 'Shooting'},
+  Ireland: {Shirt: 'Defending', Shorts: 'Agility', Boots: 'Jumping', Coach: 'Defending'},
+  Germany: {Shirt: 'Pressing', Shorts: 'Vision', Boots: 'Defending', Coach: 'Pressing'},
+  France: {Shirt: 'Vision', Shorts: 'Dribbling', Boots: 'Agility', Coach: 'Vision'},
+  Portugal: {Shirt: 'Shooting', Shorts: 'Speed', Boots: 'Dribbling', Coach: 'Shooting'},
+  Spain: {Shirt: 'Vision', Shorts: 'Pressing', Boots: 'Speed', Coach: 'Speed'},
+  England: {Shirt: 'Jumping', Shorts: 'Defending', Boots: 'Pressing', Coach: 'Jumping'},
+  Bulgaria: {Shirt: 'Agility', Shorts: 'Shooting', Boots: 'Vision', Coach: 'Vision'},
+  Mexico: {Shirt: 'Stamina', Shorts: 'Speed', Boots: 'Agility', Coach: 'Stamina'},
+  Netherlands: {Shirt: 'Vision', Shorts: 'Determination', Boots: 'Pressing', Coach: 'Vision'},
+  Brazil: {Shirt: 'Dribbling', Shorts: 'Shooting', Boots: 'Stamina', Coach: 'Dribbling'}
+};
+const coaches = {
+  Common: [
+    {name: 'Donnacha', stat: 'Defending', set: 'Ireland'},
+    {name: 'Oscar', stat: 'Pressing', set: 'Germany'}
+  ],
+  Uncommon: [
+    {name: 'Ronan', stat: 'Speed', set: 'Spain'},
+    {name: 'Danny', stat: 'Vision', set: 'France'}
+  ],
+  Rare: [
+    {name: 'Darragh', stat: 'Defending', set: 'Ireland'}
+  ],
+  Epic: [
+    {name: 'Peter', stat: 'Jumping', set: 'England'}
+  ],
+  Legendary: [
+    {name: 'Dylan', stat: 'Shooting', set: 'Portugal'}
+  ]
+};
+const packConfigs = {
+  bronze: {
+    cost: 50,
+    chances: [0.7, 0.2, 0.08, 0.015, 0.005],
+  },
+  silver: {
+    cost: 150,
+    chances: [0.5, 0.3, 0.15, 0.04, 0.01],
+  },
+  gold: {
+    cost: 500,
+    chances: [0.3, 0.3, 0.25, 0.1, 0.05],
+  }
+};
+const euroTiers = [
+  { min: 0, max: 25, euros: 5 },
+  { min: 26, max: 60, euros: 10 },
+  { min: 61, max: 100, euros: 15 },
+  { min: 101, max: Infinity, euros: 20 }
+];
+const trainingUpgrades = [
+  { name: 'Training Efficiency I', effect: 'Reduce training cooldown by 1s', cost: 150 },
+  { name: 'Training Efficiency II', effect: 'Reduce training cooldown by 1s', cost: 300 },
+  { name: 'Training Efficiency III', effect: 'Reduce training cooldown by 1s', cost: 500 },
+  { name: 'Training Efficiency IV', effect: 'Reduce training cooldown by 1s', cost: 700 },
+  { name: 'Training Efficiency V', effect: 'Reduce training cooldown by 1s', cost: 1000 }
+];
+const euroUpgrades = [
+  { name: 'Euro Boost I', effect: 'Increase Euro gain by 5%', cost: 200 },
+  { name: 'Euro Boost II', effect: 'Increase Euro gain by 5%', cost: 300 },
+  { name: 'Euro Boost III', effect: 'Increase Euro gain by 5%', cost: 400 },
+  { name: 'Euro Boost IV', effect: 'Increase Euro gain by 5%', cost: 500 },
+  { name: 'Euro Boost V', effect: 'Increase Euro gain by 5%', cost: 900 }
+];
+const matchRewards = { Win: 100, Draw: 50, Loss: 20 };
+const positionWeights = {
+  GK: { Agility: 2, Jumping: 2, Defending: 1, Vision: 1, Speed: 0.5, Shooting: 0, Dribbling: 0, Pressing: 0, Stamina: 1, Determination: 1 },
+  LB: { Defending: 2, Speed: 1.5, Pressing: 1, Agility: 1, Vision: 0.5, Shooting: 0.5, Dribbling: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
+  CB: { Defending: 2.5, Jumping: 1.5, Pressing: 1, Agility: 0.5, Speed: 0.5, Vision: 0.5, Shooting: 0, Dribbling: 0, Stamina: 1, Determination: 1 },
+  RB: { Defending: 2, Speed: 1.5, Pressing: 1, Agility: 1, Vision: 0.5, Shooting: 0.5, Dribbling: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
+  CDM: { Defending: 2, Pressing: 1.5, Vision: 1, Agility: 0.5, Speed: 0.5, Jumping: 0.5, Shooting: 0.5, Dribbling: 0.5, Stamina: 1, Determination: 1 },
+  DM: { Defending: 2, Pressing: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Speed: 0.5, Jumping: 0.5, Dribbling: 0.5, Stamina: 1, Determination: 1 },
+  CAM: { Vision: 2, Dribbling: 1.5, Shooting: 1, Agility: 0.5, Speed: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
+  LM: { Speed: 2, Dribbling: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
+  RM: { Speed: 2, Dribbling: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
+  ST: { Shooting: 2, Dribbling: 1.5, Speed: 1, Jumping: 0.5, Agility: 0.5, Vision: 0.5, Pressing: 0.5, Defending: 0, Stamina: 1, Determination: 1 },
+  LW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0, Stamina: 1, Determination: 1 },
+  RW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0, Stamina: 1, Determination: 1 }
+};
+const teams = [
+  { name: 'Ashford College', rating: 20 },
+  { name: 'Thomond Spark', rating: 45 },
+  { name: "McDonald's United", rating: 60 },
+  { name: 'Moyross Lads', rating: 100 }
+];
+
+// Load data from localStorage with error handling
+function loadData(key, defaultValue) {
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : defaultValue;
+  } catch (e) {
+    console.error(`Failed to load ${key} from localStorage:`, e);
+    return defaultValue;
+  }
+}
+
+let stats = loadData("footballStats", {});
+let cooldowns = loadData("footballCooldowns", {});
+let profile = loadData("footballProfile", { name: "", age: "", club: "", position: "" });
+let currency = loadData("footballCurrency", 0);
+let inventory = loadData("footballInventory", {});
+let equipped = loadData("footballEquipped", { Shirt: null, Shorts: null, Boots: null, Coach: null });
+let matchCooldown = loadData("footballMatchCooldown", 0);
+let matchHistory = loadData("footballMatchHistory", []);
+let careerStats = loadData("footballCareerStats", {
+  friendly: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 },
+  league: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 }
+});
+let trainingUpgradesPurchased = loadData("footballTrainingUpgrades", 0);
+let euroUpgradesPurchased = loadData("footballEuroUpgrades", 0);
+
+// Initialize stats and cooldowns if they don't exist
+statNames.forEach(name => {
+  if (!(name in stats)) stats[name] = 0;
+  if (!(name in cooldowns)) cooldowns[name] = 0;
+});
+
+// Calculate effective cooldown time
+function getCooldownTime() {
+  return Math.max(5000, baseCooldownTime - trainingUpgradesPurchased * 1000); // Reduce by 1s per upgrade, minimum 5s
+}
+
+// Save data to localStorage with error handling
+function saveData(key, data) {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (e) {
+    console.error(`Failed to save ${key} to localStorage:`, e);
+  }
+}
+
+// Create stat boxes
+const container = document.getElementById("stats-container");
+statNames.forEach(name => {
+  const id = idify(name);
+  const box = document.createElement("div");
+  box.className = "stat-box";
+  box.id = `box-${id}`;
+  box.innerHTML = `
+    <h3 class="stat-title">${name}</h3>
+    <div class="stat-value">
+      <span id="base-${id}">${stats[name]}</span>
+      <span id="bonus-${id}" class="bonus"></span>
+    </div>
+    <div class="cooldown-bar">
+      <div class="cooldown-progress" id="cooldown-progress-${id}"></div>
+    </div>
+    <button id="btn-${id}" aria-label="Train ${name} skill" aria-disabled="false">Train ${name}</button>
+    <div class="cooldown-text" id="cooldown-text-${id}"></div>
+  `;
+  container.appendChild(box);
+  // Add event listener with debounce
+  const button = document.getElementById(`btn-${id}`);
+  button.addEventListener("click", debounce(() => increaseStat(name), 200));
+});
+
+// Load profile data into inputs
+document.getElementById("player-name").value = profile.name;
+document.getElementById("player-age").value = profile.age;
+document.getElementById("player-club").value = profile.club;
+document.getElementById("player-position").value = profile.position;
+
+// Save profile on input change and update display
+const profileInputs = ["player-name", "player-age", "player-club", "player-position"];
+profileInputs.forEach(id => {
+  const input = document.getElementById(id);
+  input.addEventListener("change", () => {
+    profile.name = document.getElementById("player-name").value;
+    profile.age = document.getElementById("player-age").value;
+    profile.club = document.getElementById("player-club").value;
+    profile.position = document.getElementById("player-position").value;
+    saveData("footballProfile", profile);
+    updateDisplay(); // Update overall when position changes
+  });
+});
+
+// Debounce function
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
     };
-    const coaches = {
-      Common: [
-        {name: 'Donnacha', stat: 'Defending', set: 'Ireland'},
-        {name: 'Oscar', stat: 'Pressing', set: 'Germany'}
-      ],
-      Uncommon: [
-        {name: 'Ronan', stat: 'Speed', set: 'Spain'},
-        {name: 'Danny', stat: 'Vision', set: 'France'}
-      ],
-      Rare: [
-        {name: 'Darragh', stat: 'Defending', set: 'Ireland'}
-      ],
-      Epic: [
-        {name: 'Peter', stat: 'Jumping', set: 'England'}
-      ],
-      Legendary: [
-        {name: 'Dylan', stat: 'Shooting', set: 'Portugal'}
-      ]
-    };
-    const packConfigs = {
-      bronze: {
-        cost: 50,
-        chances: [0.7, 0.2, 0.08, 0.015, 0.005],
-      },
-      silver: {
-        cost: 150,
-        chances: [0.5, 0.3, 0.15, 0.04, 0.01],
-      },
-      gold: {
-        cost: 500,
-        chances: [0.3, 0.3, 0.25, 0.1, 0.05],
-      }
-    };
-    const euroTiers = [
-      { min: 0, max: 25, euros: 5 },
-      { min: 26, max: 60, euros: 10 },
-      { min: 61, max: 100, euros: 15 },
-      { min: 101, max: Infinity, euros: 20 }
-    ];
-    const trainingUpgrades = [
-      { name: 'Training Efficiency I', effect: 'Reduce training cooldown by 1s', cost: 150 },
-      { name: 'Training Efficiency II', effect: 'Reduce training cooldown by 1s', cost: 300 },
-      { name: 'Training Efficiency III', effect: 'Reduce training cooldown by 1s', cost: 500 },
-      { name: 'Training Efficiency IV', effect: 'Reduce training cooldown by 1s', cost: 700 },
-      { name: 'Training Efficiency V', effect: 'Reduce training cooldown by 1s', cost: 1000 }
-    ];
-    const euroUpgrades = [
-      { name: 'Euro Boost I', effect: 'Increase Euro gain by 5%', cost: 200 },
-      { name: 'Euro Boost II', effect: 'Increase Euro gain by 5%', cost: 300 },
-      { name: 'Euro Boost III', effect: 'Increase Euro gain by 5%', cost: 400 },
-      { name: 'Euro Boost IV', effect: 'Increase Euro gain by 5%', cost: 500 },
-      { name: 'Euro Boost V', effect: 'Increase Euro gain by 5%', cost: 900 }
-    ];
-    const matchRewards = { Win: 100, Draw: 50, Loss: 20 };
-    const positionWeights = {
-      GK: { Agility: 2, Jumping: 2, Defending: 1, Vision: 1, Speed: 0.5, Shooting: 0, Dribbling: 0, Pressing: 0, Stamina: 1, Determination: 1 },
-      LB: { Defending: 2, Speed: 1.5, Pressing: 1, Agility: 1, Vision: 0.5, Shooting: 0.5, Dribbling: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
-      CB: { Defending: 2.5, Jumping: 1.5, Pressing: 1, Agility: 0.5, Speed: 0.5, Vision: 0.5, Shooting: 0, Dribbling: 0, Stamina: 1, Determination: 1 },
-      RB: { Defending: 2, Speed: 1.5, Pressing: 1, Agility: 1, Vision: 0.5, Shooting: 0.5, Dribbling: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
-      CDM: { Defending: 2, Pressing: 1.5, Vision: 1, Agility: 0.5, Speed: 0.5, Jumping: 0.5, Shooting: 0.5, Dribbling: 0.5, Stamina: 1, Determination: 1 },
-      DM: { Defending: 2, Pressing: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Speed: 0.5, Jumping: 0.5, Dribbling: 0.5, Stamina: 1, Determination: 1 },
-      CAM: { Vision: 2, Dribbling: 1.5, Shooting: 1, Agility: 0.5, Speed: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
-      LM: { Speed: 2, Dribbling: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
-      RM: { Speed: 2, Dribbling: 1.5, Vision: 1, Shooting: 0.5, Agility: 0.5, Pressing: 0.5, Defending: 0.5, Jumping: 0.5, Stamina: 1, Determination: 1 },
-      ST: { Shooting: 2, Dribbling: 1.5, Speed: 1, Jumping: 0.5, Agility: 0.5, Vision: 0.5, Pressing: 0.5, Defending: 0, Stamina: 1, Determination: 1 },
-      LW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0, Stamina: 1, Determination: 1 },
-      RW: { Speed: 2, Dribbling: 1.5, Shooting: 1, Vision: 0.5, Agility: 0.5, Pressing: 0.5, Jumping: 0.5, Defending: 0, Stamina: 1, Determination: 1 }
-    };
-    const teams = [
-      { name: 'Ashford College', rating: 20 },
-      { name: 'Thomond Spark', rating: 45 },
-      { name: "McDonald's United", rating: 60 },
-      { name: 'Moyross Lads', rating: 100 }
-    ];
-    // Load data from localStorage with error handling
-    function loadData(key, defaultValue) {
-      try {
-        const data = localStorage.getItem(key);
-        return data ? JSON.parse(data) : defaultValue;
-      } catch (e) {
-        console.error(`Failed to load ${key} from localStorage:`, e);
-        return defaultValue;
-      }
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+// Get boosted stats
+function getBoostedStats() {
+  let boosted = { ...stats };
+  let equippedItems = Object.values(equipped).filter(Boolean);
+  let setCounts = {};
+  equippedItems.forEach(itemKey => {
+    const [, setName] = itemKey.split(' ');
+    setCounts[setName] = (setCounts[setName] || 0) + 1;
+  });
+  equippedItems.forEach(itemKey => {
+    const [rarity, , itemType] = itemKey.split(' ');
+    const setName = coaches[rarity]?.find(c => itemKey.includes(c.name))?.set || itemKey.split(' ')[1];
+    const boostStat = coaches[rarity]?.find(c => itemKey.includes(c.name))?.stat || itemBoosts[setName][itemType];
+    const baseBoost = rarityBoosts[rarity];
+    const multiplier = (setCounts[setName] >= 3) ? 1.5 : 1;
+    boosted[boostStat] = (boosted[boostStat] || 0) + Math.floor(baseBoost * multiplier);
+  });
+  return boosted;
+}
+
+// Calculate overall rating
+function getOverallRating() {
+  const boosted = getBoostedStats();
+  const position = profile.position;
+  let weights = position && positionWeights[position] ? positionWeights[position] : statNames.reduce((acc, stat) => { acc[stat] = 1; return acc; }, {});
+  let sum = 0;
+  let totalWeight = 0;
+  for (let stat in boosted) {
+    const w = weights[stat] || 0;
+    sum += boosted[stat] * w;
+    totalWeight += w;
+  }
+  return totalWeight > 0 ? Math.floor(sum / totalWeight) : 0;
+}
+
+// Get Euros per training based on overall rating and upgrades
+function getEurosPerTrain() {
+  const overall = getOverallRating();
+  let baseEuros = 0;
+  for (const tier of euroTiers) {
+    if (overall >= tier.min && overall <= tier.max) {
+      baseEuros = tier.euros;
+      break;
     }
-    let stats = loadData("footballStats", {});
-    let cooldowns = loadData("footballCooldowns", {});
-    let profile = loadData("footballProfile", { name: "", age: "", club: "", position: "" });
-    let currency = loadData("footballCurrency", 0);
-    let inventory = loadData("footballInventory", {});
-    let equipped = loadData("footballEquipped", { Shirt: null, Shorts: null, Boots: null, Coach: null });
-    let matchCooldown = loadData("footballMatchCooldown", 0);
-    let matchHistory = loadData("footballMatchHistory", []);
-    let careerStats = loadData("footballCareerStats", {
-      friendly: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 },
-      league: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 }
+  }
+  const multiplier = 1 + 0.05 * euroUpgradesPurchased; // 5% per upgrade
+  return Math.floor(baseEuros * multiplier);
+}
+
+// Update display function
+function updateDisplay() {
+  const boosted = getBoostedStats();
+  // Update all stat values
+  for (let key in stats) {
+    const id = idify(key);
+    const baseElement = document.getElementById(`base-${id}`);
+    const bonusElement = document.getElementById(`bonus-${id}`);
+    if (baseElement && bonusElement) {
+      baseElement.textContent = stats[key];
+      const bonus = boosted[key] - stats[key];
+      bonusElement.textContent = bonus > 0 ? ` (+${bonus})` : '';
+    }
+  }
+  // Calculate and update overall rating
+  const overall = getOverallRating();
+  document.getElementById("overall").textContent = overall;
+  // Save stats
+  saveData("footballStats", stats);
+}
+
+// Update currency display
+function updateCurrency() {
+  document.getElementById("currency").textContent = `Euros: ${currency}`;
+}
+
+// Update career stats display
+function updateCareerStats() {
+  document.getElementById("friendly-matches-played").textContent = careerStats.friendly.matchesPlayed;
+  document.getElementById("friendly-goals").textContent = careerStats.friendly.goals;
+  document.getElementById("friendly-assists").textContent = careerStats.friendly.assists;
+  document.getElementById("friendly-interventions").textContent = careerStats.friendly.interventions;
+  document.getElementById("friendly-saves").textContent = careerStats.friendly.saves;
+  document.getElementById("league-matches-played").textContent = careerStats.league.matchesPlayed;
+  document.getElementById("league-goals").textContent = careerStats.league.goals;
+  document.getElementById("league-assists").textContent = careerStats.league.assists;
+  document.getElementById("league-interventions").textContent = careerStats.league.interventions;
+  document.getElementById("league-saves").textContent = careerStats.league.saves;
+  document.getElementById("total-matches-played").textContent = careerStats.friendly.matchesPlayed + careerStats.league.matchesPlayed;
+  document.getElementById("total-goals").textContent = careerStats.friendly.goals + careerStats.league.goals;
+  document.getElementById("total-assists").textContent = careerStats.friendly.assists + careerStats.league.assists;
+  document.getElementById("total-interventions").textContent = careerStats.friendly.interventions + careerStats.league.interventions;
+  document.getElementById("total-saves").textContent = careerStats.friendly.saves + careerStats.league.saves;
+}
+
+// Count active cooldowns
+function activeCooldownCount() {
+  return statNames.filter(name => cooldowns[name] > Date.now()).length;
+}
+
+// Increase stat function with cooldown and debug alerts
+function increaseStat(stat) {
+  const id = idify(stat);
+  const button = document.getElementById(`btn-${id}`);
+  const statValue = document.querySelector(`#box-${id} .stat-value`);
+  const statBox = document.getElementById(`box-${id}`);
+  // Check if training is possible and provide feedback
+  if (stats[stat] >= maxStat) {
+    alert(`Cannot train ${stat}: Maximum value (${maxStat}) reached!`);
+    return;
+  }
+  if (cooldowns[stat] > Date.now()) {
+    const remaining = Math.max(0, (cooldowns[stat] - Date.now()) / 1000).toFixed(1);
+    alert(`Cannot train ${stat}: Skill is on cooldown for ${remaining} seconds!`);
+    return;
+  }
+  if (activeCooldownCount() >= maxConcurrentTraining) {
+    alert(`Cannot train ${stat}: Maximum concurrent trainings (${maxConcurrentTraining}) already active!`);
+    return;
+  }
+  // Increase the stat with visual feedback
+  stats[stat]++;
+  if (statValue) {
+    statValue.classList.add('increase');
+    setTimeout(() => statValue.classList.remove('increase'), 300);
+  }
+  currency += getEurosPerTrain();
+  saveData("footballCurrency", currency);
+  updateCurrency();
+  updateDisplay();
+  // Set cooldown
+  cooldowns[stat] = Date.now() + getCooldownTime();
+  saveData("footballCooldowns", cooldowns);
+  // Disable button and update ARIA
+  button.disabled = true;
+  button.setAttribute('aria-disabled', 'true');
+  statBox.classList.remove('active');
+  statBox.classList.add('cooldown');
+  // Ensure updater is running
+  startCooldownUpdater();
+}
+
+// Simulate a friendly match
+function simulateMatch() {
+  if (matchCooldown > Date.now()) {
+    alert('Match on cooldown! Wait until it’s ready.');
+    return;
+  }
+  if (!profile.position) {
+    alert('Please select a position to play a match!');
+    return;
+  }
+  const playerRating = getOverallRating();
+  const opponent = teams[Math.floor(Math.random() * teams.length)];
+  const opponentName = opponent.name;
+  const opponentRating = opponent.rating;
+  const diff = playerRating - opponentRating;
+  let result, yourGoals, opponentGoals;
+  // Define random value for match outcome
+  const rand = Math.random() * 100; // Random number between 0 and 100
+  // Determine match result and score
+  if (diff > 10) {
+    result = rand < 80 ? 'Win' : rand < 95 ? 'Draw' : 'Loss';
+    yourGoals = Math.floor(Math.random() * 4); // 0-3 goals
+    opponentGoals = result === 'Win' ? Math.floor(Math.random() * yourGoals) : result === 'Draw' ? yourGoals : Math.floor(Math.random() * 4) + 1;
+  } else if (diff < -10) {
+    result = rand < 80 ? 'Loss' : rand < 95 ? 'Draw' : 'Win';
+    yourGoals = Math.floor(Math.random() * 3); // 0-2 goals
+    opponentGoals = result === 'Loss' ? Math.floor(Math.random() * 4) + 1 : result === 'Draw' ? yourGoals : Math.floor(Math.random() * yourGoals);
+  } else {
+    result = rand < 33 ? 'Win' : rand < 66 ? 'Draw' : 'Loss';
+    yourGoals = Math.floor(Math.random() * 3); // 0-2 goals
+    opponentGoals = result === 'Draw' ? yourGoals : Math.floor(Math.random() * 3);
+  }
+  // Calculate player stats based on position
+  const position = profile.position;
+  const weights = positionWeights[position];
+  const boosted = getBoostedStats();
+  let playerStats = { goals: 0, assists: 0, interventions: 0, saves: 0 };
+  // Base probabilities influenced by key stats
+  const goalChance = (weights.Shooting * boosted.Shooting + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
+  const assistChance = (weights.Vision * boosted.Vision + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
+  const interventionChance = (weights.Defending * boosted.Defending + weights.Pressing * boosted.Pressing) / 2000; // Max 0.5
+  const saveChance = position === 'GK' ? (weights.Agility * boosted.Agility + weights.Jumping * boosted.Jumping) / 2000 : 0; // Max 0.5 for GK
+  // Assign stats based on team goals and position
+  if (yourGoals > 0) {
+    if (['ST', 'LW', 'RW'].includes(position)) {
+      playerStats.goals = Math.random() < goalChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
+      playerStats.assists = Math.random() < assistChance ? Math.min(yourGoals - playerStats.goals, Math.floor(Math.random() * 2)) : 0;
+    } else if (['CAM', 'LM', 'RM'].includes(position)) {
+      playerStats.assists = Math.random() < assistChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
+      playerStats.goals = Math.random() < goalChance ? Math.min(yourGoals - playerStats.assists, Math.floor(Math.random() * 2)) : 0;
+    } else if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
+      playerStats.interventions = Math.random() < interventionChance * 1.5 ? Math.floor(Math.random() * 3) + 1 : 0;
+      playerStats.goals = Math.random() < goalChance * 0.5 ? Math.min(yourGoals, 1) : 0;
+    } else if (position === 'GK') {
+      playerStats.saves = Math.random() < saveChance * 1.5 ? Math.floor(Math.random() * opponentGoals + 1) : 0;
+    }
+  } else {
+    if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
+      playerStats.interventions = Math.random() < interventionChance ? Math.floor(Math.random() * 2) + 1 : 0;
+    } else if (position === 'GK') {
+      playerStats.saves = Math.random() < saveChance ? Math.floor(Math.random() * opponentGoals + 1) : 0;
+    }
+  }
+  // Update career stats
+  careerStats.friendly.matchesPlayed += 1;
+  careerStats.friendly.goals += playerStats.goals;
+  careerStats.friendly.assists += playerStats.assists;
+  careerStats.friendly.interventions += playerStats.interventions;
+  careerStats.friendly.saves += playerStats.saves;
+  const euros = matchRewards[result];
+  currency += euros;
+  matchHistory.unshift({
+    opponentName,
+    score: `${yourGoals}-${opponentGoals}`,
+    opponentRating,
+    playerRating,
+    result,
+    euros,
+    stats: playerStats
+  });
+  if (matchHistory.length > 5) matchHistory.pop(); // Keep only last 5
+  matchCooldown = Date.now() + matchCooldownTime;
+  saveData('footballCurrency', currency);
+  saveData('footballMatchHistory', matchHistory);
+  saveData('footballMatchCooldown', matchCooldown);
+  saveData('footballCareerStats', careerStats);
+  updateCurrency();
+  updateMatchHistory();
+  updateCareerStats();
+  alert(`Match Result: ${result}\nOpponent: ${opponentName} (Rating: ${opponentRating})\nScore: ${yourGoals}-${opponentGoals}\nYour Rating: ${playerRating}\nStats: Goals: ${playerStats.goals}, Assists: ${playerStats.assists}, Interventions: ${playerStats.interventions}, Saves: ${playerStats.saves}\nEuros Earned: ${euros}`);
+}
+
+// Update match history display
+function updateMatchHistory() {
+  const table = document.getElementById('match-history');
+  let html = '<tr><th>Opponent</th><th>Score</th><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th><th>Stats</th></tr>';
+  matchHistory.forEach(match => {
+    const statsStr = `G: ${match.stats.goals}, A: ${match.stats.assists}, I: ${match.stats.interventions}, S: ${match.stats.saves}`;
+    html += `<tr><td>${match.opponentName}</td><td>${match.score}</td><td>${match.opponentRating}</td><td>${match.playerRating}</td><td>${match.result}</td><td>${match.euros}</td><td>${statsStr}</td></tr>`;
+  });
+  table.innerHTML = html;
+}
+
+// Update upgrades display
+function updateUpgrades() {
+  // Training Upgrades
+  const trainingTable = document.getElementById('training-upgrades');
+  let trainingHtml = '<tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>';
+  trainingUpgrades.forEach((upgrade, index) => {
+    const isPurchased = index < trainingUpgradesPurchased;
+    const canAfford = currency >= upgrade.cost;
+    const buttonDisabled = isPurchased || !canAfford ? 'disabled' : '';
+    trainingHtml += `
+      <tr>
+        <td>${upgrade.name}</td>
+        <td>${upgrade.effect}</td>
+        <td>${upgrade.cost}€</td>
+        <td><button class="buy-training-upgrade" data-index="${index}" ${buttonDisabled}>${isPurchased ? 'Purchased' : 'Buy'}</button></td>
+      </tr>
+    `;
+  });
+  trainingTable.innerHTML = trainingHtml;
+  // Euro Upgrades
+  const euroTable = document.getElementById('euro-upgrades');
+  let euroHtml = '<tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>';
+  euroUpgrades.forEach((upgrade, index) => {
+    const isPurchased = index < euroUpgradesPurchased;
+    const canAfford = currency >= upgrade.cost;
+    const buttonDisabled = isPurchased || !canAfford ? 'disabled' : '';
+    euroHtml += `
+      <tr>
+        <td>${upgrade.name}</td>
+        <td>${upgrade.effect}</td>
+        <td>${upgrade.cost}€</td>
+        <td><button class="buy-euro-upgrade" data-index="${index}" ${buttonDisabled}>${isPurchased ? 'Purchased' : 'Buy'}</button></td>
+      </tr>
+    `;
+  });
+  euroTable.innerHTML = euroHtml;
+  // Add event listeners for buy buttons
+  document.querySelectorAll('.buy-training-upgrade').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const index = parseInt(btn.dataset.index);
+      if (index >= trainingUpgradesPurchased && currency >= trainingUpgrades[index].cost) {
+        currency -= trainingUpgrades[index].cost;
+        trainingUpgradesPurchased++;
+        saveData('footballCurrency', currency);
+        saveData('footballTrainingUpgrades', trainingUpgradesPurchased);
+        updateCurrency();
+        updateUpgrades();
+      }
     });
-    let trainingUpgradesPurchased = loadData("footballTrainingUpgrades", 0);
-    let euroUpgradesPurchased = loadData("footballEuroUpgrades", 0);
-    // Initialize stats and cooldowns if they don't exist
+  });
+  document.querySelectorAll('.buy-euro-upgrade').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const index = parseInt(btn.dataset.index);
+      if (index >= euroUpgradesPurchased && currency >= euroUpgrades[index].cost) {
+        currency -= euroUpgrades[index].cost;
+        euroUpgradesPurchased++;
+        saveData('footballCurrency', currency);
+        saveData('footballEuroUpgrades', euroUpgradesPurchased);
+        updateCurrency();
+        updateUpgrades();
+      }
+    });
+  });
+}
+
+// Helper function to create safe IDs
+function idify(name) {
+  return name.toLowerCase().replace(/\s+/g, "-");
+}
+
+// Single interval to update all cooldowns and handle concurrent limit
+let cooldownInterval;
+function startCooldownUpdater() {
+  if (cooldownInterval) return; // Already running
+  cooldownInterval = setInterval(() => {
+    let activeCooldowns = 0;
     statNames.forEach(name => {
-      if (!(name in stats)) stats[name] = 0;
-      if (!(name in cooldowns)) cooldowns[name] = 0;
-    });
-    // Calculate effective cooldown time
-    function getCooldownTime() {
-      return Math.max(5000, baseCooldownTime - trainingUpgradesPurchased * 1000); // Reduce by 1s per upgrade, minimum 5s
-    }
-    // Save data to localStorage with error handling
-    function saveData(key, data) {
-      try {
-        localStorage.setItem(key, JSON.stringify(data));
-      } catch (e) {
-        console.error(`Failed to save ${key} to localStorage:`, e);
+      if (cooldowns[name] > Date.now()) {
+        activeCooldowns++;
       }
-    }
-    // Create stat boxes
-    const container = document.getElementById("stats-container");
+    });
+    // Update stat cooldowns
+    let allStatCooldownsDone = true;
     statNames.forEach(name => {
       const id = idify(name);
-      const box = document.createElement("div");
-      box.className = "stat-box";
-      box.id = `box-${id}`;
-      box.innerHTML = `
-        <h3 class="stat-title">${name}</h3>
-        <div class="stat-value">
-          <span id="base-${id}">${stats[name]}</span>
-          <span id="bonus-${id}" class="bonus"></span>
-        </div>
-        <div class="cooldown-bar">
-          <div class="cooldown-progress" id="cooldown-progress-${id}"></div>
-        </div>
-        <button id="btn-${id}" aria-label="Train ${name} skill" aria-disabled="false">Train ${name}</button>
-        <div class="cooldown-text" id="cooldown-text-${id}"></div>
-      `;
-      container.appendChild(box);
-      // Add event listener with debounce
       const button = document.getElementById(`btn-${id}`);
-      button.addEventListener("click", debounce(() => increaseStat(name), 200));
+      const cooldownText = document.getElementById(`cooldown-text-${id}`);
+      const cooldownProgress = document.getElementById(`cooldown-progress-${id}`);
+      const statBox = document.getElementById(`box-${id}`);
+      if (!button || !cooldownText || !cooldownProgress || !statBox) return;
+      const remaining = Math.max(0, cooldowns[name] - Date.now());
+      const progress = Math.min(100, ((getCooldownTime() - remaining) / getCooldownTime()) * 100);
+      cooldownProgress.style.width = `${progress}%`;
+      if (remaining > 0) {
+        const seconds = (remaining / 1000).toFixed(1);
+        cooldownText.textContent = `Available in ${seconds}s`;
+        button.disabled = true;
+        button.setAttribute('aria-disabled', 'true');
+        statBox.classList.add('cooldown');
+        statBox.classList.remove('active');
+        allStatCooldownsDone = false;
+      } else {
+        const shouldDisable = activeCooldowns >= maxConcurrentTraining || stats[name] >= maxStat;
+        button.disabled = shouldDisable;
+        button.setAttribute('aria-disabled', shouldDisable ? 'true' : 'false');
+        cooldownText.textContent = '';
+        statBox.classList.remove('cooldown');
+        statBox.classList.add('active');
+        cooldownProgress.style.width = '0%';
+      }
     });
-    // Load profile data into inputs
-    document.getElementById("player-name").value = profile.name;
-    document.getElementById("player-age").value = profile.age;
-    document.getElementById("player-club").value = profile.club;
-    document.getElementById("player-position").value = profile.position;
-    // Save profile on input change and update display
-    const profileInputs = ["player-name", "player-age", "player-club", "player-position"];
-    profileInputs.forEach(id => {
-      const input = document.getElementById(id);
-      input.addEventListener("change", () => {
-        profile.name = document.getElementById("player-name").value;
-        profile.age = document.getElementById("player-age").value;
-        profile.club = document.getElementById("player-club").value;
-        profile.position = document.getElementById("player-position").value;
-        saveData("footballProfile", profile);
-        updateDisplay(); // Update overall when position changes
-      });
+    // Update match cooldown
+    const matchButton = document.getElementById('play-match');
+    const matchCooldownText = document.getElementById('match-cooldown-text');
+    const matchCooldownProgress = document.getElementById('match-cooldown-progress');
+    const matchRemaining = Math.max(0, matchCooldown - Date.now());
+    const matchProgress = Math.min(100, ((matchCooldownTime - matchRemaining) / matchCooldownTime) * 100);
+    matchCooldownProgress.style.width = `${matchProgress}%`;
+    matchCooldownProgress.textContent = matchRemaining > 0 ? `${Math.floor(matchProgress)}%` : '';
+    if (matchRemaining > 0) {
+      const minutes = Math.floor(matchRemaining / 60000);
+      const seconds = ((matchRemaining % 60000) / 1000).toFixed(0).padStart(2, '0');
+      matchCooldownText.textContent = `Next match in ${minutes}m ${seconds}s`;
+      matchButton.disabled = true;
+      matchButton.setAttribute('aria-disabled', 'true');
+    } else {
+      matchCooldownText.textContent = '';
+      matchCooldownProgress.textContent = '';
+      matchButton.disabled = false;
+      matchButton.setAttribute('aria-disabled', 'false');
+      matchCooldownProgress.style.width = '0%';
+    }
+    if (allStatCooldownsDone && matchRemaining <= 0) {
+      clearInterval(cooldownInterval);
+      cooldownInterval = null;
+    }
+  }, 50);
+}
+
+// Get random item based on pack type
+function getRandomItem(packType) {
+  const chances = packConfigs[packType].chances;
+  let rand = Math.random();
+  let cumulative = 0;
+  let rarityIndex = 0;
+  for (let i = 0; i < chances.length; i++) {
+    cumulative += chances[i];
+    if (rand < cumulative) {
+      rarityIndex = i;
+      break;
+    }
+  }
+  const rarity = rarities[rarityIndex];
+  const typeIndex = Math.floor(Math.random() * itemTypes.length);
+  const type = itemTypes[typeIndex];
+  if (type === 'Coach') {
+    const coachList = coaches[rarity];
+    if (!coachList || coachList.length === 0) {
+      // Fallback to another item type if no coach for this rarity
+      const fallbackType = itemTypes[Math.floor(Math.random() * (itemTypes.length - 1))];
+      const setIndex = Math.floor(Math.random() * sets.length);
+      const set = sets[setIndex];
+      return `${rarity} ${set} ${fallbackType}`;
+    }
+    const coach = coachList[Math.floor(Math.random() * coachList.length)];
+    return `${rarity} ${coach.name} Coach`;
+  } else {
+    const setIndex = Math.floor(Math.random() * sets.length);
+    const set = sets[setIndex];
+    return `${rarity} ${set} ${type}`;
+  }
+}
+
+// Open pack function
+function openPack(packType) {
+  const config = packConfigs[packType];
+  if (currency < config.cost) {
+    alert('Not enough Euros!');
+    return;
+  }
+  currency -= config.cost;
+  const item = getRandomItem(packType);
+  inventory[item] = (inventory[item] || 0) + 1;
+  saveData('footballCurrency', currency);
+  saveData('footballInventory', inventory);
+  alert(`You got: ${item}!`);
+  updateCurrency();
+  updateInventory();
+  updateEquipSelects();
+}
+
+// Add pack open listeners
+document.getElementById('open-bronze').addEventListener('click', () => openPack('bronze'));
+document.getElementById('open-silver').addEventListener('click', () => openPack('silver'));
+document.getElementById('open-gold').addEventListener('click', () => openPack('gold'));
+
+// Add match listener
+document.getElementById('play-match').addEventListener('click', debounce(simulateMatch, 200));
+
+// Update inventory display
+function updateInventory() {
+  const list = document.getElementById('inventory-list');
+  let html = '';
+  for (let key in inventory) {
+    const [rarity, name, itemType] = key.split(' ');
+    const setName = coaches[rarity]?.find(c => c.name === name)?.set || name;
+    const boostStat = itemType === 'Coach' ? coaches[rarity].find(c => c.name === name).stat : itemBoosts[setName][itemType];
+    const baseBoost = rarityBoosts[rarity];
+    const count = inventory[key];
+    html += `<li>${key} (Boosts ${boostStat} by ${baseBoost})${count > 1 ? ` x${count}` : ''} <button class="sell" data-key="${key}">Sell</button></li>`;
+  }
+  list.innerHTML = html;
+  // Add sell listeners
+  document.querySelectorAll('.sell').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.key;
+      const count = inventory[key];
+      let num = 1;
+      if (count > 1) {
+        const input = prompt(`How many to sell? (1-${count})`);
+        num = parseInt(input);
+        if (isNaN(num) || num < 1 || num > count) {
+          alert('Invalid number!');
+          return;
+        }
+      } else {
+        if (!confirm('Sell this item?')) return;
+      }
+      sellItem(key, num);
     });
-    // Debounce function
-    function debounce(func, wait) {
-      let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
+  });
+}
+
+// Sell item
+function sellItem(key, num) {
+  const [rarity] = key.split(' ');
+  const value = sellValues[rarity] * num;
+  currency += value;
+  inventory[key] -= num;
+  if (inventory[key] <= 0) delete inventory[key];
+  // Unequip if necessary
+  itemTypes.forEach(type => {
+    if (equipped[type] === key && !inventory[key]) {
+      equipped[type] = null;
     }
-    // Get boosted stats
-    function getBoostedStats() {
-      let boosted = { ...stats };
-      let equippedItems = Object.values(equipped).filter(Boolean);
-      let setCounts = {};
-      equippedItems.forEach(itemKey => {
-        const [, setName] = itemKey.split(' ');
-        setCounts[setName] = (setCounts[setName] || 0) + 1;
-      });
-      equippedItems.forEach(itemKey => {
-        const [rarity, , itemType] = itemKey.split(' ');
-        const setName = coaches[rarity]?.find(c => itemKey.includes(c.name))?.set || itemKey.split(' ')[1];
-        const boostStat = coaches[rarity]?.find(c => itemKey.includes(c.name))?.stat || itemBoosts[setName][itemType];
-        const baseBoost = rarityBoosts[rarity];
-        const multiplier = (setCounts[setName] >= 3) ? 1.5 : 1;
-        boosted[boostStat] = (boosted[boostStat] || 0) + Math.floor(baseBoost * multiplier);
-      });
-      return boosted;
-    }
-    // Calculate overall rating
-    function getOverallRating() {
-      const boosted = getBoostedStats();
-      const position = profile.position;
-      let weights = position && positionWeights[position] ? positionWeights[position] : statNames.reduce((acc, stat) => { acc[stat] = 1; return acc; }, {});
-      let sum = 0;
-      let totalWeight = 0;
-      for (let stat in boosted) {
-        const w = weights[stat] || 0;
-        sum += boosted[stat] * w;
-        totalWeight += w;
+  });
+  saveData('footballInventory', inventory);
+  saveData('footballEquipped', equipped);
+  saveData('footballCurrency', currency);
+  updateCurrency();
+  updateInventory();
+  updateEquipSelects();
+  updateDisplay();
+}
+
+// Update equip selects
+function updateEquipSelects() {
+  itemTypes.forEach(type => {
+    const select = document.getElementById(`equip-${idify(type)}`);
+    let html = '<option value="">None</option>';
+    for (let key in inventory) {
+      if (inventory[key] > 0 && key.endsWith(type)) {
+        html += `<option value="${key}" ${equipped[type] === key ? 'selected' : ''}>${key}</option>`;
       }
-      return totalWeight > 0 ? Math.floor(sum / totalWeight) : 0;
     }
-    // Get Euros per training based on overall rating and upgrades
-    function getEurosPerTrain() {
-      const overall = getOverallRating();
-      let baseEuros = 0;
-      for (const tier of euroTiers) {
-        if (overall >= tier.min && overall <= tier.max) {
-          baseEuros = tier.euros;
-          break;
-        }
-      }
-      const multiplier = 1 + 0.05 * euroUpgradesPurchased; // 5% per upgrade
-      return Math.floor(baseEuros * multiplier);
+    select.innerHTML = html;
+  });
+}
+
+// Equip change listeners
+itemTypes.forEach(type => {
+  const select = document.getElementById(`equip-${idify(type)}`);
+  select.addEventListener('change', e => {
+    equipped[type] = e.target.value || null;
+    saveData('footballEquipped', equipped);
+    updateDisplay();
+  });
+});
+
+// Reset game function
+document.getElementById('reset-game').addEventListener('click', () => {
+  if (confirm('Are you sure you want to reset all progress?')) {
+    try {
+      localStorage.removeItem('footballStats');
+      localStorage.removeItem('footballCooldowns');
+      localStorage.removeItem('footballProfile');
+      localStorage.removeItem('footballCurrency');
+      localStorage.removeItem('footballInventory');
+      localStorage.removeItem('footballEquipped');
+      localStorage.removeItem('footballMatchCooldown');
+      localStorage.removeItem('footballMatchHistory');
+      localStorage.removeItem('footballCareerStats');
+      localStorage.removeItem('footballTrainingUpgrades');
+      localStorage.removeItem('footballEuroUpgrades');
+    } catch (e) {
+      console.error('Failed to clear localStorage:', e);
     }
-    // Update display function
-    function updateDisplay() {
-      const boosted = getBoostedStats();
-      // Update all stat values
-      for (let key in stats) {
-        const id = idify(key);
-        const baseElement = document.getElementById(`base-${id}`);
-        const bonusElement = document.getElementById(`bonus-${id}`);
-        if (baseElement && bonusElement) {
-          baseElement.textContent = stats[key];
-          const bonus = boosted[key] - stats[key];
-          bonusElement.textContent = bonus > 0 ? ` (+${bonus})` : '';
-        }
-      }
-      // Calculate and update overall rating
-      const overall = getOverallRating();
-      document.getElementById("overall").textContent = overall;
-      // Save stats
-      saveData("footballStats", stats);
+    stats = {};
+    cooldowns = {};
+    profile = { name: "", age: "", club: "", position: "" };
+    currency = 0;
+    inventory = {};
+    equipped = { Shirt: null, Shorts: null, Boots: null, Coach: null };
+    matchCooldown = 0;
+    matchHistory = [];
+    careerStats = {
+      friendly: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 },
+      league: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 }
+    };
+    trainingUpgradesPurchased = 0;
+    euroUpgradesPurchased = 0;
+    statNames.forEach(name => {
+      stats[name] = 0;
+      cooldowns[name] = 0;
+    });
+    document.getElementById("player-name").value = "";
+    document.getElementById("player-age").value = "";
+    document.getElementById("player-club").value = "";
+    document.getElementById("player-position").value = "";
+    updateDisplay();
+    updateCurrency();
+    updateInventory();
+    updateEquipSelects();
+    updateMatchHistory();
+    updateCareerStats();
+    updateUpgrades();
+    startCooldownUpdater(); // Restart updater if needed
+  }
+});
+
+// Initialize the game
+function initGame() {
+  updateDisplay();
+  updateCurrency();
+  updateInventory();
+  updateEquipSelects();
+  updateMatchHistory();
+  updateCareerStats();
+  updateUpgrades();
+  statNames.forEach(name => {
+    const id = idify(name);
+    const statBox = document.getElementById(`box-${id}`);
+    if (statBox) {
+      statBox.classList.add('active');
     }
-    // Update currency display
-    function updateCurrency() {
-      document.getElementById("currency").textContent = `Euros: ${currency}`;
-    }
-    // Update career stats display
-    function updateCareerStats() {
-      document.getElementById("friendly-matches-played").textContent = careerStats.friendly.matchesPlayed;
-      document.getElementById("friendly-goals").textContent = careerStats.friendly.goals;
-      document.getElementById("friendly-assists").textContent = careerStats.friendly.assists;
-      document.getElementById("friendly-interventions").textContent = careerStats.friendly.interventions;
-      document.getElementById("friendly-saves").textContent = careerStats.friendly.saves;
-      document.getElementById("league-matches-played").textContent = careerStats.league.matchesPlayed;
-      document.getElementById("league-goals").textContent = careerStats.league.goals;
-      document.getElementById("league-assists").textContent = careerStats.league.assists;
-      document.getElementById("league-interventions").textContent = careerStats.league.interventions;
-      document.getElementById("league-saves").textContent = careerStats.league.saves;
-      document.getElementById("total-matches-played").textContent = careerStats.friendly.matchesPlayed + careerStats.league.matchesPlayed;
-      document.getElementById("total-goals").textContent = careerStats.friendly.goals + careerStats.league.goals;
-      document.getElementById("total-assists").textContent = careerStats.friendly.assists + careerStats.league.assists;
-      document.getElementById("total-interventions").textContent = careerStats.friendly.interventions + careerStats.league.interventions;
-      document.getElementById("total-saves").textContent = careerStats.friendly.saves + careerStats.league.saves;
-    }
-    // Count active cooldowns
-    function activeCooldownCount() {
-      return statNames.filter(name => cooldowns[name] > Date.now()).length;
-    }
-    // Increase stat function with cooldown and debug alerts
-    function increaseStat(stat) {
-      const id = idify(stat);
-      const button = document.getElementById(`btn-${id}`);
-      const statValue = document.querySelector(`#box-${id} .stat-value`);
-      const statBox =document.getElementById(`box-${id}`);
-      // Check if training is possible and provide feedback
-      if (stats[stat] >= maxStat) {
-        alert(`Cannot train ${stat}: Maximum value (${maxStat}) reached!`);
-        return;
-      }
-      if (cooldowns[stat] > Date.now()) {
-        const remaining = Math.max(0, (cooldowns[stat] - Date.now()) / 1000).toFixed(1);
-        alert(`Cannot train ${stat}: Skill is on cooldown for ${remaining} seconds!`);
-        return;
-      }
-      if (activeCooldownCount() >= maxConcurrentTraining) {
-        alert(`Cannot train ${stat}: Maximum concurrent trainings (${maxConcurrentTraining}) already active!`);
-        return;
-      }
-      // Increase the stat with visual feedback
-      stats[stat]++;
-      if (statValue) {
-        statValue.classList.add('increase');
-        setTimeout(() => statValue.classList.remove('increase'), 300);
-      }
-      currency += getEurosPerTrain();
-      saveData("footballCurrency", currency);
-      updateCurrency();
-      updateDisplay();
-      // Set cooldown
-      cooldowns[stat] = Date.now() + getCooldownTime();
-      saveData("footballCooldowns", cooldowns);
-      // Disable button and update ARIA
+  });
+  // Initialize stat button states
+  statNames.forEach(name => {
+    const id = idify(name);
+    const button = document.getElementById(`btn-${id}`);
+    const cooldownText = document.getElementById(`cooldown-text-${id}`);
+    const cooldownProgress = document.getElementById(`cooldown-progress-${id}`);
+    const statBox = document.getElementById(`box-${id}`);
+    const remaining = Math.max(0, cooldowns[name] - Date.now());
+    const progress = Math.min(100, ((getCooldownTime() - remaining) / getCooldownTime()) * 100);
+    cooldownProgress.style.width = `${progress}%`;
+    if (remaining > 0) {
+      const seconds = (remaining / 1000).toFixed(1);
+      cooldownText.textContent = `Available in ${seconds}s`;
       button.disabled = true;
       button.setAttribute('aria-disabled', 'true');
-      statBox.classList.remove('active');
       statBox.classList.add('cooldown');
-      // Ensure updater is running
-      startCooldownUpdater();
+      statBox.classList.remove('active');
+    } else {
+      const shouldDisable = activeCooldownCount() >= maxConcurrentTraining || stats[name] >= maxStat;
+      button.disabled = shouldDisable;
+      button.setAttribute('aria-disabled', shouldDisable ? 'true' : 'false');
+      cooldownText.textContent = '';
+      statBox.classList.remove('cooldown');
+      statBox.classList.add('active');
+      cooldownProgress.style.width = '0%';
     }
-    // Simulate a friendly match
-    function simulateMatch() {
-      if (matchCooldown > Date.now()) {
-        alert('Match on cooldown! Wait until it’s ready.');
-        return;
-      }
-      if (!profile.position) {
-        alert('Please select a position to play a match!');
-        return;
-      }
-      const playerRating = getOverallRating();
-      const opponent = teams[Math.floor(Math.random() * teams.length)];
-      const opponentName = opponent.name;
-      const opponentRating = opponent.rating;
-      const diff = playerRating - opponentRating;
-      let result, yourGoals, opponentGoals;
-      // Determine match result and score
-      if (diff > 10) {
-        result = rand < 80 ? 'Win' : rand < 95 ? 'Draw' : 'Loss';
-        yourGoals = Math.floor(Math.random() * 4); // 0-3 goals
-        opponentGoals = result === 'Win' ? Math.floor(Math.random() * yourGoals) : result === 'Draw' ? yourGoals : Math.floor(Math.random() * 4) + 1;
-      } else if (diff < -10) {
-        result = rand < 80 ? 'Loss' : rand < 95 ? 'Draw' : 'Win';
-        yourGoals = Math.floor(Math.random() * 3); // 0-2 goals
-        opponentGoals = result === 'Loss' ? Math.floor(Math.random() * 4) + 1 : result === 'Draw' ? yourGoals : Math.floor(Math.random() * yourGoals);
-      } else {
-        result = rand < 33 ? 'Win' : rand < 66 ? 'Draw' : 'Loss';
-        yourGoals = Math.floor(Math.random() * 3); // 0-2 goals
-        opponentGoals = result === 'Draw' ? yourGoals : Math.floor(Math.random() * 3);
-      }
-      // Calculate player stats based on position
-      const position = profile.position;
-      const weights = positionWeights[position];
-      const boosted = getBoostedStats();
-      let playerStats = { goals: 0, assists: 0, interventions: 0, saves: 0 };
-      // Base probabilities influenced by key stats
-      const goalChance = (weights.Shooting * boosted.Shooting + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
-      const assistChance = (weights.Vision * boosted.Vision + weights.Dribbling * boosted.Dribbling) / 2000; // Max 0.5
-      const interventionChance = (weights.Defending * boosted.Defending + weights.Pressing * boosted.Pressing) / 2000; // Max 0.5
-      const saveChance = position === 'GK' ? (weights.Agility * boosted.Agility + weights.Jumping * boosted.Jumping) / 2000 : 0; // Max 0.5 for GK
-      // Assign stats based on team goals and position
-      if (yourGoals > 0) {
-        if (['ST', 'LW', 'RW'].includes(position)) {
-          playerStats.goals = Math.random() < goalChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
-          playerStats.assists = Math.random() < assistChance ? Math.min(yourGoals - playerStats.goals, Math.floor(Math.random() * 2)) : 0;
-        } else if (['CAM', 'LM', 'RM'].includes(position)) {
-          playerStats.assists = Math.random() < assistChance * 1.5 ? Math.min(yourGoals, Math.floor(Math.random() * 2) + 1) : 0;
-          playerStats.goals = Math.random() < goalChance ? Math.min(yourGoals - playerStats.assists, Math.floor(Math.random() * 2)) : 0;
-        } else if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
-          playerStats.interventions = Math.random() < interventionChance * 1.5 ? Math.floor(Math.random() * 3) + 1 : 0;
-          playerStats.goals = Math.random() < goalChance * 0.5 ? Math.min(yourGoals, 1) : 0;
-        } else if (position === 'GK') {
-          playerStats.saves = Math.random() < saveChance * 1.5 ? Math.floor(Math.random() * opponentGoals + 1) : 0;
-        }
-      } else {
-        if (['LB', 'CB', 'RB', 'CDM', 'DM'].includes(position)) {
-          playerStats.interventions = Math.random() < interventionChance ? Math.floor(Math.random() * 2) + 1 : 0;
-        } else if (position === 'GK') {
-          playerStats.saves = Math.random() < saveChance ? Math.floor(Math.random() * opponentGoals + 1) : 0;
-        }
-      }
-      // Update career stats
-      careerStats.friendly.matchesPlayed += 1;
-      careerStats.friendly.goals += playerStats.goals;
-      careerStats.friendly.assists += playerStats.assists;
-      careerStats.friendly.interventions += playerStats.interventions;
-      careerStats.friendly.saves += playerStats.saves;
-      const euros = matchRewards[result];
-      currency += euros;
-      matchHistory.unshift({
-        opponentName,
-        score: `${yourGoals}-${opponentGoals}`,
-        opponentRating,
-        playerRating,
-        result,
-        euros,
-        stats: playerStats
-      });
-      if (matchHistory.length > 5) matchHistory.pop(); // Keep only last 5
-      matchCooldown = Date.now() + matchCooldownTime;
-      saveData('footballCurrency', currency);
-      saveData('footballMatchHistory', matchHistory);
-      saveData('footballMatchCooldown', matchCooldown);
-      saveData('footballCareerStats', careerStats);
-      updateCurrency();
-      updateMatchHistory();
-      updateCareerStats();
-      alert(`Match Result: ${result}\nOpponent: ${opponentName} (Rating: ${opponentRating})\nScore: ${yourGoals}-${opponentGoals}\nYour Rating: ${playerRating}\nStats: Goals: ${playerStats.goals}, Assists: ${playerStats.assists}, Interventions: ${playerStats.interventions}, Saves: ${playerStats.saves}\nEuros Earned: ${euros}`);
-    }
-    // Update match history display
-    function updateMatchHistory() {
-      const table = document.getElementById('match-history');
-      let html = '<tr><th>Opponent</th><th>Score</th><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th><th>Stats</th></tr>';
-      matchHistory.forEach(match => {
-        const statsStr = `G: ${match.stats.goals}, A: ${match.stats.assists}, I: ${match.stats.interventions}, S: ${match.stats.saves}`;
-        html += `<tr><td>${match.opponentName}</td><td>${match.score}</td><td>${match.opponentRating}</td><td>${match.playerRating}</td><td>${match.result}</td><td>${match.euros}</td><td>${statsStr}</td></tr>`;
-      });
-      table.innerHTML = html;
-    }
-    // Update upgrades display
-    function updateUpgrades() {
-      // Training Upgrades
-      const trainingTable = document.getElementById('training-upgrades');
-      let trainingHtml = '<tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>';
-      trainingUpgrades.forEach((upgrade, index) => {
-        const isPurchased = index < trainingUpgradesPurchased;
-        const canAfford = currency >= upgrade.cost;
-        const buttonDisabled = isPurchased || !canAfford ? 'disabled' : '';
-        trainingHtml += `
-          <tr>
-            <td>${upgrade.name}</td>
-            <td>${upgrade.effect}</td>
-            <td>${upgrade.cost}€</td>
-            <td><button class="buy-training-upgrade" data-index="${index}" ${buttonDisabled}>${isPurchased ? 'Purchased' : 'Buy'}</button></td>
-          </tr>
-        `;
-      });
-      trainingTable.innerHTML = trainingHtml;
-      // Euro Upgrades
-      const euroTable = document.getElementById('euro-upgrades');
-      let euroHtml = '<tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>';
-      euroUpgrades.forEach((upgrade, index) => {
-        const isPurchased = index < euroUpgradesPurchased;
-        const canAfford = currency >= upgrade.cost;
-        const buttonDisabled = isPurchased || !canAfford ? 'disabled' : '';
-        euroHtml += `
-          <tr>
-            <td>${upgrade.name}</td>
-            <td>${upgrade.effect}</td>
-            <td>${upgrade.cost}€</td>
-            <td><button class="buy-euro-upgrade" data-index="${index}" ${buttonDisabled}>${isPurchased ? 'Purchased' : 'Buy'}</button></td>
-          </tr>
-        `;
-      });
-      euroTable.innerHTML = euroHtml;
-      // Add event listeners for buy buttons
-      document.querySelectorAll('.buy-training-upgrade').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const index = parseInt(btn.dataset.index);
-          if (index >= trainingUpgradesPurchased && currency >= trainingUpgrades[index].cost) {
-            currency -= trainingUpgrades[index].cost;
-            trainingUpgradesPurchased++;
-            saveData('footballCurrency', currency);
-            saveData('footballTrainingUpgrades', trainingUpgradesPurchased);
-            updateCurrency();
-            updateUpgrades();
-          }
-        });
-      });
-      document.querySelectorAll('.buy-euro-upgrade').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const index = parseInt(btn.dataset.index);
-          if (index >= euroUpgradesPurchased && currency >= euroUpgrades[index].cost) {
-            currency -= euroUpgrades[index].cost;
-            euroUpgradesPurchased++;
-            saveData('footballCurrency', currency);
-            saveData('footballEuroUpgrades', euroUpgradesPurchased);
-            updateCurrency();
-            updateUpgrades();
-          }
-        });
-      });
-    }
-    // Helper function to create safe IDs
-    function idify(name) {
-      return name.toLowerCase().replace(/\s+/g, "-");
-    }
-    // Single interval to update all cooldowns and handle concurrent limit
-    let cooldownInterval;
-    function startCooldownUpdater() {
-      if (cooldownInterval) return; // Already running
-      cooldownInterval = setInterval(() => {
-        let activeCooldowns = 0;
-        statNames.forEach(name => {
-          if (cooldowns[name] > Date.now()) {
-            activeCooldowns++;
-          }
-        });
-        // Update stat cooldowns
-        let allStatCooldownsDone = true;
-        statNames.forEach(name => {
-          const id = idify(name);
-          const button = document.getElementById(`btn-${id}`);
-          const cooldownText = document.getElementById(`cooldown-text-${id}`);
-          const cooldownProgress = document.getElementById(`cooldown-progress-${id}`);
-          const statBox = document.getElementById(`box-${id}`);
-          if (!button || !cooldownText || !cooldownProgress || !statBox) return;
-          const remaining = Math.max(0, cooldowns[name] - Date.now());
-          const progress = Math.min(100, ((getCooldownTime() - remaining) / getCooldownTime()) * 100);
-          cooldownProgress.style.width = `${progress}%`;
-          if (remaining > 0) {
-            const seconds = (remaining / 1000).toFixed(1);
-            cooldownText.textContent = `Available in ${seconds}s`;
-            button.disabled = true;
-            button.setAttribute('aria-disabled', 'true');
-            statBox.classList.add('cooldown');
-            statBox.classList.remove('active');
-            allStatCooldownsDone = false;
-          } else {
-            const shouldDisable = activeCooldowns >= maxConcurrentTraining || stats[name] >= maxStat;
-            button.disabled = shouldDisable;
-            button.setAttribute('aria-disabled', shouldDisable ? 'true' : 'false');
-            cooldownText.textContent = '';
-            statBox.classList.remove('cooldown');
-            statBox.classList.add('active');
-            cooldownProgress.style.width = '0%';
-          }
-        });
-        // Update match cooldown
-        const matchButton = document.getElementById('play-match');
-        const matchCooldownText = document.getElementById('match-cooldown-text');
-        const matchCooldownProgress = document.getElementById('match-cooldown-progress');
-        const matchRemaining = Math.max(0, matchCooldown - Date.now());
-        const matchProgress = Math.min(100, ((matchCooldownTime - matchRemaining) / matchCooldownTime) * 100);
-        matchCooldownProgress.style.width = `${matchProgress}%`;
-        matchCooldownProgress.textContent = matchRemaining > 0 ? `${Math.floor(matchProgress)}%` : '';
-        if (matchRemaining > 0) {
-          const minutes = Math.floor(matchRemaining / 60000);
-          const seconds = ((matchRemaining % 60000) / 1000).toFixed(0).padStart(2, '0');
-          matchCooldownText.textContent = `Next match in ${minutes}m ${seconds}s`;
-          matchButton.disabled = true;
-          matchButton.setAttribute('aria-disabled', 'true');
-        } else {
-          matchCooldownText.textContent = '';
-          matchCooldownProgress.textContent = '';
-          matchButton.disabled = false;
-          matchButton.setAttribute('aria-disabled', 'false');
-          matchCooldownProgress.style.width = '0%';
-        }
-        if (allStatCooldownsDone && matchRemaining <= 0) {
-          clearInterval(cooldownInterval);
-          cooldownInterval = null;
-        }
-      }, 50);
-    }
-    // Get random item based on pack type
-    function getRandomItem(packType) {
-      const chances = packConfigs[packType].chances;
-      let rand = Math.random();
-      let cumulative = 0;
-      let rarityIndex = 0;
-      for (let i = 0; i < chances.length; i++) {
-        cumulative += chances[i];
-        if (rand < cumulative) {
-          rarityIndex = i;
-          break;
-        }
-      }
-      const rarity = rarities[rarityIndex];
-      const typeIndex = Math.floor(Math.random() * itemTypes.length);
-      const type = itemTypes[typeIndex];
-      if (type === 'Coach') {
-        const coachList = coaches[rarity];
-        if (!coachList || coachList.length === 0) {
-          // Fallback to another item type if no coach for this rarity
-          const fallbackType = itemTypes[Math.floor(Math.random() * (itemTypes.length - 1))];
-          const setIndex = Math.floor(Math.random() * sets.length);
-          const set = sets[setIndex];
-          return `${rarity} ${set} ${fallbackType}`;
-        }
-        const coach = coachList[Math.floor(Math.random() * coachList.length)];
-        return `${rarity} ${coach.name} Coach`;
-      } else {
-        const setIndex = Math.floor(Math.random() * sets.length);
-        const set = sets[setIndex];
-        return `${rarity} ${set} ${type}`;
-      }
-    }
-    // Open pack function
-    function openPack(packType) {
-      const config = packConfigs[packType];
-      if (currency < config.cost) {
-        alert('Not enough Euros!');
-        return;
-      }
-      currency -= config.cost;
-      const item = getRandomItem(packType);
-      inventory[item] = (inventory[item] || 0) + 1;
-      saveData('footballCurrency', currency);
-      saveData('footballInventory', inventory);
-      alert(`You got: ${item}!`);
-      updateCurrency();
-      updateInventory();
-      updateEquipSelects();
-    }
-    // Add pack open listeners
-    document.getElementById('open-bronze').addEventListener('click', () => openPack('bronze'));
-    document.getElementById('open-silver').addEventListener('click', () => openPack('silver'));
-    document.getElementById('open-gold').addEventListener('click', () => openPack('gold'));
-    // Add match listener
-    document.getElementById('play-match').addEventListener('click', debounce(simulateMatch, 200));
-    // Update inventory display
-    function updateInventory() {
-      const list = document.getElementById('inventory-list');
-      let html = '';
-      for (let key in inventory) {
-        const [rarity, name, itemType] = key.split(' ');
-        const setName = coaches[rarity]?.find(c => c.name === name)?.set || name;
-        const boostStat = itemType === 'Coach' ? coaches[rarity].find(c => c.name === name).stat : itemBoosts[setName][itemType];
-        const baseBoost = rarityBoosts[rarity];
-        const count = inventory[key];
-        html += `<li>${key} (Boosts ${boostStat} by ${baseBoost})${count > 1 ? ` x${count}` : ''} <button class="sell" data-key="${key}">Sell</button></li>`;
-      }
-      list.innerHTML = html;
-      // Add sell listeners
-      document.querySelectorAll('.sell').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const key = btn.dataset.key;
-          const count = inventory[key];
-          let num = 1;
-          if (count > 1) {
-            const input = prompt(`How many to sell? (1-${count})`);
-            num = parseInt(input);
-            if (isNaN(num) || num < 1 || num > count) {
-              alert('Invalid number!');
-              return;
-            }
-          } else {
-            if (!confirm('Sell this item?')) return;
-          }
-          sellItem(key, num);
-        });
-      });
-    }
-    // Sell item
-    function sellItem(key, num) {
-      const [rarity] = key.split(' ');
-      const value = sellValues[rarity] * num;
-      currency += value;
-      inventory[key] -= num;
-      if (inventory[key] <= 0) delete inventory[key];
-      // Unequip if necessary
-      itemTypes.forEach(type => {
-        if (equipped[type] === key && !inventory[key]) {
-          equipped[type] = null;
-        }
-      });
-      saveData('footballInventory', inventory);
-      saveData('footballEquipped', equipped);
-      saveData('footballCurrency', currency);
-      updateCurrency();
-      updateInventory();
-      updateEquipSelects();
-      updateDisplay();
-    }
-    // Update equip selects
-    function updateEquipSelects() {
-      itemTypes.forEach(type => {
-        const select = document.getElementById(`equip-${idify(type)}`);
-        let html = '<option value="">None</option>';
-        for (let key in inventory) {
-          if (inventory[key] > 0 && key.endsWith(type)) {
-            html += `<option value="${key}" ${equipped[type] === key ? 'selected' : ''}>${key}</option>`;
-          }
-        }
-        select.innerHTML = html;
-      });
-    }
-    // Equip change listeners
-    itemTypes.forEach(type => {
-      const select = document.getElementById(`equip-${idify(type)}`);
-      select.addEventListener('change', e => {
-        equipped[type] = e.target.value || null;
-        saveData('footballEquipped', equipped);
-        updateDisplay();
-      });
-    });
-    // Reset game function
-    document.getElementById('reset-game').addEventListener('click', () => {
-      if (confirm('Are you sure you want to reset all progress?')) {
-        try {
-          localStorage.removeItem('footballStats');
-          localStorage.removeItem('footballCooldowns');
-          localStorage.removeItem('footballProfile');
-          localStorage.removeItem('footballCurrency');
-          localStorage.removeItem('footballInventory');
-          localStorage.removeItem('footballEquipped');
-          localStorage.removeItem('footballMatchCooldown');
-          localStorage.removeItem('footballMatchHistory');
-          localStorage.removeItem('footballCareerStats');
-          localStorage.removeItem('footballTrainingUpgrades');
-          localStorage.removeItem('footballEuroUpgrades');
-        } catch (e) {
-          console.error('Failed to clear localStorage:', e);
-        }
-        stats = {};
-        cooldowns = {};
-        profile = { name: "", age: "", club: "", position: "" };
-        currency = 0;
-        inventory = {};
-        equipped = { Shirt: null, Shorts: null, Boots: null, Coach: null };
-        matchCooldown = 0;
-        matchHistory = [];
-        careerStats = {
-          friendly: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 },
-          league: { matchesPlayed: 0, goals: 0, assists: 0, interventions: 0, saves: 0 }
-        };
-        trainingUpgradesPurchased = 0;
-        euroUpgradesPurchased = 0;
-        statNames.forEach(name => {
-          stats[name] = 0;
-          cooldowns[name] = 0;
-        });
-        document.getElementById("player-name").value = "";
-        document.getElementById("player-age").value = "";
-        document.getElementById("player-club").value = "";
-        document.getElementById("player-position").value = "";
-        updateDisplay();
-        updateCurrency();
-        updateInventory();
-        updateEquipSelects();
-        updateMatchHistory();
-        updateCareerStats();
-        updateUpgrades();
-        startCooldownUpdater(); // Restart updater if needed
-      }
-    });
-    // Initialize the game
-    function initGame() {
-      updateDisplay();
-      updateCurrency();
-      updateInventory();
-      updateEquipSelects();
-      updateMatchHistory();
-      updateCareerStats();
-      updateUpgrades();
-      statNames.forEach(name => {
-        const id = idify(name);
-        const statBox = document.getElementById(`box-${id}`);
-        if (statBox) {
-          statBox.classList.add('active');
-        }
-      });
-      // Initialize stat button states
-      statNames.forEach(name => {
-        const id = idify(name);
-        const button = document.getElementById(`btn-${id}`);
-        const cooldownText = document.getElementById(`cooldown-text-${id}`);
-        const cooldownProgress = document.getElementById(`cooldown-progress-${id}`);
-        const statBox = document.getElementById(`box-${id}`);
-        const remaining = Math.max(0, cooldowns[name] - Date.now());
-        const progress = Math.min(100, ((getCooldownTime() - remaining) / getCooldownTime()) * 100);
-        cooldownProgress.style.width = `${progress}%`;
-        if (remaining > 0) {
-          const seconds = (remaining / 1000).toFixed(1);
-          cooldownText.textContent = `Available in ${seconds}s`;
-          button.disabled = true;
-          button.setAttribute('aria-disabled', 'true');
-          statBox.classList.add('cooldown');
-          statBox.classList.remove('active');
-        } else {
-          const shouldDisable = activeCooldownCount() >= maxConcurrentTraining || stats[name] >= maxStat;
-          button.disabled = shouldDisable;
-          button.setAttribute('aria-disabled', shouldDisable ? 'true' : 'false');
-          cooldownText.textContent = '';
-          statBox.classList.remove('cooldown');
-          statBox.classList.add('active');
-          cooldownProgress.style.width = '0%';
-        }
-      });
-      // Initialize match button state
-      const matchButton = document.getElementById('play-match');
-      const matchCooldownText = document.getElementById('match-cooldown-text');
-      const matchCooldownProgress = document.getElementById('match-cooldown-progress');
-      const matchRemaining = Math.max(0, matchCooldown - Date.now());
-      if (matchRemaining > 0) {
-        const matchProgress = Math.min(100, ((matchCooldownTime - matchRemaining) / matchCooldownTime) * 100);
-        matchCooldownProgress.style.width = `${matchProgress}%`;
-        matchCooldownProgress.textContent = `${Math.floor(matchProgress)}%`;
-        const minutes = Math.floor(matchRemaining / 60000);
-        const seconds = ((matchRemaining % 60000) / 1000).toFixed(0).padStart(2, '0');
-        matchCooldownText.textContent = `Next match in ${minutes}m ${seconds}s`;
-        matchButton.disabled = true;
-        matchButton.setAttribute('aria-disabled', 'true');
-      } else {
-        matchCooldownText.textContent = '';
-        matchCooldownProgress.textContent = '';
-        matchCooldownProgress.style.width = '0%';
-        matchButton.disabled = false;
-        matchButton.setAttribute('aria-disabled', 'false');
-      }
-      startCooldownUpdater(); // Start the cooldown updater
-    }
-    // Start the game
-    initGame();
-  </script>
+  });
+  // Initialize match button state
+  const matchButton = document.getElementById('play-match');
+  const matchCooldownText = document.getElementById('match-cooldown-text');
+  const matchCooldownProgress = document.getElementById('match-cooldown-progress');
+  const matchRemaining = Math.max(0, matchCooldown - Date.now());
+  if (matchRemaining > 0) {
+    const matchProgress = Math.min(100, ((matchCooldownTime - matchRemaining) / matchCooldownTime) * 100);
+    matchCooldownProgress.style.width = `${matchProgress}%`;
+    matchCooldownProgress.textContent = `${Math.floor(matchProgress)}%`;
+    const minutes = Math.floor(matchRemaining / 60000);
+    const seconds = ((matchRemaining % 60000) / 1000).toFixed(0).padStart(2, '0');
+    matchCooldownText.textContent = `Next match in ${minutes}m ${seconds}s`;
+    matchButton.disabled = true;
+    matchButton.setAttribute('aria-disabled', 'true');
+  } else {
+    matchCooldownText.textContent = '';
+    matchCooldownProgress.textContent = '';
+    matchCooldownProgress.style.width = '0%';
+    matchButton.disabled = false;
+    matchButton.setAttribute('aria-disabled', 'false');
+  }
+  startCooldownUpdater(); // Start the cooldown updater
+}
+
+// Start the game
+initGame();
+</script>
 </body>
 </html>

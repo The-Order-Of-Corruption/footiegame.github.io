@@ -1,4 +1,648 @@
-  <script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Football Training Clicker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+ 
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+      color: white;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+ 
+    .container {
+      max-width: 1200px;
+      width: 100%;
+    }
+ 
+    header {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+ 
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+ 
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+ 
+    .overall-display,
+    .currency-display {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #FFD700;
+      margin: 15px 0;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    }
+ 
+    .main-content {
+      display: flex;
+      width: 100%;
+      gap: 25px;
+      margin-bottom: 20px;
+    }
+ 
+    .packs {
+      width: 250px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+ 
+    .pack {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+ 
+    .pack h3 {
+      margin-bottom: 10px;
+      color: #FFD700;
+    }
+ 
+    .pack table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+ 
+    .pack th, .pack td {
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      text-align: left;
+    }
+ 
+    .pack th {
+      background: rgba(255, 255, 255, 0.1);
+    }
+ 
+    .pack tr:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+ 
+    .rarity-common { color: #B0B0B0; }
+    .rarity-uncommon { color: #00FF00; }
+    .rarity-rare { color: #ADD8E6; }
+    .rarity-epic { color: #800080; }
+    .rarity-legendary { color: #FFA500; }
+ 
+    .stats-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+ 
+    .profile {
+      width: 300px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+ 
+    .profile h3, .profile h4 {
+      font-size: 1.6rem;
+      color: #FFD700;
+      margin-bottom: 20px;
+    }
+ 
+    .profile label {
+      display: block;
+      text-align: left;
+      margin-bottom: 5px;
+      font-size: 1.1rem;
+    }
+ 
+    .profile input,
+    .profile select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+    }
+ 
+    .profile input::placeholder,
+    .profile select {
+      color: #BDBDBD;
+    }
+ 
+    .inventory, .matches, .stats-section, .upgrades {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      margin-bottom: 20px;
+    }
+ 
+    .inventory ul, .matches ul, .news ul {
+      list-style: none;
+      text-align: left;
+    }
+ 
+    .inventory li, .matches li, .news li {
+      margin-bottom: 10px;
+    }
+ 
+    .inventory button, .matches button, .upgrades button {
+      padding: 5px 10px;
+      font-size: 0.9rem;
+      background: linear-gradient(to bottom, #FF0000 0%, #B30000 100%);
+      color: white;
+      max-width: none;
+      width: auto;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+ 
+    .inventory button:hover:enabled, .matches button:hover:enabled, .upgrades button:hover:enabled {
+      background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
+    }
+ 
+    .upgrades button:disabled {
+      background: linear-gradient(to bottom, #9E9E9E 0%, #616161 100%);
+      cursor: not-allowed;
+    }
+ 
+    .matches table, .stats-section table, .upgrades table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+ 
+    .matches th, .matches td, .stats-section th, .stats-section td, .upgrades th, .upgrades td {
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      text-align: left;
+    }
+ 
+    .matches th, .stats-section th, .upgrades th {
+      background: rgba(255, 255, 255, 0.1);
+    }
+ 
+    .matches tr:hover, .stats-section tr:hover, .upgrades tr:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+ 
+    .match-cooldown-bar {
+      width: 100%;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      margin-top: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+ 
+    .match-cooldown-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #FFD700 0%, #FF9800 100%);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.1s linear;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #333;
+    }
+ 
+    .match-cooldown-text {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #BDBDBD;
+    }
+ 
+    .stat-box {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 15px;
+      padding: 25px 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    .stat-box.active {
+      background: rgba(0, 0, 0, 0.7);
+    }
+ 
+    .stat-box.cooldown {
+      background: rgba(60, 60, 60, 0.7);
+      opacity: 0.8;
+    }
+ 
+    .stat-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+    }
+ 
+    .stat-title {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      color: #FFD700;
+    }
+ 
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #4CAF50;
+    }
+ 
+    .bonus {
+      color: #00FF00;
+      font-size: 1.5rem;
+    }
+ 
+    .stat-value.increase {
+      animation: flash 0.3s ease;
+    }
+ 
+    @keyframes flash {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+ 
+    .cooldown-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+ 
+    .cooldown-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #FFD700 0%, #FF9800 100%);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+ 
+    button {
+      padding: 15px 30px; /* Increased padding for mobile touch */
+      font-size: 1.2rem; /* Slightly larger font for buttons */
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(to bottom, #FFD700 0%, #FFA000 100%);
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 250px; /* Slightly wider max-width for buttons */
+      touch-action: manipulation; /* Improves touch responsiveness */
+    }
+ 
+    button:hover:enabled {
+      background: linear-gradient(to bottom, #FFC400 0%, #FF6F00 100%);
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+ 
+    button:disabled {
+      background: linear-gradient(to bottom, #9E9E9E 0%, #616161 100%);
+      cursor: not-allowed;
+      transform: scale(0.98);
+    }
+ 
+    .cooldown-text {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #BDBDBD;
+    }
+ 
+    .instructions, .news, .upgrades {
+      margin: 30px auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 15px;
+      max-width: 800px;
+      text-align: center;
+    }
+ 
+    .instructions h3, .news h3, .upgrades h3 {
+      margin-bottom: 15px;
+      color: #FFD700;
+    }
+ 
+    .instructions p, .news li {
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+ 
+    #reset-game {
+      margin-top: 20px;
+      background: linear-gradient(to bottom, #FF0000 0%, #B30000 100%);
+      color: white;
+    }
+ 
+    #reset-game:hover:enabled {
+      background: linear-gradient(to bottom, #CC0000 0%, #800000 100%);
+    }
+ 
+    #open-bronze, #open-silver, #open-gold, #play-match {
+      max-width: none;
+    }
+ 
+    #open-bronze {
+      background: linear-gradient(to bottom, #CD7F32 0%, #A57128 100%);
+    }
+ 
+    #open-bronze:hover:enabled {
+      background: linear-gradient(to bottom, #B8732E 0%, #8C5F23 100%);
+    }
+ 
+    #open-silver {
+      background: linear-gradient(to bottom, #C0C0C0 0%, #A9A9A9 100%);
+    }
+ 
+    #open-silver:hover:enabled {
+      background: linear-gradient(to bottom, #B0B0B0 0%, #999999 100%);
+    }
+ 
+    #open-gold {
+      background: linear-gradient(to bottom, #FFD700 0%, #FFA000 100%);
+    }
+ 
+    #open-gold:hover:enabled {
+      background: linear-gradient(to bottom, #FFC400 0%, #FF6F00 100%);
+    }
+ 
+    #play-match {
+      background: linear-gradient(to bottom, #4CAF50 0%, #388E3C 100%);
+    }
+ 
+    #play-match:hover:enabled {
+      background: linear-gradient(to bottom, #45A049 0%, #2E7D32 100%);
+    }
+ 
+    /* Enhanced Mobile Styles */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem; /* Slightly smaller for mobile */
+      }
+   
+      h2 {
+        font-size: 1.4rem;
+      }
+   
+      .main-content {
+        flex-direction: column;
+        gap: 15px; /* Reduce gap for mobile */
+      }
+ 
+      .packs, .profile {
+        width: 100%;
+        margin-top: 20px;
+      }
+   
+      .stats-grid {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        gap: 15px;
+      }
+   
+      .stat-box {
+        padding: 20px 15px;
+      }
+   
+      .instructions, .news, .upgrades {
+        margin: 20px auto;
+        padding: 15px;
+      }
+
+      .pack table, .matches table, .stats-section table, .upgrades table {
+        overflow-x: auto; /* Allow horizontal scroll for tables on small screens */
+        display: block;
+      }
+
+      button {
+        padding: 18px 35px; /* Even larger padding for touch targets */
+        font-size: 1.3rem;
+      }
+
+      .profile input, .profile select {
+        font-size: 1.2rem; /* Larger inputs for mobile */
+        padding: 12px;
+      }
+
+      .inventory li, .matches li {
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px; /* Reduce padding on very small screens */
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .overall-display, .currency-display {
+        font-size: 1.8rem;
+      }
+
+      .stat-title {
+        font-size: 1.2rem;
+      }
+
+      .stat-value {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>⚽ Football Training Clicker ⚽</h1>
+      <h2>Improve your player's skills</h2>
+      <div class="overall-display">Overall Rating: <span id="overall">0</span></div>
+      <div class="currency-display" id="currency">Euros: 0</div>
+    </header>
+    <div class="instructions">
+      <h3>How to Play</h3>
+      <p>Click on the training buttons to improve your player's skills.</p>
+      <p>Each skill has a 10-second cooldown after training (reducible with upgrades).</p>
+      <p>You can only train up to 2 skills at the same time.</p>
+      <p>Earn Euros per training based on overall rating (0-25: 5€, 26-60: 10€, 61-100: 15€, 100+: 20€, increased by upgrades).</p>
+      <p>Use Euros to open different packs with varying costs and chances for items (Shirts, Shorts, Boots, Coaches).</p>
+      <p>Equip items for stat bonuses. Full set (3 items same country) multiplies bonuses by 1.5.</p>
+      <p>Your overall rating is a weighted average of all boosted skills based on selected position (or simple average if no position selected).</p>
+      <p>Play friendly matches (3-minute cooldown) to earn Euros (Win: 100€, Draw: 50€, Loss: 20€) and accumulate stats (Goals, Assists, Interventions, Saves).</p>
+      <p>Match stats depend on your position (e.g., only GKs get Saves). Scores are realistic based on ratings.</p>
+      <p>Equip a Coach to boost specific stats (e.g., Dylan for +100 Shooting).</p>
+      <p>Purchase upgrades to reduce training cooldown or increase Euro earnings.</p>
+      <p>Progress, profile, inventory, currency, match history, stats, and upgrades are automatically saved to your browser.</p>
+    </div>
+    <div class="news">
+      <h3>News</h3>
+      <ul id="news-list"></ul>
+    </div>
+    <div class="main-content">
+      <div class="packs">
+        <div class="pack">
+          <h3>Bronze Pack</h3>
+          <table>
+            <tr><th>Rarity</th><th>Chance</th></tr>
+            <tr class="rarity-common"><td>Common</td><td>70%</td></tr>
+            <tr class="rarity-uncommon"><td>Uncommon</td><td>20%</td></tr>
+            <tr class="rarity-rare"><td>Rare</td><td>8%</td></tr>
+            <tr class="rarity-epic"><td>Epic</td><td>1.5%</td></tr>
+            <tr class="rarity-legendary"><td>Legendary</td><td>0.5%</td></tr>
+          </table>
+          <button id="open-bronze">Open Bronze Pack (50 Euros)</button>
+        </div>
+        <div class="pack">
+          <h3>Silver Pack</h3>
+          <table>
+            <tr><th>Rarity</th><th>Chance</th></tr>
+            <tr class="rarity-common"><td>Common</td><td>50%</td></tr>
+            <tr class="rarity-uncommon"><td>Uncommon</td><td>30%</td></tr>
+            <tr class="rarity-rare"><td>Rare</td><td>15%</td></tr>
+            <tr class="rarity-epic"><td>Epic</td><td>4%</td></tr>
+            <tr class="rarity-legendary"><td>Legendary</td><td>1%</td></tr>
+          </table>
+          <button id="open-silver">Open Silver Pack (150 Euros)</button>
+        </div>
+        <div class="pack">
+          <h3>Gold Pack</h3>
+          <table>
+            <tr><th>Rarity</th><th>Chance</th></tr>
+            <tr class="rarity-common"><td>Common</td><td>30%</td></tr>
+            <tr class="rarity-uncommon"><td>Uncommon</td><td>30%</td></tr>
+            <tr class="rarity-rare"><td>Rare</td><td>25%</td></tr>
+            <tr class="rarity-epic"><td>Epic</td><td>10%</td></tr>
+            <tr class="rarity-legendary"><td>Legendary</td><td>5%</td></tr>
+          </table>
+          <button id="open-gold">Open Gold Pack (500 Euros)</button>
+        </div>
+      </div>
+      <div class="stats-grid" id="stats-container">
+        <!-- Stats will be generated by JavaScript -->
+      </div>
+      <div class="profile">
+        <h3>Player Profile</h3>
+        <label for="player-name">Name:</label>
+        <input type="text" id="player-name" placeholder="Enter name">
+        <label for="player-age">Age:</label>
+        <input type="number" id="player-age" placeholder="Enter age" min="1" max="100">
+        <label for="player-club">Club:</label>
+        <input type="text" id="player-club" placeholder="Enter club">
+        <label for="player-position">Position:</label>
+        <select id="player-position">
+          <option value="">Select position</option>
+          <option value="GK">GK</option>
+          <option value="LB">LB</option>
+          <option value="CB">CB</option>
+          <option value="RB">RB</option>
+          <option value="CDM">CDM</option>
+          <option value="DM">DM</option>
+          <option value="CAM">CAM</option>
+          <option value="LM">LM</option>
+          <option value="RM">RM</option>
+          <option value="ST">ST</option>
+          <option value="LW">LW</option>
+          <option value="RW">RW</option>
+        </select>
+        <h4>Equip Items</h4>
+        <label for="equip-shirt">Shirt:</label>
+        <select id="equip-shirt"></select>
+        <label for="equip-shorts">Shorts:</label>
+        <select id="equip-shorts"></select>
+        <label for="equip-boots">Boots:</label>
+        <select id="equip-boots"></select>
+        <label for="equip-coach">Coach:</label>
+        <select id="equip-coach"></select>
+      </div>
+    </div>
+    <div class="inventory" id="inventory-section">
+      <h3>Inventory</h3>
+      <ul id="inventory-list"></ul>
+    </div>
+    <div class="upgrades">
+      <h3>Upgrades</h3>
+      <h4>Training Upgrades</h4>
+      <table id="training-upgrades">
+        <tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>
+      </table>
+      <h4>Euro Upgrades</h4>
+      <table id="euro-upgrades">
+        <tr><th>Name</th><th>Effect</th><th>Cost</th><th>Action</th></tr>
+      </table>
+    </div>
+    <div class="matches" id="matches-section">
+      <h3>Friendly Matches</h3>
+      <button id="play-match">Play Friendly Match</button>
+      <div class="match-cooldown-bar">
+        <div class="match-cooldown-progress" id="match-cooldown-progress"></div>
+      </div>
+      <div class="match-cooldown-text" id="match-cooldown-text"></div>
+      <h4>Match History</h4>
+      <table id="match-history">
+        <tr><th>Opponent</th><th>Score</th><th>Opponent Rating</th><th>Your Rating</th><th>Result</th><th>Euros</th><th>Stats</th></tr>
+      </table>
+    </div>
+    <div class="stats-section" id="stats-section">
+      <h3>Career Statistics</h3>
+      <h4>Friendly Matches</h4>
+      <table id="friendly-stats">
+        <tr><th>Matches Played</th><th>Goals</th><th>Assists</th><th>Interventions</th><th>Saves</th></tr>
+        <tr><td id="friendly-matches-played">0</td><td id="friendly-goals">0</td><td id="friendly-assists">0</td><td id="friendly-interventions">0</td><td id="friendly-saves">0</td></tr>
+      </table>
+      <h4>League Matches</h4>
+      <table id="league-stats">
+        <tr><th>Matches Played</th><th>Goals</th><th>Assists</th><th>Interventions</th><th>Saves</th></tr>
+        <tr><td id="league-matches-played">0</td><td id="league-goals">0</td><td id="league-assists">0</td><td id="league-interventions">0</td><td id="league-saves">0</td></tr>
+      </table>
+      <h4>Total</h4>
+      <table id="total-stats">
+        <tr><th>Matches Played</th><th>Goals</th><th>Assists</th><th>Interventions</th><th>Saves</th></tr>
+        <tr><td id="total-matches-played">0</td><td id="total-goals">0</td><td id="total-assists">0</td><td id="total-interventions">0</td><td id="total-saves">0</td></tr>
+      </table>
+    </div>
+    <button id="reset-game">Reset Progress</button>
+  </div>
+<script>
     // Game configuration
     const statNames = [
       "Shooting", "Defending", "Dribbling", "Agility",

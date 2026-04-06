@@ -3,340 +3,396 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Football Pro: Career Master</title>
+    <title>FOOTBALL PRO: GLOBAL CAREER</title>
     <style>
         :root {
-            --gold: #f1c40f; --green: #2ecc71; --red: #e74c3c;
-            --blue: #3498db; --dark: #1a1a2e; --panel: #16213e;
-            --text: #e9ecef;
+            --neon-green: #00ff88; --pitch: #0a0f0d; --gold: #ffd700;
+            --ui-blue: #0077ff; --panel-bg: #151a1e; --text: #e0e0e0;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--dark); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+        body { background: var(--pitch); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Layout Sections */
-        .sidebar { width: 350px; background: var(--panel); padding: 20px; border-right: 2px solid #0f3460; overflow-y: auto; }
-        .main-hub { flex: 1; padding: 25px; overflow-y: auto; background: radial-gradient(circle at top, #1b262c 0%, #0f1a20 100%); }
-        .right-bar { width: 380px; background: var(--panel); padding: 20px; border-left: 2px solid #0f3460; overflow-y: auto; }
+        /* Navigation */
+        .nav-sidebar { width: 80px; background: #000; display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 30px; border-right: 1px solid #333; }
+        .nav-item { cursor: pointer; opacity: 0.5; transition: 0.3s; font-size: 1.5rem; }
+        .nav-item:hover, .nav-item.active { opacity: 1; color: var(--neon-green); }
 
-        /* UI Elements */
-        .card { background: #0f3460; border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #16213e; }
-        h2, h3 { color: var(--gold); margin-bottom: 15px; text-transform: uppercase; font-size: 1rem; letter-spacing: 1px; }
-        
-        .ovr-badge { background: var(--gold); color: #000; width: 70px; height: 70px; border-radius: 50%; 
-                     display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; margin: 0 auto 10px; border: 4px solid #fff; }
+        /* Layout Panels */
+        .main-container { flex: 1; display: grid; grid-template-columns: 350px 1fr 380px; gap: 2px; background: #333; }
+        .column { background: var(--panel-bg); padding: 25px; overflow-y: auto; }
 
-        .stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; padding-bottom: 4px; border-bottom: 1px solid #ffffff05; }
-        .val { color: var(--green); font-weight: bold; }
+        /* Player Identity Card */
+        .player-card { background: linear-gradient(145deg, #1e252b, #151a1e); border-radius: 20px; padding: 20px; border: 1px solid #ffffff10; text-align: center; }
+        .ovr-large { font-size: 4rem; font-weight: 900; color: var(--gold); line-height: 1; margin: 10px 0; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .badge { display: inline-block; padding: 4px 12px; background: var(--ui-blue); border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
 
-        /* Training Slots */
-        .training-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .train-item { background: #16213e; padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #ffffff10; }
-        .progress-bg { width: 100%; height: 6px; background: #000; border-radius: 3px; margin: 10px 0; }
-        .progress-fill { height: 100%; background: var(--blue); width: 0%; transition: width 0.1s linear; }
+        /* Visual Match Engine */
+        #pitch-container { width: 100%; height: 400px; background: #1a472a; border-radius: 15px; position: relative; overflow: hidden; border: 4px solid #2d5a3f; margin-bottom: 20px; }
+        .grass-line { position: absolute; width: 100%; height: 2px; background: rgba(255,255,255,0.1); }
+        #player-dot { width: 15px; height: 15px; background: var(--neon-green); border-radius: 50%; position: absolute; transition: 0.5s ease-out; box-shadow: 0 0 10px var(--neon-green); }
+        #ball-dot { width: 10px; height: 10px; background: white; border-radius: 50%; position: absolute; transition: 0.3s; }
 
-        /* Match Engine */
-        #match-log { background: #000; height: 250px; border-radius: 8px; padding: 15px; overflow-y: auto; 
-                     font-family: 'Courier New', monospace; font-size: 0.85rem; color: #00ff00; border: 2px solid #16213e; }
-        .log-entry { margin-bottom: 5px; border-left: 2px solid #222; padding-left: 10px; }
+        /* Stats Grid */
+        .attribute-group { margin-bottom: 25px; }
+        .attribute-group h4 { font-size: 0.7rem; color: #666; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; }
+        .stat-bar-container { margin-bottom: 10px; }
+        .stat-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; }
+        .stat-fill-bg { height: 4px; background: #000; border-radius: 2px; overflow: hidden; }
+        .stat-fill { height: 100%; background: var(--neon-green); width: 0%; transition: 1s; }
 
-        /* League Table */
-        table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
-        th { text-align: left; color: #888; padding-bottom: 5px; }
-        td { padding: 5px 0; border-bottom: 1px solid #ffffff05; }
+        /* Interactive Elements */
+        .btn-premium { background: var(--neon-green); color: black; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-premium:hover { transform: scale(1.02); filter: brightness(1.2); }
+        .btn-premium:disabled { background: #333; color: #666; transform: none; cursor: not-allowed; }
 
-        /* Controls */
-        input, select { background: #1a1a2e; border: 1px solid #3498db; color: white; padding: 8px; border-radius: 4px; width: 100%; margin-bottom: 10px; }
-        button { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.2s; }
-        button:hover:not(:disabled) { background: #2980b9; transform: translateY(-1px); }
-        button:disabled { opacity: 0.4; cursor: not-allowed; }
-        .btn-action { background: var(--green); color: #000; margin-top: 10px; height: 50px; font-size: 1.1rem; }
-        
-        .energy-bar { height: 20px; background: #000; border-radius: 10px; overflow: hidden; position: relative; margin-bottom: 10px; }
-        .energy-fill { height: 100%; background: linear-gradient(90deg, #e74c3c, #2ecc71); width: 100%; transition: 0.5s; }
+        /* Transfer Market */
+        .transfer-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 10px; border: 1px solid #ffffff05; }
+        .club-info { display: flex; align-items: center; gap: 10px; }
+        .club-logo { width: 30px; height: 30px; background: #444; border-radius: 5px; }
 
-        .shop-card { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #0f3460; margin-bottom: 8px; border-radius: 6px; font-size: 0.8rem; }
+        /* Decision Events */
+        #event-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1a1f24; width: 500px; padding: 30px; border-radius: 20px; border: 2px solid var(--neon-green); z-index: 1000; display: none; box-shadow: 0 0 100px rgba(0,0,0,0.8); }
+
+        .currency { color: var(--neon-green); font-weight: bold; }
+        .week-display { font-size: 2rem; font-weight: bold; color: #444; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <div class="card" style="text-align: center;">
-        <div class="ovr-badge" id="ovr-text">10</div>
-        <input type="text" id="player-name" value="Wonderkid" onchange="updateProfile()">
-        <select id="player-pos" onchange="updateProfile()">
-            <option value="ST">ST - Striker</option>
-            <option value="CAM">CAM - Playmaker</option>
-            <option value="CB">CB - Defender</option>
-            <option value="GK">GK - Goalkeeper</option>
-        </select>
-        <p style="color:var(--gold); font-size: 0.8rem;">Value: €<span id="market-val">0</span></p>
-    </div>
-
-    <div class="card">
-        <h3>Fitness & Bank</h3>
-        <div class="energy-bar"><div class="energy-fill" id="energy-fill"></div></div>
-        <div class="stat-row"><span>Energy</span><span id="energy-text">100/100</span></div>
-        <div class="stat-row"><span>Bank Balance</span><span class="val">€<span id="bank-val">0</span></span></div>
-        <button onclick="restDay()" style="background: var(--panel); border: 1px solid var(--blue);">Rest (Full Recovery)</button>
-    </div>
-
-    <div class="card">
-        <h3>Attributes</h3>
-        <div id="attr-list"></div>
-    </div>
+<div class="nav-sidebar">
+    <div class="nav-item active" title="Hub">🏠</div>
+    <div class="nav-item" title="Training">🏋️</div>
+    <div class="nav-item" title="Transfer Market">🌍</div>
+    <div class="nav-item" title="Lifestyle">💎</div>
+    <div class="nav-item" title="Settings">⚙️</div>
 </div>
 
-<div class="main-hub">
-    <div class="card" style="background: rgba(0,0,0,0.3);">
-        <h2 id="match-header">Next Match: Week 1</h2>
-        <div id="match-log">
-            <div class="log-entry">> Welcome to the League. Manage your energy and train your stats to promote.</div>
+<div class="main-container">
+    <div class="column">
+        <div class="player-card">
+            <span class="badge" id="player-tier">PROSPECT</span>
+            <div class="ovr-large" id="ui-ovr">15</div>
+            <h2 id="ui-name">J. DOE</h2>
+            <p style="color:#888; font-size: 0.8rem;" id="ui-club">LIMERICK CITY</p>
         </div>
-        <button class="btn-action" id="match-btn" onclick="playMatch()">PLAY LEAGUE MATCH (-25 Energy)</button>
+
+        <div style="margin-top: 30px;">
+            <div class="attribute-group">
+                <h4>Physicality</h4>
+                <div id="stats-physical"></div>
+            </div>
+            <div class="attribute-group">
+                <h4>Technical</h4>
+                <div id="stats-technical"></div>
+            </div>
+            <div class="attribute-group">
+                <h4>Mental</h4>
+                <div id="stats-mental"></div>
+            </div>
+        </div>
     </div>
 
-    <h3>Training Center (Max 2 Active Slots)</h3>
-    <div class="training-grid" id="training-grid"></div>
-</div>
+    <div class="column">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <span class="week-display">WEEK <span id="ui-week">1</span></span>
+            <div style="text-align: right;">
+                <p>BANK: <span class="currency">€<span id="ui-bank">0</span></span></p>
+                <p>WAGE: <span style="color:#888; font-size: 0.7rem;">€<span id="ui-wage">100</span>/WK</span></p>
+            </div>
+        </div>
 
-<div class="right-bar">
-    <div class="card">
-        <h3>League Table (Div 1)</h3>
-        <table>
-            <thead><tr><th>#</th><th>Team</th><th>W-D-L</th><th>Pts</th></tr></thead>
-            <tbody id="league-table"></tbody>
+        <div id="pitch-container">
+            <div id="player-dot"></div>
+            <div id="ball-dot"></div>
+            <div style="top:20%" class="grass-line"></div>
+            <div style="top:40%" class="grass-line"></div>
+            <div style="top:60%" class="grass-line"></div>
+            <div style="top:80%" class="grass-line"></div>
+        </div>
+
+        <div id="match-log" style="height: 200px; overflow-y: auto; background: #000; padding: 15px; border-radius: 10px; font-family: monospace; font-size: 0.8rem; margin-bottom: 20px;">
+            <div style="color:var(--neon-green)">> ENGINE INITIALIZED. AWAITING FIXTURE...</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <button class="btn-premium" id="btn-match" onclick="engine.startMatch()">PLAY MATCH</button>
+            <button class="btn-premium" style="background:#222; color:white;" onclick="engine.advanceWeek()">REST WEEK</button>
+        </div>
+    </div>
+
+    <div class="column">
+        <h3>TRANSFER MARKET</h3>
+        <p style="font-size: 0.7rem; color:#666; margin-bottom: 15px;">TOP OFFERS BASED ON YOUR OVR</p>
+        <div id="ui-market"></div>
+
+        <h3 style="margin-top: 40px;">LEAGUE TABLE</h3>
+        <table style="width: 100%; font-size: 0.8rem; margin-top: 10px;">
+            <thead style="color:#666"><tr><th>CLUB</th><th>W</th><th>PTS</th></tr></thead>
+            <tbody id="ui-league"></tbody>
         </table>
     </div>
+</div>
 
-    <div class="card">
-        <h3>Equipment & Shop</h3>
-        <div id="shop-list"></div>
-    </div>
+<div id="event-popup">
+    <h2 id="event-title">RANDOM EVENT</h2>
+    <p id="event-desc" style="margin: 15px 0; color:#bbb;"></p>
+    <div id="event-options" style="display:flex; flex-direction:column; gap:10px;"></div>
 </div>
 
 <script>
-    // --- STATE ---
-    let p = {
-        name: "Wonderkid", pos: "ST", bank: 500, energy: 100, 
-        stats: { shooting: 10, passing: 10, dribbling: 10, defending: 10, pace: 10, physical: 10 },
-        equipped: [],
-        activeTrainings: 0,
-        week: 1, w:0, d:0, l:0, pts:0
-    };
+/**
+ * FOOTBALL PRO ENGINE v1.0
+ * Deep Simulation Architecture
+ */
 
-    const teams = [
-        "Limerick City", "Dublin Rovers", "Cork Athletic", "Galway Utd", "Manchester Blue", 
-        "London Red", "Madrid White", "Munich FC", "Paris SG", "Milan Stars",
-        "Belfast Celtic", "Waterford FC", "Derry City", "Shelbourne", "Shamrock",
-        "Sligo Rovers", "Dundalk", "Finn Harps", "St Pats", "Wexford FC"
-    ].map(name => ({ name, pts: Math.floor(Math.random() * 3), w:0, d:0, l:0 }));
-
-    const shopItems = [
-        { name: "Pro Boots", price: 300, stat: "shooting", boost: 5 },
-        { name: "Lightweight Pads", price: 250, stat: "pace", boost: 5 },
-        { name: "GPS Vest", price: 400, stat: "physical", boost: 8 },
-        { name: "Golden Gloves", price: 500, stat: "defending", boost: 10 }
-    ];
-
-    // --- INITIALIZE ---
-    function init() {
-        const grid = document.getElementById('training-grid');
-        Object.keys(p.stats).forEach(s => {
-            grid.innerHTML += `
-                <div class="train-item">
-                    <h4 style="text-transform:capitalize">${s}</h4>
-                    <div class="val" id="stat-${s}">${p.stats[s]}</div>
-                    <div class="progress-bg"><div class="progress-fill" id="fill-${s}"></div></div>
-                    <button onclick="startTraining('${s}')" id="btn-${s}">Train (-10 Energy)</button>
-                </div>
-            `;
-        });
-
-        const shop = document.getElementById('shop-list');
-        shopItems.forEach((item, idx) => {
-            shop.innerHTML += `
-                <div class="shop-card">
-                    <span>${item.name} (+${item.boost} ${item.stat})</span>
-                    <button onclick="buyItem(${idx})" style="width:70px; padding:5px;">€${item.price}</button>
-                </div>
-            `;
-        });
-
-        updateUI();
-        updateLeague();
-    }
-
-    // --- CORE LOGIC ---
-    function updateProfile() {
-        p.name = document.getElementById('player-name').value;
-        p.pos = document.getElementById('player-pos').value;
-        updateUI();
-    }
-
-    function calculateOVR() {
-        let sum = Object.values(p.stats).reduce((a,b) => a+b);
-        p.equipped.forEach(i => sum += i.boost);
-        return Math.floor(sum / 6);
-    }
-
-    function updateUI() {
-        const ovr = calculateOVR();
-        document.getElementById('ovr-text').innerText = ovr;
-        document.getElementById('bank-val').innerText = p.bank;
-        document.getElementById('market-val').innerText = (ovr * 150000).toLocaleString();
-        document.getElementById('energy-text').innerText = `${Math.floor(p.energy)}/100`;
-        document.getElementById('energy-fill').style.width = p.energy + "%";
-
-        Object.keys(p.stats).forEach(s => {
-            document.getElementById(`stat-${s}`).innerText = p.stats[s];
-            const btn = document.getElementById(`btn-${s}`);
-            btn.disabled = (p.activeTrainings >= 2 || p.energy < 10);
-        });
-
-        document.getElementById('match-btn').disabled = (p.energy < 25);
-    }
-
-    function restDay() {
-        p.energy = 100;
-        p.week++;
-        document.getElementById('match-header').innerText = `Next Match: Week ${p.week}`;
-        updateUI();
-        logMatch("Spent the week resting. Energy fully recovered.", "#3498db");
-    }
-
-    function startTraining(stat) {
-        if(p.activeTrainings >= 2 || p.energy < 10) return;
-
-        p.activeTrainings++;
-        p.energy -= 10;
-        const btn = document.getElementById(`btn-${stat}`);
-        const fill = document.getElementById(`fill-${stat}`);
-        
-        btn.disabled = true;
-        updateUI();
-
-        let progress = 0;
-        const duration = 100 + (p.stats[stat] * 5); // Harder as you improve
-        const interval = setInterval(() => {
-            progress += 1;
-            fill.style.width = progress + "%";
-            if(progress >= 100) {
-                clearInterval(interval);
-                p.stats[stat]++;
-                p.activeTrainings--;
-                fill.style.width = "0%";
-                updateUI();
+const engine = {
+    state: {
+        player: {
+            name: "WONDERKID",
+            ovr: 15,
+            bank: 500,
+            wage: 150,
+            club: "Limerick City",
+            week: 1,
+            energy: 100,
+            marketValue: 1200000,
+            stats: {
+                pace: 20, stamina: 20, strength: 20,
+                shooting: 15, passing: 15, dribbling: 15, defending: 10,
+                vision: 15, composure: 15, aggression: 10
             }
-        }, duration / 10);
-    }
+        },
+        league: [
+            { name: "Limerick City", pts: 0, w: 0, power: 15 },
+            { name: "Dublin FC", pts: 0, w: 0, power: 18 },
+            { name: "Cork Utd", pts: 0, w: 0, power: 14 },
+            { name: "Galway Rovers", pts: 0, w: 0, power: 12 },
+            { name: "London Blue", pts: 0, w: 0, power: 85 },
+            { name: "Madrid Gold", pts: 0, w: 0, power: 92 },
+            { name: "Munich Red", pts: 0, w: 0, power: 88 }
+        ],
+        activeMatch: false
+    },
 
-    // --- MATCH ENGINE ---
-    function playMatch() {
-        if(p.energy < 25) return;
-        p.energy -= 25;
-        const btn = document.getElementById('match-btn');
-        btn.disabled = true;
+    init() {
+        this.renderStats();
+        this.updateUI();
+        this.renderMarket();
+        this.renderLeague();
+    },
 
-        const logEl = document.getElementById('match-log');
-        logEl.innerHTML = "";
+    renderStats() {
+        const groups = {
+            physical: ['pace', 'stamina', 'strength'],
+            technical: ['shooting', 'passing', 'dribbling', 'defending'],
+            mental: ['vision', 'composure', 'aggression']
+        };
+
+        Object.keys(groups).forEach(group => {
+            const container = document.getElementById(`stats-${group}`);
+            container.innerHTML = groups[group].map(s => `
+                <div class="stat-bar-container">
+                    <div class="stat-label">
+                        <span style="text-transform:capitalize">${s}</span>
+                        <span id="val-${s}">${this.state.player.stats[s]}</span>
+                    </div>
+                    <div class="stat-fill-bg">
+                        <div class="stat-fill" id="fill-${s}" style="width: ${this.state.player.stats[s]}%"></div>
+                    </div>
+                    <button onclick="engine.train('${s}')" style="font-size:0.6rem; background:none; border:1px solid #444; color:#888; padding:2px 5px; margin-top:5px; cursor:pointer">TRAIN</button>
+                </div>
+            `).join('');
+        });
+    },
+
+    updateUI() {
+        const p = this.state.player;
+        p.ovr = Math.floor(Object.values(p.stats).reduce((a,b) => a+b) / 10);
         
-        let myScore = 0;
-        let oppScore = 0;
-        const opp = teams[p.week % teams.length];
-        const myOvr = calculateOVR();
+        document.getElementById('ui-ovr').innerText = p.ovr;
+        document.getElementById('ui-bank').innerText = p.bank.toLocaleString();
+        document.getElementById('ui-wage').innerText = p.wage;
+        document.getElementById('ui-week').innerText = p.week;
+        document.getElementById('ui-club').innerText = p.club.toUpperCase();
 
-        let min = 0;
-        const engine = setInterval(() => {
-            min += 10;
-            const entry = document.createElement('div');
-            entry.className = "log-entry";
+        // Update fill bars
+        Object.keys(p.stats).forEach(s => {
+            const fill = document.getElementById(`fill-${s}`);
+            if(fill) fill.style.width = p.stats[s] + "%";
+            const val = document.getElementById(`val-${s}`);
+            if(val) val.innerText = p.stats[s];
+        });
+    },
 
-            // Tactical Roll
-            let chance = Math.random() * 100;
-            let success = 30 + (myOvr - 15); // Base difficulty is 15 OVR
+    train(stat) {
+        if(this.state.player.energy < 15) return this.log("Too tired to train! Rest for a week.");
+        this.state.player.stats[stat] += 1;
+        this.state.player.energy -= 15;
+        this.updateUI();
+        this.log(`Trained ${stat}. Energy is now ${this.state.player.energy}%`);
+    },
 
-            if(chance < 15) {
-                if(Math.random() * 100 < success) {
-                    myScore++;
-                    entry.innerHTML = `<span style="color:var(--gold)">${min}' - GOAL! ${p.name} scores a screamer!</span>`;
-                } else { entry.innerText = `${min}' - You hit the post! So close.`; }
-            } else if (chance > 85) {
-                if(Math.random() * 100 > success + 10) {
-                    oppScore++;
-                    entry.innerHTML = `<span style="color:var(--red)">${min}' - GOAL for ${opp.name}. Defense beaten.</span>`;
-                } else { entry.innerText = `${min}' - Great defensive block by the team.`; }
-            } else {
-                entry.innerText = `${min}' - Midfield stalemate. Intense pressure.`;
+    log(msg, color = "white") {
+        const console = document.getElementById('match-log');
+        const entry = document.createElement('div');
+        entry.style.color = color;
+        entry.innerText = `> ${msg}`;
+        console.prepend(entry);
+    },
+
+    startMatch() {
+        if(this.state.player.energy < 30) return this.log("Injured or too tired! You must rest.", "red");
+        
+        const btn = document.getElementById('btn-match');
+        btn.disabled = true;
+        this.state.activeMatch = true;
+        this.state.player.energy -= 30;
+
+        let clock = 0;
+        let pScore = 0;
+        let oScore = 0;
+        const opp = this.state.league[Math.floor(Math.random() * 4)]; // Play local league
+
+        this.log(`MATCH START: ${this.state.player.club} vs ${opp.name}`, var(--neon-green));
+
+        const matchTimer = setInterval(() => {
+            clock += 5;
+            this.moveVisuals();
+
+            if(Math.random() * 100 < (this.state.player.stats.shooting / 2)) {
+                pScore++;
+                this.log(`${clock}' - GOAL! Clinical finish by ${this.state.player.name}!`, "gold");
+            } else if (Math.random() * 100 > 90) {
+                oScore++;
+                this.log(`${clock}' - Defeat in the box! ${opp.name} scores.`, "red");
             }
 
-            logEl.prepend(entry);
-
-            if(min >= 90) {
-                clearInterval(engine);
-                finalizeMatch(myScore, oppScore, opp);
+            if(clock >= 90) {
+                clearInterval(matchTimer);
+                this.endMatch(pScore, oScore, opp);
                 btn.disabled = false;
             }
         }, 300);
-    }
+    },
 
-    function finalizeMatch(me, oppScore, oppTeam) {
-        p.week++;
-        let earnings = 50;
+    moveVisuals() {
+        const dot = document.getElementById('player-dot');
+        const ball = document.getElementById('ball-dot');
+        dot.style.left = Math.random() * 80 + "%";
+        dot.style.top = Math.random() * 80 + "%";
+        ball.style.left = dot.style.left;
+        ball.style.top = dot.style.top;
+    },
+
+    endMatch(me, oppScore, oppObj) {
+        this.state.activeMatch = false;
+        let bonus = 50;
         if(me > oppScore) {
-            p.pts += 3; p.w++; earnings = 250;
-            logMatch(`VICTORY! ${me}-${oppScore} vs ${oppTeam.name}. +€250`, "var(--green)");
-        } else if (me == oppScore) {
-            p.pts += 1; p.d++; earnings = 100;
-            logMatch(`DRAW. ${me}-${oppScore} vs ${oppTeam.name}. +€100`, "var(--gold)");
+            bonus = 200;
+            this.state.player.bank += bonus;
+            this.log(`FINAL: WIN ${me}-${oppScore}. Bonus €${bonus} awarded.`);
         } else {
-            p.l++; earnings = 20;
-            logMatch(`DEFEAT. ${me}-${oppScore} vs ${oppTeam.name}. +€20`, "var(--red)");
+            this.log(`FINAL: DRAW/LOSS ${me}-${oppScore}.`);
         }
-        p.bank += earnings;
-        
-        // Sim other teams
-        teams.forEach(t => { if(t.name !== "YOU") t.pts += (Math.random() > 0.6 ? 3 : 1); });
-        
-        document.getElementById('match-header').innerText = `Next Match: Week ${p.week}`;
-        updateUI();
-        updateLeague();
-    }
+        this.advanceWeek();
+    },
 
-    function logMatch(msg, color) {
-        const logEl = document.getElementById('match-log');
-        logEl.innerHTML = `<div class="log-entry" style="color:${color}; border-left-color:${color}; font-weight:bold;">> ${msg}</div>` + logEl.innerHTML;
-    }
+    advanceWeek() {
+        this.state.player.week++;
+        this.state.player.bank += this.state.player.wage;
+        this.state.player.energy = Math.min(100, this.state.player.energy + 50);
+        this.log(`WEEK ${this.state.player.week}: Salary €${this.state.player.wage} paid.`);
+        this.updateUI();
+        this.renderMarket();
+        if(this.state.player.week % 4 === 0) this.triggerEvent();
+    },
 
-    function updateLeague() {
-        const table = document.getElementById('league-table');
-        const sorted = [
-            { name: "YOU", pts: p.pts, w: p.w, d: p.d, l: p.l },
-            ...teams
-        ].sort((a,b) => b.pts - a.pts);
+    renderMarket() {
+        const container = document.getElementById('ui-market');
+        const offers = [
+            { name: "Limerick City", wage: 150, req: 0 },
+            { name: "Dublin FC", wage: 450, req: 30 },
+            { name: "London Blue", wage: 12000, req: 75 },
+            { name: "Madrid Gold", wage: 45000, req: 88 }
+        ];
 
-        table.innerHTML = sorted.map((t, idx) => `
-            <tr style="${t.name === 'YOU' ? 'background:rgba(52, 152, 219, 0.2)' : ''}">
-                <td>${idx+1}</td>
-                <td>${t.name}</td>
-                <td>${t.w || 0}-${t.d || 0}-${t.l || 0}</td>
-                <td><b>${t.pts}</b></td>
-            </tr>
+        container.innerHTML = offers.map(o => `
+            <div class="transfer-row">
+                <div class="club-info">
+                    <div class="club-logo"></div>
+                    <div>
+                        <p style="font-weight:bold">${o.name}</p>
+                        <p style="font-size:0.6rem; color:#888">€${o.wage}/week</p>
+                    </div>
+                </div>
+                ${this.state.player.ovr >= o.req ? 
+                    `<button onclick="engine.signClub('${o.name}', ${o.wage})" style="background:var(--neon-green); border:none; padding:5px 10px; border-radius:5px; cursor:pointer">SIGN</button>` : 
+                    `<span style="color:#444; font-size:0.7rem">Req: ${o.req} OVR</span>`}
+            </div>
         `).join('');
-    }
+    },
 
-    function buyItem(idx) {
-        const item = shopItems[idx];
-        if(p.bank >= item.price) {
-            p.bank -= item.price;
-            p.equipped.push(item);
-            alert(`Equipped ${item.name}! OVR increased.`);
-            updateUI();
-        } else {
-            alert("Not enough money in the bank!");
+    signClub(name, wage) {
+        if(confirm(`Accept transfer to ${name}? Current club progress will reset.`)) {
+            this.state.player.club = name;
+            this.state.player.wage = wage;
+            this.log(`TRANSFER COMPLETE: Welcome to ${name}!`, "gold");
+            this.updateUI();
         }
-    }
+    },
 
-    init();
+    renderLeague() {
+        const table = document.getElementById('ui-league');
+        const sorted = this.state.league.sort((a,b) => b.pts - a.pts);
+        table.innerHTML = sorted.map(t => `
+            <tr><td>${t.name}</td><td>${t.w}</td><td><b>${t.pts}</b></td></tr>
+        `).join('');
+    },
+
+    triggerEvent() {
+        const events = [
+            {
+                title: "LATE NIGHT PARTY",
+                desc: "Teammates are going out. Staying out late will hurt your fitness but boost popularity.",
+                options: [
+                    { text: "Go out (-20 Stamina, +€500 Sponsor)", action: () => { engine.state.player.stats.stamina -= 5; engine.state.player.bank += 500; } },
+                    { text: "Stay home (+10 Energy)", action: () => { engine.state.player.energy += 10; } }
+                ]
+            },
+            {
+                title: "NEW BOOT DEAL",
+                desc: "A local brand wants you to wear their boots. Take the deal?",
+                options: [
+                    { text: "Accept (€1000, +2 Shooting)", action: () => { engine.state.player.bank += 1000; engine.state.player.stats.shooting += 2; } },
+                    { text: "Decline", action: () => {} }
+                ]
+            }
+        ];
+
+        const ev = events[Math.floor(Math.random() * events.length)];
+        const popup = document.getElementById('event-popup');
+        document.getElementById('event-title').innerText = ev.title;
+        document.getElementById('event-desc').innerText = ev.desc;
+        const optCont = document.getElementById('event-options');
+        optCont.innerHTML = "";
+        
+        ev.options.forEach(o => {
+            const b = document.createElement('button');
+            b.className = "btn-premium";
+            b.style.fontSize = "0.7rem";
+            b.innerText = o.text;
+            b.onclick = () => { o.action(); popup.style.display = "none"; engine.updateUI(); };
+            optCont.appendChild(b);
+        });
+
+        popup.style.display = "block";
+    }
+};
+
+engine.init();
 </script>
 </body>
 </html>

@@ -3,396 +3,1001 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FOOTBALL PRO: GLOBAL CAREER</title>
+    <title>FOOTBALL PRO: WORLD TOUR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
+        /* --- ELITE GAMING UI FRAMEWORK --- */
         :root {
-            --neon-green: #00ff88; --pitch: #0a0f0d; --gold: #ffd700;
-            --ui-blue: #0077ff; --panel-bg: #151a1e; --text: #e0e0e0;
+            --primary: #00ff88; --secondary: #00d4ff; --accent: #ff0055;
+            --bg-dark: #080a0c; --panel: rgba(255, 255, 255, 0.03);
+            --gold: #ffcc00; --text-main: #f0f0f0; --border: rgba(255,255,255,0.1);
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
-        body { background: var(--pitch); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        body { 
+            background: var(--bg-dark); 
+            color: var(--text-main); 
+            height: 100vh; 
+            display: flex; 
+            overflow: hidden; 
+            background-image: radial-gradient(circle at 50% -20%, #1a2a22 0%, #080a0c 80%);
+        }
 
-        /* Navigation */
-        .nav-sidebar { width: 80px; background: #000; display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 30px; border-right: 1px solid #333; }
-        .nav-item { cursor: pointer; opacity: 0.5; transition: 0.3s; font-size: 1.5rem; }
-        .nav-item:hover, .nav-item.active { opacity: 1; color: var(--neon-green); }
+        /* Side Navigation */
+        .nav-rail { width: 90px; background: rgba(0,0,0,0.4); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 30px 0; gap: 40px; z-index: 100; }
+        .nav-btn { width: 50px; height: 50px; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; font-size: 1.4rem; border: 1px solid transparent; background: var(--panel); }
+        .nav-btn:hover, .nav-btn.active { background: var(--primary); color: #000; transform: scale(1.1); box-shadow: 0 0 20px rgba(0,255,136,0.4); }
 
-        /* Layout Panels */
-        .main-container { flex: 1; display: grid; grid-template-columns: 350px 1fr 380px; gap: 2px; background: #333; }
-        .column { background: var(--panel-bg); padding: 25px; overflow-y: auto; }
+        /* Main Grid Layout */
+        .app-shell { flex: 1; display: grid; grid-template-columns: 380px 1fr 400px; gap: 1px; background: var(--border); position: relative; }
+        .view-column { background: var(--bg-dark); padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
 
-        /* Player Identity Card */
-        .player-card { background: linear-gradient(145deg, #1e252b, #151a1e); border-radius: 20px; padding: 20px; border: 1px solid #ffffff10; text-align: center; }
-        .ovr-large { font-size: 4rem; font-weight: 900; color: var(--gold); line-height: 1; margin: 10px 0; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
-        .badge { display: inline-block; padding: 4px 12px; background: var(--ui-blue); border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
+        /* Component: Player Profile Card */
+        .profile-card { background: linear-gradient(145deg, #121619, #0a0c0e); border-radius: 24px; padding: 25px; border: 1px solid var(--border); position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .ovr-display { font-size: 5rem; font-weight: 900; color: var(--gold); line-height: 1; text-shadow: 0 0 30px rgba(255,204,0,0.3); }
+        .pos-badge { position: absolute; top: 25px; right: 25px; background: var(--primary); color: #000; padding: 4px 12px; border-radius: 8px; font-weight: 900; font-size: 0.8rem; }
 
-        /* Visual Match Engine */
-        #pitch-container { width: 100%; height: 400px; background: #1a472a; border-radius: 15px; position: relative; overflow: hidden; border: 4px solid #2d5a3f; margin-bottom: 20px; }
-        .grass-line { position: absolute; width: 100%; height: 2px; background: rgba(255,255,255,0.1); }
-        #player-dot { width: 15px; height: 15px; background: var(--neon-green); border-radius: 50%; position: absolute; transition: 0.5s ease-out; box-shadow: 0 0 10px var(--neon-green); }
-        #ball-dot { width: 10px; height: 10px; background: white; border-radius: 50%; position: absolute; transition: 0.3s; }
+        /* Component: Visual Pitch */
+        .match-arena { width: 100%; height: 450px; background: #143d24; border-radius: 20px; border: 5px solid #234d34; position: relative; overflow: hidden; box-shadow: inset 0 0 100px rgba(0,0,0,0.5); }
+        .pitch-mowing { position: absolute; width: 100%; height: 10%; background: rgba(0,0,0,0.05); }
+        #ball { width: 12px; height: 12px; background: #fff; border-radius: 50%; position: absolute; transition: 0.3s; z-index: 10; box-shadow: 0 0 10px #fff; }
+        #player-sprite { width: 20px; height: 20px; background: var(--primary); border: 2px solid #fff; border-radius: 50%; position: absolute; transition: 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); z-index: 11; box-shadow: 0 0 15px var(--primary); }
 
-        /* Stats Grid */
-        .attribute-group { margin-bottom: 25px; }
-        .attribute-group h4 { font-size: 0.7rem; color: #666; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #333; }
-        .stat-bar-container { margin-bottom: 10px; }
-        .stat-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; }
-        .stat-fill-bg { height: 4px; background: #000; border-radius: 2px; overflow: hidden; }
-        .stat-fill { height: 100%; background: var(--neon-green); width: 0%; transition: 1s; }
+        /* Attribute Styling */
+        .attr-group { background: var(--panel); border-radius: 15px; padding: 15px; border: 1px solid var(--border); }
+        .attr-header { font-size: 0.7rem; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; display: block; }
+        .attr-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .attr-bar-bg { flex: 1; height: 6px; background: #000; border-radius: 3px; margin: 0 15px; overflow: hidden; }
+        .attr-bar-fill { height: 100%; background: var(--primary); width: 0%; transition: 1.5s cubic-bezier(0.075, 0.82, 0.165, 1); }
 
-        /* Interactive Elements */
-        .btn-premium { background: var(--neon-green); color: black; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .btn-premium:hover { transform: scale(1.02); filter: brightness(1.2); }
-        .btn-premium:disabled { background: #333; color: #666; transform: none; cursor: not-allowed; }
+        /* Buttons & Actions */
+        .btn-elite { background: var(--primary); color: #000; border: none; padding: 18px; border-radius: 14px; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s; letter-spacing: 1px; width: 100%; }
+        .btn-elite:hover:not(:disabled) { background: #fff; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,255,136,0.3); }
+        .btn-elite:disabled { background: #222; color: #555; cursor: not-allowed; }
 
-        /* Transfer Market */
-        .transfer-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 10px; border: 1px solid #ffffff05; }
-        .club-info { display: flex; align-items: center; gap: 10px; }
-        .club-logo { width: 30px; height: 30px; background: #444; border-radius: 5px; }
+        /* Transfer Table */
+        .transfer-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: var(--panel); border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); }
+        .club-name { font-weight: bold; font-size: 0.9rem; }
+        .wage-tag { font-size: 0.7rem; color: var(--primary); }
 
-        /* Decision Events */
-        #event-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1a1f24; width: 500px; padding: 30px; border-radius: 20px; border: 2px solid var(--neon-green); z-index: 1000; display: none; box-shadow: 0 0 100px rgba(0,0,0,0.8); }
+        /* Popup Modals */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .decision-card { width: 500px; background: #121518; border: 1px solid var(--primary); padding: 40px; border-radius: 30px; text-align: center; }
 
-        .currency { color: var(--neon-green); font-weight: bold; }
-        .week-display { font-size: 2rem; font-weight: bold; color: #444; }
-
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-<div class="nav-sidebar">
-    <div class="nav-item active" title="Hub">🏠</div>
-    <div class="nav-item" title="Training">🏋️</div>
-    <div class="nav-item" title="Transfer Market">🌍</div>
-    <div class="nav-item" title="Lifestyle">💎</div>
-    <div class="nav-item" title="Settings">⚙️</div>
+<div class="nav-rail">
+    <div class="nav-btn active" onclick="switchTab('hub')">🏠</div>
+    <div class="nav-btn" onclick="switchTab('training')">🏋️</div>
+    <div class="nav-btn" onclick="switchTab('market')">🌍</div>
+    <div class="nav-btn" onclick="switchTab('lifestyle')">💎</div>
 </div>
 
-<div class="main-container">
-    <div class="column">
-        <div class="player-card">
-            <span class="badge" id="player-tier">PROSPECT</span>
-            <div class="ovr-large" id="ui-ovr">15</div>
-            <h2 id="ui-name">J. DOE</h2>
-            <p style="color:#888; font-size: 0.8rem;" id="ui-club">LIMERICK CITY</p>
+<div class="app-shell">
+    <div class="view-column">
+        <div class="profile-card">
+            <div class="pos-badge" id="ui-pos">ST</div>
+            <span style="color: #666; font-size: 0.7rem;">WORLD RANKING</span>
+            <div class="ovr-display" id="ui-ovr">20</div>
+            <h2 id="ui-name">KEVIN DE BRUYNE</h2>
+            <p id="ui-club" style="color: #888; font-size: 0.8rem; margin-top: 5px;">FREE AGENT</p>
         </div>
 
-        <div style="margin-top: 30px;">
-            <div class="attribute-group">
-                <h4>Physicality</h4>
-                <div id="stats-physical"></div>
-            </div>
-            <div class="attribute-group">
-                <h4>Technical</h4>
-                <div id="stats-technical"></div>
-            </div>
-            <div class="attribute-group">
-                <h4>Mental</h4>
-                <div id="stats-mental"></div>
-            </div>
+        <div class="attr-group">
+            <span class="attr-header">Physicality</span>
+            <div id="phys-stats"></div>
+        </div>
+        <div class="attr-group">
+            <span class="attr-header">Technical</span>
+            <div id="tech-stats"></div>
         </div>
     </div>
 
-    <div class="column">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <span class="week-display">WEEK <span id="ui-week">1</span></span>
+    <div class="view-column">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <p style="color: #666; font-size: 0.7rem;">CURRENT SEASON</p>
+                <h1 style="font-size: 2.5rem;">WEEK <span id="ui-week">1</span></h1>
+            </div>
             <div style="text-align: right;">
-                <p>BANK: <span class="currency">€<span id="ui-bank">0</span></span></p>
-                <p>WAGE: <span style="color:#888; font-size: 0.7rem;">€<span id="ui-wage">100</span>/WK</span></p>
+                <p style="color: var(--primary); font-weight: 900; font-size: 1.2rem;">€<span id="ui-bank">0</span></p>
+                <p style="font-size: 0.7rem; color: #666;">WAGE: €<span id="ui-wage">0</span>/WK</p>
             </div>
         </div>
 
-        <div id="pitch-container">
-            <div id="player-dot"></div>
-            <div id="ball-dot"></div>
-            <div style="top:20%" class="grass-line"></div>
-            <div style="top:40%" class="grass-line"></div>
-            <div style="top:60%" class="grass-line"></div>
-            <div style="top:80%" class="grass-line"></div>
+        <div class="match-arena" id="arena">
+            <div id="ball"></div>
+            <div id="player-sprite"></div>
+            <div class="pitch-mowing" style="top:0%"></div>
+            <div class="pitch-mowing" style="top:20%"></div>
+            <div class="pitch-mowing" style="top:40%"></div>
+            <div class="pitch-mowing" style="top:60%"></div>
+            <div class="pitch-mowing" style="top:80%"></div>
         </div>
 
-        <div id="match-log" style="height: 200px; overflow-y: auto; background: #000; padding: 15px; border-radius: 10px; font-family: monospace; font-size: 0.8rem; margin-bottom: 20px;">
-            <div style="color:var(--neon-green)">> ENGINE INITIALIZED. AWAITING FIXTURE...</div>
+        <div id="feed" style="background: #000; border-radius: 15px; height: 180px; padding: 20px; overflow-y: auto; font-family: monospace; font-size: 0.8rem; line-height: 1.6;">
+            <div style="color: var(--primary)">[SYSTEM] CAREER MODE INITIALIZED.</div>
+            <div style="color: #666">Welcome to the elite league. Start training to catch the eye of scouts.</div>
         </div>
 
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <button class="btn-premium" id="btn-match" onclick="engine.startMatch()">PLAY MATCH</button>
-            <button class="btn-premium" style="background:#222; color:white;" onclick="engine.advanceWeek()">REST WEEK</button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <button class="btn-elite" onclick="game.startMatch()" id="match-trigger">Play Fixture</button>
+            <button class="btn-elite" style="background: #222; color: #fff;" onclick="game.advanceTime()">Advance Week</button>
         </div>
     </div>
 
-    <div class="column">
+    <div class="view-column">
         <h3>TRANSFER MARKET</h3>
-        <p style="font-size: 0.7rem; color:#666; margin-bottom: 15px;">TOP OFFERS BASED ON YOUR OVR</p>
-        <div id="ui-market"></div>
+        <div id="market-list"></div>
 
-        <h3 style="margin-top: 40px;">LEAGUE TABLE</h3>
-        <table style="width: 100%; font-size: 0.8rem; margin-top: 10px;">
-            <thead style="color:#666"><tr><th>CLUB</th><th>W</th><th>PTS</th></tr></thead>
-            <tbody id="ui-league"></tbody>
+        <h3 style="margin-top: 20px;">LEAGUE STANDINGS</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 10px;">
+            <thead style="color: #555; text-align: left;">
+                <tr><th>TEAM</th><th>W</th><th>D</th><th>L</th><th>PTS</th></tr>
+            </thead>
+            <tbody id="league-rows"></tbody>
         </table>
     </div>
 </div>
 
-<div id="event-popup">
-    <h2 id="event-title">RANDOM EVENT</h2>
-    <p id="event-desc" style="margin: 15px 0; color:#bbb;"></p>
-    <div id="event-options" style="display:flex; flex-direction:column; gap:10px;"></div>
-</div>
-
 <script>
-/**
- * FOOTBALL PRO ENGINE v1.0
- * Deep Simulation Architecture
- */
-
-const engine = {
+/* --- CORE GAME STATE ENGINE --- */
+const game = {
     state: {
         player: {
-            name: "WONDERKID",
-            ovr: 15,
-            bank: 500,
-            wage: 150,
-            club: "Limerick City",
-            week: 1,
-            energy: 100,
-            marketValue: 1200000,
+            name: "WONDERKID", pos: "ST", club: "Free Agent",
+            ovr: 20, bank: 500, wage: 0, week: 1, energy: 100,
             stats: {
-                pace: 20, stamina: 20, strength: 20,
-                shooting: 15, passing: 15, dribbling: 15, defending: 10,
-                vision: 15, composure: 15, aggression: 10
+                pace: 25, stamina: 20, strength: 20, 
+                shooting: 20, passing: 20, dribbling: 20, 
+                defending: 10, vision: 20, composure: 20
             }
         },
         league: [
-            { name: "Limerick City", pts: 0, w: 0, power: 15 },
-            { name: "Dublin FC", pts: 0, w: 0, power: 18 },
-            { name: "Cork Utd", pts: 0, w: 0, power: 14 },
-            { name: "Galway Rovers", pts: 0, w: 0, power: 12 },
-            { name: "London Blue", pts: 0, w: 0, power: 85 },
-            { name: "Madrid Gold", pts: 0, w: 0, power: 92 },
-            { name: "Munich Red", pts: 0, w: 0, power: 88 }
+            { name: "Limerick City", w:0, d:0, l:0, pts:0, pwr: 20 },
+            { name: "Dublin Utd", w:0, d:0, l:0, pts:0, pwr: 25 },
+            { name: "Cork Athletic", w:0, d:0, l:0, pts:0, pwr: 18 },
+            { name: "Manchester Blue", w:0, d:0, l:0, pts:0, pwr: 88 },
+            { name: "Madrid Gold", w:0, d:0, l:0, pts:0, pwr: 92 },
+            { name: "Munich Red", w:0, d:0, l:0, pts:0, pwr: 85 },
+            { name: "Paris Stars", w:0, d:0, l:0, pts:0, pwr: 82 },
+            { name: "London FC", w:0, d:0, l:0, pts:0, pwr: 78 }
+            // More teams will be added in the logic batch
         ],
-        activeMatch: false
-    },
+        market: [
+            { club: "Limerick City", wage: 250, req: 15 },
+            { club: "Dublin Utd", wage: 600, req: 30 },
+            { club: "Cork Athletic", wage: 450, req: 25 },
+            { club: "Manchester Blue", wage: 55000, req: 85 },
+            { club: "Madrid Gold", wage: 75000, req: 90 }
+        ]
+    }
+};
 
+// Next Batch will contain the heavy logic: training systems, match movement, and transfer negotiations.
+    /* --- MODULE: ATTRIBUTE & PROGRESSION SYSTEM --- */
+const controller = {
     init() {
-        this.renderStats();
-        this.updateUI();
-        this.renderMarket();
-        this.renderLeague();
+        this.renderAttributeBars();
+        this.updateGlobalUI();
+        this.simulateInitialLeague();
     },
 
-    renderStats() {
-        const groups = {
-            physical: ['pace', 'stamina', 'strength'],
-            technical: ['shooting', 'passing', 'dribbling', 'defending'],
-            mental: ['vision', 'composure', 'aggression']
+    // Calculate OVR based on position weighting
+    calculateOVR() {
+        const s = game.state.player.stats;
+        const pos = game.state.player.pos;
+        let weightedSum = 0;
+        
+        // Define Importance based on position
+        const weights = {
+            ST: { shooting: 2.0, pace: 1.5, dribbling: 1.2, passing: 0.8, defending: 0.2, vision: 1.0, composure: 1.5, stamina: 1.0, strength: 1.2 },
+            CAM: { passing: 2.0, vision: 2.0, dribbling: 1.5, shooting: 1.0, pace: 0.8, stamina: 1.2, composure: 1.2, strength: 0.5, defending: 0.5 },
+            CB: { defending: 2.5, strength: 2.0, stamina: 1.5, pace: 1.0, passing: 0.8, vision: 0.5, composure: 1.2, shooting: 0.1, dribbling: 0.2 }
         };
 
-        Object.keys(groups).forEach(group => {
-            const container = document.getElementById(`stats-${group}`);
-            container.innerHTML = groups[group].map(s => `
-                <div class="stat-bar-container">
-                    <div class="stat-label">
-                        <span style="text-transform:capitalize">${s}</span>
-                        <span id="val-${s}">${this.state.player.stats[s]}</span>
-                    </div>
-                    <div class="stat-fill-bg">
-                        <div class="stat-fill" id="fill-${s}" style="width: ${this.state.player.stats[s]}%"></div>
-                    </div>
-                    <button onclick="engine.train('${s}')" style="font-size:0.6rem; background:none; border:1px solid #444; color:#888; padding:2px 5px; margin-top:5px; cursor:pointer">TRAIN</button>
-                </div>
-            `).join('');
+        const w = weights[pos] || weights.ST;
+        let totalWeight = 0;
+
+        Object.keys(s).forEach(key => {
+            weightedSum += s[key] * (w[key] || 1);
+            totalWeight += (w[key] || 1);
         });
+
+        game.state.player.ovr = Math.floor(weightedSum / totalWeight);
     },
 
-    updateUI() {
-        const p = this.state.player;
-        p.ovr = Math.floor(Object.values(p.stats).reduce((a,b) => a+b) / 10);
+    renderAttributeBars() {
+        const physDiv = document.getElementById('phys-stats');
+        const techDiv = document.getElementById('tech-stats');
         
-        document.getElementById('ui-ovr').innerText = p.ovr;
-        document.getElementById('ui-bank').innerText = p.bank.toLocaleString();
-        document.getElementById('ui-wage').innerText = p.wage;
-        document.getElementById('ui-week').innerText = p.week;
-        document.getElementById('ui-club').innerText = p.club.toUpperCase();
+        const physKeys = ['pace', 'stamina', 'strength'];
+        const techKeys = ['shooting', 'passing', 'dribbling', 'defending', 'vision', 'composure'];
 
-        // Update fill bars
-        Object.keys(p.stats).forEach(s => {
-            const fill = document.getElementById(`fill-${s}`);
-            if(fill) fill.style.width = p.stats[s] + "%";
-            const val = document.getElementById(`val-${s}`);
-            if(val) val.innerText = p.stats[s];
+        const generateHTML = (keys) => keys.map(key => `
+            <div class="attr-row">
+                <span style="font-size:0.8rem; width:80px; text-transform:uppercase;">${key}</span>
+                <div class="attr-bar-bg"><div class="attr-bar-fill" id="fill-${key}"></div></div>
+                <span id="val-${key}" style="font-weight:bold; width:30px; text-align:right;">${game.state.player.stats[key]}</span>
+                <button onclick="controller.trainAttribute('${key}')" class="train-mini-btn">+</button>
+            </div>
+        `).join('');
+
+        physDiv.innerHTML = generateHTML(physKeys);
+        techDiv.innerHTML = generateHTML(techKeys);
+    },
+
+    trainAttribute(key) {
+        if (game.state.player.energy < 15) {
+            this.logFeed("SYSTEM: Vital signs low. Cannot train. Advance week to recover.", "var(--accent)");
+            return;
+        }
+
+        // Diminishing returns: Training gets harder as you reach elite levels
+        const currentVal = game.state.player.stats[key];
+        const costMultiplier = currentVal > 80 ? 3 : currentVal > 50 ? 2 : 1;
+        
+        game.state.player.stats[key] += 1;
+        game.state.player.energy -= (10 * costMultiplier);
+        
+        this.calculateOVR();
+        this.updateGlobalUI();
+        this.logFeed(`TRAINING: Improved ${key.toUpperCase()} (+1). Energy: ${game.state.player.energy}%`);
+    },
+
+    /* --- MODULE: MATCH ENGINE PHYSICS --- */
+    startMatchSimulation() {
+        if (game.state.player.energy < 35) {
+            this.logFeed
+            /* --- MODULE: ATTRIBUTE & PROGRESSION SYSTEM --- */
+const controller = {
+    init() {
+        this.renderAttributeBars();
+        this.updateGlobalUI();
+        this.simulateInitialLeague();
+    },
+
+    // Calculate OVR based on position weighting
+    calculateOVR() {
+        const s = game.state.player.stats;
+        const pos = game.state.player.pos;
+        let weightedSum = 0;
+        
+        // Define Importance based on position
+        const weights = {
+            ST: { shooting: 2.0, pace: 1.5, dribbling: 1.2, passing: 0.8, defending: 0.2, vision: 1.0, composure: 1.5, stamina: 1.0, strength: 1.2 },
+            CAM: { passing: 2.0, vision: 2.0, dribbling: 1.5, shooting: 1.0, pace: 0.8, stamina: 1.2, composure: 1.2, strength: 0.5, defending: 0.5 },
+            CB: { defending: 2.5, strength: 2.0, stamina: 1.5, pace: 1.0, passing: 0.8, vision: 0.5, composure: 1.2, shooting: 0.1, dribbling: 0.2 }
+        };
+
+        const w = weights[pos] || weights.ST;
+        let totalWeight = 0;
+
+        Object.keys(s).forEach(key => {
+            weightedSum += s[key] * (w[key] || 1);
+            totalWeight += (w[key] || 1);
         });
+
+        game.state.player.ovr = Math.floor(weightedSum / totalWeight);
     },
 
-    train(stat) {
-        if(this.state.player.energy < 15) return this.log("Too tired to train! Rest for a week.");
-        this.state.player.stats[stat] += 1;
-        this.state.player.energy -= 15;
-        this.updateUI();
-        this.log(`Trained ${stat}. Energy is now ${this.state.player.energy}%`);
+    renderAttributeBars() {
+        const physDiv = document.getElementById('phys-stats');
+        const techDiv = document.getElementById('tech-stats');
+        
+        const physKeys = ['pace', 'stamina', 'strength'];
+        const techKeys = ['shooting', 'passing', 'dribbling', 'defending', 'vision', 'composure'];
+
+        const generateHTML = (keys) => keys.map(key => `
+            <div class="attr-row">
+                <span style="font-size:0.8rem; width:80px; text-transform:uppercase;">${key}</span>
+                <div class="attr-bar-bg"><div class="attr-bar-fill" id="fill-${key}"></div></div>
+                <span id="val-${key}" style="font-weight:bold; width:30px; text-align:right;">${game.state.player.stats[key]}</span>
+                <button onclick="controller.trainAttribute('${key}')" class="train-mini-btn">+</button>
+            </div>
+        `).join('');
+
+        physDiv.innerHTML = generateHTML(physKeys);
+        techDiv.innerHTML = generateHTML(techKeys);
     },
 
-    log(msg, color = "white") {
-        const console = document.getElementById('match-log');
+    trainAttribute(key) {
+        if (game.state.player.energy < 15) {
+            this.logFeed("SYSTEM: Vital signs low. Cannot train. Advance week to recover.", "var(--accent)");
+            return;
+        }
+
+        // Diminishing returns: Training gets harder as you reach elite levels
+        const currentVal = game.state.player.stats[key];
+        const costMultiplier = currentVal > 80 ? 3 : currentVal > 50 ? 2 : 1;
+        
+        game.state.player.stats[key] += 1;
+        game.state.player.energy -= (10 * costMultiplier);
+        
+        this.calculateOVR();
+        this.updateGlobalUI();
+        this.logFeed(`TRAINING: Improved ${key.toUpperCase()} (+1). Energy: ${game.state.player.energy}%`);
+    },
+
+    /* --- MODULE: MATCH ENGINE PHYSICS --- */
+    startMatchSimulation() {
+        if (game.state.player.energy < 35) {
+            this.logFeed("MEDICAL: High risk of injury. Energy below 35%. Match canceled.", "var(--accent)");
+            return;
+        }
+
+        const arena = document.getElementById('arena');
+        const player = document.getElementById('player-sprite');
+        const ball = document.getElementById('ball');
+        const matchBtn = document.getElementById('match-trigger');
+
+        matchBtn.disabled = true;
+        game.state.player.energy -= 35;
+        let minute = 0;
+        let myGoals = 0;
+        let oppGoals = 0;
+        
+        const matchLoop = setInterval(() => {
+            minute += 2;
+            
+            // 2D Movement Physics
+            const pX = Math.random() * 80 + 10;
+            const pY = Math.random() * 80 + 10;
+            player.style.left = `${pX}%`;
+            player.style.top = `${pY}%`;
+
+            // Ball follows player based on Dribbling stat
+            const dribbleError = (100 - game.state.player.stats.dribbling) / 5;
+            ball.style.left = `${pX + (Math.random() * dribbleError - dribbleError/2)}%`;
+            ball.style.top = `${pY + (Math.random() * dribbleError - dribbleError/2)}%`;
+
+            // Goal Logic
+            if (minute % 10 === 0) {
+                const shotChance = (game.state.player.stats.shooting + game.state.player.stats.vision) / 2.5;
+                if (Math.random() * 100 < shotChance / 10) {
+                    myGoals++;
+                    this.logFeed(`${minute}' - GOAL! Clinical strike into the top corner!`, "var(--primary)");
+                    this.triggerGoalFlash();
+                }
+
+                // Opponent attack logic
+                if (Math.random() * 100 > 92) {
+                    oppGoals++;
+                    this.logFeed(`${minute}' - GOAL CONCEDED. Defense caught out of position.`, "var(--accent)");
+                }
+            }
+
+            if (minute >= 90) {
+                clearInterval(matchLoop);
+                this.finalizeMatch(myGoals, oppGoals);
+                matchBtn.disabled = false;
+            }
+        }, 150);
+    },
+
+    finalizeMatch(me, opp) {
+        let earnings = 50;
+        let pts = 0;
+
+        if (me > opp) {
+            earnings = 250 + (game.state.player.ovr * 10);
+            pts = 3;
+            this.logFeed(`MATCH END: Victory ${me}-${opp}! Bonus €${earnings} paid.`, "var(--gold)");
+        } else if (me === opp) {
+            earnings = 100;
+            pts = 1;
+            this.logFeed(`MATCH END: Draw ${me}-${opp}. Performance bonus €100.`, "white");
+        } else {
+            this.logFeed(`MATCH END: Defeat ${me}-${opp}. You learned from the loss.`, "#888");
+        }
+
+        game.state.player.bank += earnings;
+        this.updateLeagueStats("YOU", pts, me, opp);
+        this.advanceTime();
+    },
+
+    /* --- MODULE: WORLD SIMULATION --- */
+    advanceTime() {
+        game.state.player.week += 1;
+        game.state.player.bank += game.state.player.wage;
+        game.state.player.energy = Math.min(100, game.state.player.energy + 45);
+        
+        // Sim other teams
+        game.state.league.forEach(team => {
+            if (team.name !== "YOU") {
+                const roll = Math.random();
+                if (roll > 0.6) team.pts += 3;
+                else if (roll > 0.4) team.pts += 1;
+            }
+        });
+
+        this.updateGlobalUI();
+        this.renderMarketOffers();
+        this.renderLeagueTable();
+        this.logFeed(`WEEK ${game.state.player.week}: New fixtures released. Salary credited.`);
+    },
+
+    logFeed(msg, color = "#888") {
+        const feed = document.getElementById('feed');
         const entry = document.createElement('div');
         entry.style.color = color;
-        entry.innerText = `> ${msg}`;
-        console.prepend(entry);
+        entry.innerHTML = `> ${msg}`;
+        feed.prepend(entry);
     },
 
-    startMatch() {
-        if(this.state.player.energy < 30) return this.log("Injured or too tired! You must rest.", "red");
+    triggerGoalFlash() {
+        const arena = document.getElementById('arena');
+        arena.style.boxShadow = "0 0 50px var(--primary)";
+        setTimeout(() => arena.style.boxShadow = "inset 0 0 100px rgba(0,0,0,0.5)", 500);
+    }
+};
+
+// Start logic
+controller.init();
+
+/* --- MODULE: TRANSFER MARKET & SCOUTING SYSTEM --- */
+const market = {
+    // Database of 40+ Clubs across 3 Tiers
+    clubs: [
+        { name: "Limerick City", tier: 3, budget: 1000, rep: 10, color: "#00f" },
+        { name: "Cork Athletic", tier: 3, budget: 1200, rep: 12, color: "#f00" },
+        { name: "Dublin Rovers", tier: 3, budget: 1500, rep: 15, color: "#0f0" },
+        { name: "Galway Utd", tier: 3, budget: 900, rep: 8, color: "#800080" },
+        { name: "Belfast Stars", tier: 3, budget: 2000, rep: 18, color: "#ffa500" },
         
-        const btn = document.getElementById('btn-match');
-        btn.disabled = true;
-        this.state.activeMatch = true;
-        this.state.player.energy -= 30;
+        { name: "London Blue", tier: 2, budget: 45000, rep: 65, color: "#0000ff" },
+        { name: "Manchester Red", tier: 2, budget: 55000, rep: 70, color: "#ff0000" },
+        { name: "Paris SG", tier: 2, budget: 90000, rep: 75, color: "#000080" },
+        { name: "Dortmund Gold", tier: 2, budget: 40000, rep: 68, color: "#ffff00" },
+        { name: "Milan AC", tier: 2, budget: 35000, rep: 62, color: "#000" },
 
-        let clock = 0;
-        let pScore = 0;
-        let oScore = 0;
-        const opp = this.state.league[Math.floor(Math.random() * 4)]; // Play local league
+        { name: "Madrid White", tier: 1, budget: 250000, rep: 92, color: "#fff" },
+        { name: "Barcelona Garnet", tier: 1, budget: 220000, rep: 90, color: "#800000" },
+        { name: "Munich Giants", tier: 1, budget: 280000, rep: 95, color: "#ff0000" },
+        { name: "Manchester Light Blue", tier: 1, budget: 500000, rep: 98, color: "#add8e6" }
+    ],
 
-        this.log(`MATCH START: ${this.state.player.club} vs ${opp.name}`, var(--neon-green));
-
-        const matchTimer = setInterval(() => {
-            clock += 5;
-            this.moveVisuals();
-
-            if(Math.random() * 100 < (this.state.player.stats.shooting / 2)) {
-                pScore++;
-                this.log(`${clock}' - GOAL! Clinical finish by ${this.state.player.name}!`, "gold");
-            } else if (Math.random() * 100 > 90) {
-                oScore++;
-                this.log(`${clock}' - Defeat in the box! ${opp.name} scores.`, "red");
-            }
-
-            if(clock >= 90) {
-                clearInterval(matchTimer);
-                this.endMatch(pScore, oScore, opp);
-                btn.disabled = false;
-            }
-        }, 300);
-    },
-
-    moveVisuals() {
-        const dot = document.getElementById('player-dot');
-        const ball = document.getElementById('ball-dot');
-        dot.style.left = Math.random() * 80 + "%";
-        dot.style.top = Math.random() * 80 + "%";
-        ball.style.left = dot.style.left;
-        ball.style.top = dot.style.top;
-    },
-
-    endMatch(me, oppScore, oppObj) {
-        this.state.activeMatch = false;
-        let bonus = 50;
-        if(me > oppScore) {
-            bonus = 200;
-            this.state.player.bank += bonus;
-            this.log(`FINAL: WIN ${me}-${oppScore}. Bonus €${bonus} awarded.`);
-        } else {
-            this.log(`FINAL: DRAW/LOSS ${me}-${oppScore}.`);
-        }
-        this.advanceWeek();
-    },
-
-    advanceWeek() {
-        this.state.player.week++;
-        this.state.player.bank += this.state.player.wage;
-        this.state.player.energy = Math.min(100, this.state.player.energy + 50);
-        this.log(`WEEK ${this.state.player.week}: Salary €${this.state.player.wage} paid.`);
-        this.updateUI();
+    init() {
         this.renderMarket();
-        if(this.state.player.week % 4 === 0) this.triggerEvent();
+    },
+
+    // Generates offers based on your OVR and Reputation
+    generateOffers() {
+        const playerOvr = game.state.player.ovr;
+        const availableOffers = [];
+
+        this.clubs.forEach(club => {
+            // Logic: Tier 3 needs 10-40 OVR, Tier 2 needs 45-75, Tier 1 needs 80+
+            let isInterested = false;
+            if (club.tier === 3 && playerOvr >= 0 && playerOvr < 50) isInterested = true;
+            if (club.tier === 2 && playerOvr >= 45 && playerOvr < 80) isInterested = true;
+            if (club.tier === 1 && playerOvr >= 78) isInterested = true;
+
+            if (isInterested && club.name !== game.state.player.club) {
+                // Calculate dynamic wage: Base + (OVR * Tier Multiplier)
+                const baseWage = club.tier === 1 ? 50000 : club.tier === 2 ? 5000 : 200;
+                const calculatedWage = baseWage + (playerOvr * (club.tier === 1 ? 1000 : 100));
+                
+                availableOffers.push({
+                    club: club.name,
+                    tier: club.tier,
+                    wage: Math.floor(calculatedWage),
+                    bonus: Math.floor(calculatedWage * 5), // Signing bonus is 5 weeks of wage
+                    color: club.color
+                });
+            }
+        });
+
+        return availableOffers.slice(0, 5); // Show top 5 relevant offers
     },
 
     renderMarket() {
-        const container = document.getElementById('ui-market');
-        const offers = [
-            { name: "Limerick City", wage: 150, req: 0 },
-            { name: "Dublin FC", wage: 450, req: 30 },
-            { name: "London Blue", wage: 12000, req: 75 },
-            { name: "Madrid Gold", wage: 45000, req: 88 }
-        ];
+        const marketList = document.getElementById('market-list');
+        const offers = this.generateOffers();
 
-        container.innerHTML = offers.map(o => `
-            <div class="transfer-row">
-                <div class="club-info">
-                    <div class="club-logo"></div>
+        if (offers.length === 0) {
+            marketList.innerHTML = `<p style="color:#666; font-size:0.7rem;">No clubs are currently scouting you. Improve your OVR to attract interest.</p>`;
+            return;
+        }
+
+        marketList.innerHTML = offers.map(o => `
+            <div class="transfer-item">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="width:4px; height:30px; background:${o.color}"></div>
                     <div>
-                        <p style="font-weight:bold">${o.name}</p>
-                        <p style="font-size:0.6rem; color:#888">€${o.wage}/week</p>
+                        <span class="club-name">${o.club.toUpperCase()}</span><br>
+                        <span class="wage-tag">€${o.wage.toLocaleString()}/WK</span>
                     </div>
                 </div>
-                ${this.state.player.ovr >= o.req ? 
-                    `<button onclick="engine.signClub('${o.name}', ${o.wage})" style="background:var(--neon-green); border:none; padding:5px 10px; border-radius:5px; cursor:pointer">SIGN</button>` : 
-                    `<span style="color:#444; font-size:0.7rem">Req: ${o.req} OVR</span>`}
+                <button onclick="market.openNegotiation('${o.club}', ${o.wage}, ${o.bonus})" class="negotiate-btn">VIEW</button>
             </div>
         `).join('');
     },
 
-    signClub(name, wage) {
-        if(confirm(`Accept transfer to ${name}? Current club progress will reset.`)) {
-            this.state.player.club = name;
-            this.state.player.wage = wage;
-            this.log(`TRANSFER COMPLETE: Welcome to ${name}!`, "gold");
-            this.updateUI();
-        }
-    },
+    openNegotiation(clubName, wage, bonus) {
+        const modal = document.getElementById('modal-decision'); // We'll add this UI in Batch 4
+        const title = document.getElementById('decision-title');
+        const desc = document.getElementById('decision-desc');
+        const options = document.getElementById('decision-options');
 
-    renderLeague() {
-        const table = document.getElementById('ui-league');
-        const sorted = this.state.league.sort((a,b) => b.pts - a.pts);
-        table.innerHTML = sorted.map(t => `
-            <tr><td>${t.name}</td><td>${t.w}</td><td><b>${t.pts}</b></td></tr>
-        `).join('');
-    },
-
-    triggerEvent() {
-        const events = [
-            {
-                title: "LATE NIGHT PARTY",
-                desc: "Teammates are going out. Staying out late will hurt your fitness but boost popularity.",
-                options: [
-                    { text: "Go out (-20 Stamina, +€500 Sponsor)", action: () => { engine.state.player.stats.stamina -= 5; engine.state.player.bank += 500; } },
-                    { text: "Stay home (+10 Energy)", action: () => { engine.state.player.energy += 10; } }
-                ]
-            },
-            {
-                title: "NEW BOOT DEAL",
-                desc: "A local brand wants you to wear their boots. Take the deal?",
-                options: [
-                    { text: "Accept (€1000, +2 Shooting)", action: () => { engine.state.player.bank += 1000; engine.state.player.stats.shooting += 2; } },
-                    { text: "Decline", action: () => {} }
-                ]
-            }
-        ];
-
-        const ev = events[Math.floor(Math.random() * events.length)];
-        const popup = document.getElementById('event-popup');
-        document.getElementById('event-title').innerText = ev.title;
-        document.getElementById('event-desc').innerText = ev.desc;
-        const optCont = document.getElementById('event-options');
-        optCont.innerHTML = "";
+        title.innerText = `CONTRACT OFFER: ${clubName}`;
+        desc.innerText = `The scouts from ${clubName} are impressed with your recent form. They are offering two contract paths:`;
         
-        ev.options.forEach(o => {
-            const b = document.createElement('button');
-            b.className = "btn-premium";
-            b.style.fontSize = "0.7rem";
-            b.innerText = o.text;
-            b.onclick = () => { o.action(); popup.style.display = "none"; engine.updateUI(); };
-            optCont.appendChild(b);
-        });
+        options.innerHTML = `
+            <button class="btn-elite" onclick="market.acceptOffer('${clubName}', ${wage}, 0)">
+                STABLE: €${wage.toLocaleString()}/wk (No Bonus)
+            </button>
+            <button class="btn-elite" style="background:var(--gold); margin-top:10px;" onclick="market.acceptOffer('${clubName}', ${Math.floor(wage*0.8)}, ${bonus})">
+                FAST CASH: €${Math.floor(wage*0.8).toLocaleString()}/wk + €${bonus.toLocaleString()} Signing Bonus
+            </button>
+            <button class="btn-elite" style="background:#222; color:#fff; margin-top:10px;" onclick="market.closeModal()">
+                REJECT OFFER
+            </button>
+        `;
 
-        popup.style.display = "block";
+        modal.style.display = 'flex';
+    },
+
+    acceptOffer(club, wage, bonus) {
+        game.state.player.club = club;
+        game.state.player.wage = wage;
+        game.state.player.bank += bonus;
+        
+        controller.logFeed(`TRANSFER: Signed for ${club}! New wage: €${wage.toLocaleString()}/wk.`, "var(--gold)");
+        this.closeModal();
+        controller.updateGlobalUI();
+        this.renderMarket();
+    },
+
+    closeModal() {
+        document.getElementById('modal-decision').style.display = 'none';
     }
 };
 
-engine.init();
+/* --- UI UPDATE FOR BATCH 3 --- */
+// Adding the Modal HTML structure to the body via JS
+const modalHTML = `
+    <div class="modal-overlay" id="modal-decision">
+        <div class="decision-card">
+            <h2 id="decision-title">NEGOTIATION</h2>
+            <p id="decision-desc"></p>
+            <div id="decision-options"></div>
+        </div>
+    </div>
+`;
+document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+/* --- MODULE: LIFESTYLE & BRAND MANAGEMENT --- */
+const lifestyle = {
+    // Assets provide passive bonuses to recovery or market value multipliers
+    assets: [
+        { id: 'car_1', name: "Used Hatchback", price: 5000, type: 'transport', bonus: "Small recovery boost", recoveryMod: 2, valueMult: 1.05 },
+        { id: 'apt_1', name: "City Apartment", price: 50000, type: 'housing', bonus: "Resting is 10% more effective", recoveryMod: 5, valueMult: 1.2 },
+        { id: 'car_2', name: "Italian Supercar", price: 250000, type: 'transport', bonus: "Massive Popularity spike", recoveryMod: 0, valueMult: 1.5 },
+        { id: 'house_1', name: "Luxury Villa", price: 2000000, type: 'housing', bonus: "+20 Energy per week rest", recoveryMod: 20, valueMult: 2.0 },
+        { id: 'jet_1', name: "Private Jet", price: 15000000, type: 'transport', bonus: "Global Icon status", recoveryMod: 0, valueMult: 5.0 }
+    ],
+
+    sponsorships: [
+        { brand: "Swift-Foot (Boots)", minFollowers: 1000, weeklyPay: 500 },
+        { brand: "Aura Energy (Drink)", minFollowers: 50000, weeklyPay: 5000 },
+        { brand: "Titanium Watch Co.", minFollowers: 500000, weeklyPay: 50000 },
+        { brand: "Global Airlines", minFollowers: 10000000, weeklyPay: 1000000 }
+    ],
+
+    state: {
+        followers: 100,
+        ownedAssets: [],
+        activeSponsorships: []
+    },
+
+    init() {
+        this.renderLifestyleShop();
+        this.updateBrandUI();
+    },
+
+    // Grow followers based on OVR and match performance
+    updateFollowers(performanceScore) {
+        const growthBase = game.state.player.ovr * 10;
+        const multiplier = performanceScore > 0 ? performanceScore : 1;
+        const newFollowers = Math.floor(growthBase * multiplier * (Math.random() * 2));
+        this.state.followers += newFollowers;
+        
+        this.checkSponsorships();
+        this.updateBrandUI();
+    },
+
+    checkSponsorships() {
+        this.sponsorships.forEach(s => {
+            if (this.state.followers >= s.minFollowers && !this.state.activeSponsorships.includes(s.brand)) {
+                this.state.activeSponsorships.push(s.brand);
+                controller.logFeed(`SPONSORSHIP: ${s.brand} signed you! +€${s.weeklyPay.toLocaleString()}/wk`, "var(--primary)");
+            }
+        });
+    },
+
+    calculateWeeklyPassiveIncome() {
+        let total = 0;
+        this.sponsorships.forEach(s => {
+            if (this.state.activeSponsorships.includes(s.brand)) total += s.weeklyPay;
+        });
+        return total;
+    },
+
+    renderLifestyleShop() {
+        const container = document.getElementById('lifestyle-list'); // Need to ensure this ID exists in UI
+        if (!container) return;
+
+        container.innerHTML = this.assets.map(a => {
+            const isOwned = this.state.ownedAssets.includes(a.id);
+            return `
+                <div class="transfer-item" style="border-color: ${isOwned ? 'var(--primary)' : 'rgba(255,255,255,0.1)'}">
+                    <div>
+                        <span class="club-name">${a.name.toUpperCase()}</span><br>
+                        <span style="font-size:0.6rem; color:#888">${a.bonus}</span>
+                    </div>
+                    ${isOwned ? 
+                        `<span style="color:var(--primary); font-size:0.7rem; font-weight:bold;">OWNED</span>` : 
+                        `<button onclick="lifestyle.buyAsset('${a.id}')" class="negotiate-btn">€${a.price.toLocaleString()}</button>`
+                    }
+                </div>
+            `;
+        }).join('');
+    },
+
+    buyAsset(id) {
+        const asset = this.assets.find(a => a.id === id);
+        if (game.state.player.bank >= asset.price) {
+            game.state.player.bank -= asset.price;
+            this.state.ownedAssets.push(id);
+            controller.logFeed(`PURCHASE: You now own ${asset.name}!`, "var(--gold)");
+            this.renderLifestyleShop();
+            controller.updateGlobalUI();
+        } else {
+            alert("Insufficient funds in your bank account!");
+        }
+    },
+
+    updateBrandUI() {
+        // This would update a 'Brand' tab if we had one, otherwise logs to feed
+        const uiFollowers = document.getElementById('ui-followers');
+        if (uiFollowers) uiFollowers.innerText = this.formatNumber(this.state.followers);
+    },
+
+    formatNumber(num) {
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num;
+    }
+};
+
+/* --- INTEGRATION INTO CORE ADVANCE TIME --- */
+// We need to modify the advanceTime function from Batch 2 to include passive income
+const originalAdvanceTime = controller.advanceTime;
+controller.advanceTime = function() {
+    // Add sponsorship money
+    const extraCash = lifestyle.calculateWeeklyPassiveIncome();
+    game.state.player.bank += extraCash;
+    
+    // Recovery boost from assets
+    let bonusRecovery = 0;
+    lifestyle.assets.forEach(a => {
+        if (lifestyle.state.ownedAssets.includes(a.id)) bonusRecovery += a.recoveryMod;
+    });
+    game.state.player.energy = Math.min(100, game.state.player.energy + bonusRecovery);
+
+    // Run original logic
+    originalAdvanceTime.call(this);
+    
+    // Update Followers naturally every week
+    lifestyle.updateFollowers(0.1); 
+};
+
+/* --- UI ADDITIONS FOR BATCH 4 --- */
+// Updating the HTML to include the Lifestyle tab content
+const lifestyleTabHTML = `
+    <div id="tab-lifestyle" class="view-column" style="display:none; grid-column: 1 / span 3; background: var(--bg-dark); z-index: 50;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px; height: 100%;">
+            <div class="column">
+                <h2 style="color:var(--primary)">LUXURY SHOP</h2>
+                <p style="color:#666; font-size:0.8rem; margin-bottom:20px;">Invest your wealth to grow your global icon status.</p>
+                <div id="lifestyle-list"></div>
+            </div>
+            <div class="column">
+                <h2 style="color:var(--gold)">BRAND & POPULARITY</h2>
+                <div class="profile-card" style="margin-bottom:20px;">
+                    <div class="ovr-large" id="ui-followers">0</div>
+                    <p>TOTAL FOLLOWERS</p>
+                </div>
+                <h3>ACTIVE SPONSORS</h3>
+                <div id="sponsor-list" style="margin-top:15px;"></div>
+            </div>
+        </div>
+    </div>
+`;
+document.body.insertAdjacentHTML('beforeend', lifestyleTabHTML);
+
+// Initialize Lifestyle
+lifestyle.init();
+
+/* --- MODULE: LEAGUE HIERARCHY & MEDICAL ENGINE --- */
+const world = {
+    leagues: {
+        3: { name: "Regional League", teams: ["Limerick City", "Cork Utd", "Galway Rovers", "Dublin City", "Belfast FC", "Waterford Utd"], promotion: true },
+        2: { name: "Pro Continental", teams: ["Paris SG", "Milan AC", "Dortmund Gold", "London Blue", "Manchester Red", "Ajax Stars"], promotion: true, relegation: true },
+        1: { name: "Elite World League", teams: ["Madrid White", "Munich Giants", "Manchester Light Blue", "Barcelona Garnet", "Turin Zebras", "London Red"], relegation: true }
+    },
+
+    status: {
+        isInjured: false,
+        injuryWeeks: 0,
+        yellowCards: 0,
+        isSuspended: false
+    },
+
+    init() {
+        this.renderNewsTicker();
+        this.updateLeagueDisplay();
+    },
+
+    // Dynamic News Generator
+    generateNews(type, data = {}) {
+        const ticker = document.getElementById('news-ticker');
+        const news = {
+            MATCH_WIN: `BREAKING: ${game.state.player.name} leads ${game.state.player.club} to a vital victory!`,
+            TRANSFER_RUMOR: `RUMOR: Top Tier scouts spotted watching ${game.state.player.name} at recent fixture.`,
+            INJURY: `MEDICAL: Heartbreak for ${game.state.player.name} - sidelined for ${data.weeks} weeks.`,
+            PROMOTION: `HISTORY: ${game.state.player.club} have secured promotion to the next tier!`,
+            GOAL: `STUNNER: Is there any stopping ${game.state.player.name}? Another goal added to the tally.`
+        };
+
+        const msg = news[type] || "League News: Season reaching a critical turning point.";
+        ticker.innerHTML = `<span class="news-text">${msg}</span>`;
+    },
+
+    // Physical Health & Discipline Logic
+    processPhysicality(intensity) {
+        // Higher intensity training/matches = higher injury risk
+        const riskFactor = (100 - game.state.player.stats.stamina) / 10;
+        const roll = Math.random() * 100;
+
+        if (roll < (riskFactor + intensity)) {
+            const weeks = Math.floor(Math.random() * 4) + 1;
+            this.status.isInjured = true;
+            this.status.injuryWeeks = weeks;
+            this.generateNews("INJURY", { weeks });
+            controller.logFeed(`INJURY: You've suffered a muscle strain. Out for ${weeks} weeks.`, "var(--accent)");
+            return true;
+        }
+        
+        // Random Discipline (Yellow Cards)
+        if (Math.random() * 100 < 5) {
+            this.status.yellowCards++;
+            controller.logFeed("DISCIPLINE: You received a Yellow Card for a late challenge.", "orange");
+            if (this.status.yellowCards >= 3) {
+                this.status.isSuspended = true;
+                this.status.yellowCards = 0;
+                controller.logFeed("SUSPENSION: Too many bookings. You are banned for 1 match.", "var(--accent)");
+            }
+        }
+        return false;
+    },
+
+    updateLeagueDisplay() {
+        const club = market.clubs.find(c => c.name === game.state.player.club);
+        const currentLeague = this.leagues[club.tier];
+        document.getElementById('ui-league-name').innerText = currentLeague.name.toUpperCase();
+    }
+};
+
+/* --- UI ADDITIONS FOR BATCH 5 --- */
+const newsHTML = `
+    <div id="news-bar" style="position:fixed; bottom:0; left:0; width:100%; height:40px; background:#000; border-top:1px solid var(--primary); display:flex; align-items:center; overflow:hidden; z-index:200;">
+        <div style="background:var(--primary); color:#000; padding:0 20px; height:100%; display:flex; align-items:center; font-weight:900; font-size:0.7rem;">LIVE</div>
+        <div id="news-ticker" style="padding:0 20px; font-size:0.8rem; color:var(--primary); white-space:nowrap; animation: scrollText 20s linear infinite;">
+            Welcome to the new season. Transfer window is officially open.
+        </div>
+    </div>
+    <style>
+        @keyframes scrollText {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .news-text { padding-right: 50px; }
+    </style>
+`;
+document.body.insertAdjacentHTML('beforeend', newsHTML);
+
+/* --- OVERRIDING CORE FUNCTIONS FOR BATCH 5 LOGIC --- */
+const preMatchCheck = controller.startMatchSimulation;
+controller.startMatchSimulation = function() {
+    if (world.status.isInjured) return alert(`You are currently injured for ${world.status.injuryWeeks} more weeks!`);
+    if (world.status.isSuspended) {
+        world.status.isSuspended = false;
+        return alert("You are suspended for this match.");
+    }
+    
+    // Check for injury during the match
+    const gotInjured = world.processPhysicality(10); // 10% base match intensity
+    if (!gotInjured) {
+        preMatchCheck.call(this);
+    }
+};
+
+const preWeekCheck = controller.advanceTime;
+controller.advanceTime = function() {
+    if (world.status.isInjured) {
+        world.status.injuryWeeks--;
+        if (world.status.injuryWeeks <= 0) {
+            world.status.isInjured = false;
+            controller.logFeed("MEDICAL: You have been cleared to play!", "var(--primary)");
+        }
+    }
+    
+    // Random News Generation
+    if (Math.random() > 0.7) world.generateNews("TRANSFER_RUMOR");
+    
+    preWeekCheck.call(this);
+    world.updateLeagueDisplay();
+};
+
+/* --- INITIALIZE TIER UI --- */
+document.querySelector('.view-column:last-child h3').insertAdjacentHTML('beforebegin', `
+    <div class="attr-group" style="margin-bottom:20px; border-color:var(--primary);">
+        <span class="attr-header">Active Competition</span>
+        <h2 id="ui-league-name" style="font-size:1rem; color:white;">-</h2>
+    </div>
+`);
+
+world.init();
+
+/* --- MODULE: LEGACY, AGING & GLOBAL SAVE SYSTEM --- */
+const legacy = {
+    state: {
+        age: 17,
+        totalGoals: 0,
+        trophies: 0,
+        careerEarnings: 0,
+        isRetired: false,
+        bestOvr: 0
+    },
+
+    init() {
+        this.loadGame();
+        this.startAutoSave();
+        this.renderCareerStats();
+    },
+
+    // Aging Logic: Every 40 weeks = 1 year
+    processAging() {
+        if (game.state.player.week % 40 === 0) {
+            this.state.age++;
+            controller.logFeed(`BIRTHDAY: You are now ${this.state.age} years old!`, "var(--gold)");
+            
+            // Physical Decline starts at 30
+            if (this.state.age >= 30) {
+                this.applyPhysicalDecline();
+            }
+            
+            // Forced Retirement at 40
+            if (this.state.age >= 40) {
+                this.retirePlayer();
+            }
+        }
+    },
+
+    applyPhysicalDecline() {
+        const p = game.state.player.stats;
+        p.pace = Math.max(10, p.pace - 2);
+        p.stamina = Math.max(10, p.stamina - 2);
+        controller.logFeed("AGING: Your physical attributes are beginning to decline.", "var(--accent)");
+        controller.updateGlobalUI();
+    },
+
+    retirePlayer() {
+        this.state.isRetired = true;
+        const finalScore = (this.state.totalGoals * 10) + (this.state.trophies * 500) + (game.state.player.bank / 1000);
+        
+        const modal = document.getElementById('modal-decision');
+        const title = document.getElementById('decision-title');
+        const desc = document.getElementById('decision-desc');
+        const options = document.getElementById('decision-options');
+
+        title.innerText = "CAREER END: LEGEND STATUS";
+        desc.innerHTML = `
+            You have retired at age ${this.state.age}.<br><br>
+            <b>GOALS:</b> ${this.state.totalGoals}<br>
+            <b>TROPHIES:</b> ${this.state.trophies}<br>
+            <b>FINAL WEALTH:</b> €${game.state.player.bank.toLocaleString()}<br>
+            <b>GOAT SCORE:</b> ${Math.floor(finalScore)}
+        `;
+        options.innerHTML = `<button class="btn-elite" onclick="location.reload()">NEW CAREER</button>`;
+        modal.style.display = 'flex';
+    },
+
+    // Persistence Logic
+    saveGame() {
+        const saveData = {
+            player: game.state.player,
+            legacy: this.state,
+            lifestyle: lifestyle.state,
+            world: world.status
+        };
+        localStorage.setItem('FOOTBALL_PRO_SAVE', JSON.stringify(saveData));
+    },
+
+    loadGame() {
+        const saved = localStorage.getItem('FOOTBALL_PRO_SAVE');
+        if (saved) {
+            const data = JSON.parse(saved);
+            game.state.player = data.player;
+            this.state = data.legacy;
+            lifestyle.state = data.lifestyle;
+            world.status = data.world;
+            controller.logFeed("SYSTEM: Career Loaded Successfully.", "var(--neon-green)");
+        }
+    },
+
+    startAutoSave() {
+        setInterval(() => this.saveGame(), 30000); // Save every 30 seconds
+    },
+
+    renderCareerStats() {
+        // Adding a dedicated Career Stats display to the Profile Card
+        const uiName = document.getElementById('ui-name');
+        if (uiName) {
+            const statsMini = document.createElement('div');
+            statsMini.style = "font-size:0.6rem; color:#666; margin-top:10px; display:flex; justify-content:center; gap:15px;";
+            statsMini.innerHTML = `
+                <span>AGE: <b id="ui-age" style="color:white">${this.state.age}</b></span>
+                <span>GOALS: <b id="ui-total-goals" style="color:white">${this.state.totalGoals}</b></span>
+                <span>VALUE: <b id="ui-value" style="color:var(--neon-green)">€${(game.state.player.ovr * 1.5).toFixed(1)}M</b></span>
+            `;
+            uiName.after(statsMini);
+        }
+    }
+};
+
+/* --- FINAL INTEGRATION OVERRIDES --- */
+// Hooking into Match End to track goals
+const finalMatchLogic = controller.finalizeMatch;
+controller.finalizeMatch = function(me, opp) {
+    legacy.state.totalGoals += me;
+    legacy.state.careerEarnings += (game.state.player.bank);
+    if (me > opp && Math.random() > 0.9) {
+        legacy.state.trophies++;
+        world.generateNews("PROMOTION");
+    }
+    
+    finalMatchLogic.call(this, me, opp);
+    
+    // Update the mini-stats
+    document.getElementById('ui-total-goals').innerText = legacy.state.totalGoals;
+    document.getElementById('ui-value').innerText = `€${(game.state.player.ovr * 1.5).toFixed(1)}M`;
+};
+
+const finalWeekLogic = controller.advanceTime;
+controller.advanceTime = function() {
+    if (legacy.state.isRetired) return;
+    
+    legacy.processAging();
+    document.getElementById('ui-age').innerText = legacy.state.age;
+    
+    finalWeekLogic.call(this);
+    legacy.saveGame(); // Save on every week advance
+};
+
+// Start the Final Engine
+legacy.init();
+
+// Visual Polish for the "Full Screen" Experience
+document.body.style.userSelect = "none";
+console.log("%c FOOTBALL PRO: VERSION 1.0 (MASTER BUILD) ", "background: #00ff88; color: #000; font-weight: bold;");
+            
 </script>
 </body>
 </html>

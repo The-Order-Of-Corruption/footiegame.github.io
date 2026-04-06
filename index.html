@@ -3,145 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Football Pro: Evolution</title>
+    <title>Football Pro: Manager & Career</title>
     <style>
         :root {
-            --primary: #00ff88;
-            --secondary: #00aeff;
-            --bg: #0f172a;
-            --card: #1e293b;
-            --text: #f8fafc;
-            --gold: #fbbf24;
+            --pitch-green: #2ecc71;
+            --dark-pitch: #27ae60;
+            --ui-blue: #1e3799;
+            --ui-dark: #0c2461;
+            --gold: #f1c40f;
+            --text-light: #f5f6fa;
+            --card-bg: #2f3640;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
         
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            padding: 20px;
+            background-color: #121212;
+            color: var(--text-light);
             display: grid;
-            grid-template-columns: 300px 1fr 300px;
-            gap: 20px;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        /* Sidebar & Layout */
-        .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .main-content { display: flex; flex-direction: column; gap: 20px; }
-        
-        .panel {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
-        }
-
-        h1, h2, h3 { color: var(--primary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Stats Display */
-        .rating-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 8px solid var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin: 0 auto 15px;
-            background: rgba(0, 255, 136, 0.1);
-        }
-
-        /* Training Grid */
-        .training-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-
-        .stat-card {
-            background: rgba(255,255,255,0.03);
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            transition: 0.2s;
-        }
-
-        .stat-card:hover { background: rgba(255,255,255,0.07); }
-
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background: #000;
-            border-radius: 3px;
-            margin: 10px 0;
+            grid-template-columns: 350px 1fr 350px;
+            height: 100vh;
             overflow: hidden;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.1s linear;
+        /* Sidebars */
+        .sidebar {
+            background: var(--ui-dark);
+            padding: 20px;
+            border-right: 1px solid #ffffff10;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
         }
 
-        /* Match Engine UI */
-        #match-console {
-            background: #000;
-            height: 200px;
+        .panel {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Stats & Attributes */
+        .ovr-box {
+            background: linear-gradient(135deg, var(--gold), #d4ac0d);
+            color: #000;
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            margin: 0 auto 10px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #ffffff10;
+        }
+
+        .stat-val { color: var(--pitch-green); font-weight: bold; }
+        .boost-val { color: var(--gold); font-size: 0.8rem; margin-left: 5px; }
+
+        /* Training Center */
+        .main-content {
+            padding: 20px;
             overflow-y: auto;
-            font-family: 'Courier New', monospace;
+            background: radial-gradient(circle at center, #1e3799 0%, #121212 100%);
+        }
+
+        .training-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .train-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #ffffff10;
             padding: 15px;
             border-radius: 8px;
-            font-size: 0.9rem;
-            color: #00ff00;
-            margin-bottom: 15px;
-            border: 1px solid #333;
+            text-align: center;
         }
 
-        .match-log-entry { margin-bottom: 5px; border-left: 2px solid #333; padding-left: 8px; }
+        /* Match Console */
+        #match-display {
+            background: #000;
+            border: 2px solid #333;
+            height: 300px;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            color: #00ff00;
+            margin-bottom: 15px;
+        }
+
+        /* Progress Bars */
+        .pb-bg { width: 100%; height: 8px; background: #000; border-radius: 4px; margin: 10px 0; }
+        .pb-fill { height: 100%; background: var(--pitch-green); width: 0%; transition: width 0.1s linear; }
+
+        /* Shop & Locker Room */
+        .shop-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e272e;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+        }
 
         /* Buttons */
         button {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #000;
+            background: var(--ui-blue);
+            color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-weight: 700;
+            padding: 10px;
+            border-radius: 5px;
             cursor: pointer;
-            width: 100%;
-            transition: 0.3s;
-        }
-
-        button:hover:not(:disabled) { opacity: 0.9; transform: translateY(-2px); }
-        button:disabled { filter: grayscale(1); cursor: not-allowed; }
-
-        /* League Table */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; color: #94a3b8; font-size: 0.8rem; }
-        td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-
-        .currency-pill {
-            background: var(--gold);
-            color: #000;
-            padding: 4px 12px;
-            border-radius: 20px;
+            transition: 0.2s;
             font-weight: bold;
-            display: inline-block;
         }
 
-        /* Mobile */
+        button:hover:not(:disabled) { background: #3c6382; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-buy { background: var(--pitch-green); color: black; padding: 5px 10px; font-size: 0.8rem; }
+        .btn-equip { background: var(--gold); color: black; padding: 5px 10px; font-size: 0.8rem; }
+
+        .tab-btn { padding: 10px; background: none; border-bottom: 2px solid transparent; border-radius: 0; }
+        .tab-btn.active { border-bottom: 2px solid var(--gold); color: var(--gold); }
+
+        /* Scoreboard */
+        .scoreboard {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #000;
+            padding: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
         @media (max-width: 1000px) {
-            body { grid-template-columns: 1fr; }
-            .sidebar { order: 2; }
-            .main-content { order: 1; }
+            body { grid-template-columns: 1fr; overflow-y: auto; height: auto; }
+            .sidebar { border: none; }
         }
     </style>
 </head>
@@ -149,227 +162,366 @@
 
 <div class="sidebar">
     <div class="panel">
-        <h3>Player Profile</h3>
-        <div class="rating-circle" id="overall-val">0</div>
-        <p style="text-align:center; margin-bottom:10px;">Overall Rating</p>
-        <div style="text-align:center">
-            <span class="currency-pill">€ <span id="euros-val">0</span></span>
+        <div class="ovr-box">
+            <span style="font-size: 0.7rem;">OVR</span>
+            <span id="ovr-text">0</span>
         </div>
-        <hr style="margin:15px 0; opacity:0.1">
-        <label>Name</label>
-        <input type="text" id="p-name" placeholder="Wonderkid" style="width:100%; background:#000; border:1px solid #444; color:#fff; padding:5px; margin-bottom:10px;">
-        <label>Position</label>
-        <select id="p-pos" style="width:100%; background:#000; color:#fff; padding:5px;">
-            <option value="ST">ST (Striker)</option>
-            <option value="MID">MID (Midfielder)</option>
-            <option value="DEF">DEF (Defender)</option>
-            <option value="GK">GK (Goalkeeper)</option>
-        </select>
+        <h2 id="display-name" style="text-align: center; margin-bottom: 5px;">Wonderkid</h2>
+        <p id="display-club" style="text-align: center; color: var(--gold); font-size: 0.8rem;">Free Agent</p>
+        
+        <div style="margin-top: 20px;">
+            <div class="stat-row"><span>Position</span><span id="stat-pos" class="stat-val">ST</span></div>
+            <div class="stat-row"><span>Bank Balance</span><span class="stat-val">€<span id="bank-val">0</span></span></div>
+        </div>
     </div>
 
     <div class="panel">
-        <h3>League Standings</h3>
-        <p id="current-league" style="color: var(--gold); font-weight: bold;">Division 5: Sunday League</p>
-        <table>
-            <thead><tr><th>Team</th><th>P</th><th>Pts</th></tr></thead>
-            <tbody id="league-body"></tbody>
+        <h3>Attributes</h3>
+        <div id="attribute-list">
+            </div>
+    </div>
+
+    <div class="panel">
+        <h3>League Table</h3>
+        <table style="width:100%; font-size: 0.8rem;">
+            <thead><tr><th>Team</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr></thead>
+            <tbody id="league-table"></tbody>
         </table>
     </div>
 </div>
 
 <div class="main-content">
-    <div class="panel">
-        <h2>Live Match Engine</h2>
-        <div id="match-console">
-            <div class="match-log-entry">> Welcome to the League. Select a position and train to begin.</div>
-        </div>
-        <button id="btn-match" onclick="startProMatch()">Play Next League Match</button>
+    <div class="scoreboard" id="scoreboard" style="display: none;">
+        <span id="home-team">YOU</span>
+        <span id="live-score">0 - 0</span>
+        <span id="away-team">OPP</span>
+    </div>
+    
+    <div id="match-display">
+        <h3>Pre-Season Briefing</h3>
+        <p>1. Train your skills to improve your OVR.</p>
+        <p>2. Buy equipment in the Shop to boost performance.</p>
+        <p>3. Compete in the League to earn big rewards.</p>
     </div>
 
-    <div class="panel">
-        <h2>Training Center</h2>
-        <div class="training-grid" id="training-grid"></div>
-    </div>
+    <button id="match-btn" onclick="playMatch()" style="width: 100%; font-size: 1.2rem; margin-bottom: 20px; height: 60px;">START NEXT MATCH</button>
+
+    <div class="training-grid">
+        </div>
 </div>
 
 <div class="sidebar">
-    <div class="panel">
-        <h3>Market & Upgrades</h3>
-        <button onclick="openPack('bronze')" style="margin-bottom:10px;">Bronze Pack (50€)</button>
-        <button onclick="openPack('silver')" style="margin-bottom:10px; background: silver;">Silver Pack (150€)</button>
-        <button onclick="openPack('gold')" style="background: var(--gold);">Gold Pack (500€)</button>
+    <div style="display:flex; gap:5px; margin-bottom: 10px;">
+        <button class="tab-btn active" onclick="switchTab('shop')">Shop</button>
+        <button class="tab-btn" onclick="switchTab('locker')">Locker</button>
     </div>
 
-    <div class="panel">
-        <h3>Inventory</h3>
-        <div id="inventory-list" style="font-size: 0.85rem; max-height: 300px; overflow-y: auto;"></div>
+    <div id="shop-view">
+        <div class="panel">
+            <h3>Equipment Shop</h3>
+            <div id="shop-list"></div>
+        </div>
+    </div>
+
+    <div id="locker-view" style="display: none;">
+        <div class="panel">
+            <h3>Equipped Items</h3>
+            <div id="equipped-list"></div>
+            <h3 style="margin-top: 15px;">Your Inventory</h3>
+            <div id="inventory-list"></div>
+        </div>
     </div>
 </div>
 
 <script>
-    // --- DATA ---
-    const stats = { Shooting: 10, Passing: 10, Dribbling: 10, Defending: 10, Speed: 10, Stamina: 10 };
-    let euros = 100;
-    let xp = 0;
-    let division = 5;
-    let leaguePoints = 0;
-    let matchesPlayed = 0;
-    let inventory = [];
-    
-    const leagueNames = ["", "Premier League", "Championship", "League One", "National League", "Sunday League"];
-    
-    // --- INITIALIZATION ---
-    function init() {
-        const grid = document.getElementById('training-grid');
-        Object.keys(stats).forEach(stat => {
-            grid.innerHTML += `
-                <div class="stat-card">
-                    <h4>${stat}</h4>
-                    <div style="font-size: 1.5rem; font-weight:bold;">${stats[stat]}</div>
-                    <div class="progress-container"><div class="progress-fill" id="fill-${stat}"></div></div>
-                    <button onclick="train('${stat}')" id="btn-${stat}">Train</button>
+    // --- GAME DATA ---
+    const game = {
+        player: {
+            name: "Striker Pro",
+            club: "Sunday League FC",
+            pos: "ST",
+            bank: 250,
+            stats: { shooting: 15, passing: 15, dribbling: 15, defending: 10, physical: 15, gk: 5 },
+            inventory: [],
+            equipped: { boots: null, accessory: null, training_kit: null }
+        },
+        league: {
+            currentMatch: 0,
+            points: 0,
+            w: 0, d: 0, l: 0,
+            opponents: [
+                { name: "Local Pub XI", rating: 12 },
+                { name: "Harbor Town", rating: 25 },
+                { name: "Valley United", rating: 35 },
+                { name: "City Academy", rating: 48 },
+                { name: "Blue Giants", rating: 60 },
+                { name: "Madrid Elite", rating: 75 },
+                { name: "London FC", rating: 85 },
+                { name: "World Stars", rating: 95 }
+            ]
+        }
+    };
+
+    const shopItems = [
+        { id: 1, name: "Starter Boots", price: 100, type: 'boots', boost: 'shooting', value: 5 },
+        { id: 2, name: "Speed Cleats", price: 500, type: 'boots', boost: 'dribbling', value: 12 },
+        { id: 3, name: "Weighted Vest", price: 300, type: 'training_kit', boost: 'physical', value: 8 },
+        { id: 4, name: "Tactical Watch", price: 400, type: 'accessory', boost: 'passing', value: 10 },
+        { id: 5, name: "Pro Gloves", price: 200, type: 'accessory', boost: 'gk', value: 20 }
+    ];
+
+    // --- ENGINE ---
+    function calculateOvr() {
+        const s = game.player.stats;
+        let base = (s.shooting + s.passing + s.dribbling + s.defending + s.physical) / 5;
+        
+        // Add Equipment Bonuses
+        Object.values(game.player.equipped).forEach(item => {
+            if(item) base += (item.value / 5);
+        });
+        
+        return Math.floor(base);
+    }
+
+    function updateUI() {
+        document.getElementById('bank-val').innerText = game.player.bank;
+        document.getElementById('ovr-text').innerText = calculateOvr();
+        
+        // Update Attributes
+        const attrList = document.getElementById('attribute-list');
+        attrList.innerHTML = '';
+        Object.keys(game.player.stats).forEach(key => {
+            let boost = 0;
+            Object.values(game.player.equipped).forEach(item => {
+                if(item && item.boost === key) boost += item.value;
+            });
+
+            attrList.innerHTML += `
+                <div class="stat-row">
+                    <span style="text-transform: capitalize;">${key}</span>
+                    <span>
+                        <span class="stat-val">${game.player.stats[key]}</span>
+                        ${boost > 0 ? `<span class="boost-val">+${boost}</span>` : ''}
+                    </span>
                 </div>
             `;
         });
-        updateUI();
+
+        updateLocker();
         updateLeagueTable();
     }
 
-    // --- LOGIC ---
-    function train(stat) {
+    function initTraining() {
+        const grid = document.querySelector('.training-grid');
+        grid.innerHTML = '';
+        Object.keys(game.player.stats).forEach(stat => {
+            grid.innerHTML += `
+                <div class="train-card">
+                    <h4 style="text-transform: capitalize;">${stat}</h4>
+                    <div class="pb-bg"><div class="pb-fill" id="fill-${stat}"></div></div>
+                    <button id="btn-${stat}" onclick="runTraining('${stat}')">TRAIN (+1)</button>
+                </div>
+            `;
+        });
+    }
+
+    function runTraining(stat) {
         const btn = document.getElementById(`btn-${stat}`);
         const fill = document.getElementById(`fill-${stat}`);
         btn.disabled = true;
         
+        // Slower training as you get better
+        let speed = Math.max(10, 50 - (game.player.stats[stat] / 2));
         let progress = 0;
-        const interval = setInterval(() => {
-            progress += 2;
+        
+        const timer = setInterval(() => {
+            progress += 1;
             fill.style.width = progress + "%";
-            if (progress >= 100) {
-                clearInterval(interval);
-                stats[stat]++;
-                euros += 5;
+            if(progress >= 100) {
+                clearInterval(timer);
+                game.player.stats[stat]++;
+                game.player.bank += 10;
                 fill.style.width = "0%";
                 btn.disabled = false;
                 updateUI();
             }
-        }, 50);
+        }, speed);
     }
 
-    function updateUI() {
-        document.getElementById('euros-val').innerText = euros;
-        let avg = Object.values(stats).reduce((a,b) => a+b) / 6;
-        document.getElementById('overall-val').innerText = Math.floor(avg);
+    // --- SHOP & LOCKER ---
+    function initShop() {
+        const list = document.getElementById('shop-list');
+        list.innerHTML = shopItems.map(item => `
+            <div class="shop-item">
+                <span>${item.name} <br><small style="color:var(--gold)">+${item.value} ${item.boost}</small></span>
+                <button class="btn-buy" onclick="buyItem(${item.id})">€${item.price}</button>
+            </div>
+        `).join('');
+    }
+
+    function buyItem(id) {
+        const item = shopItems.find(i => i.id === id);
+        if(game.player.bank >= item.price) {
+            game.player.bank -= item.price;
+            game.player.inventory.push({...item, instanceId: Date.now()});
+            updateUI();
+            alert("Purchased " + item.name);
+        } else {
+            alert("Not enough money!");
+        }
+    }
+
+    function updateLocker() {
+        const invList = document.getElementById('inventory-list');
+        const eqList = document.getElementById('equipped-list');
+        
+        invList.innerHTML = game.player.inventory.length === 0 ? "Inventory empty." : "";
+        eqList.innerHTML = "";
+
+        game.player.inventory.forEach(item => {
+            const isEquipped = Object.values(game.player.equipped).some(e => e && e.instanceId === item.instanceId);
+            if(!isEquipped) {
+                invList.innerHTML += `
+                    <div class="shop-item">
+                        <span>${item.name}</span>
+                        <button class="btn-equip" onclick="equipItem(${item.instanceId})">Equip</button>
+                    </div>
+                `;
+            }
+        });
+
+        Object.keys(game.player.equipped).forEach(slot => {
+            const item = game.player.equipped[slot];
+            if(item) {
+                eqList.innerHTML += `
+                    <div class="shop-item" style="border: 1px solid var(--gold)">
+                        <span>[${slot.toUpperCase()}] ${item.name}</span>
+                        <button class="btn-buy" style="background:#c0392b" onclick="unequipItem('${slot}')">X</button>
+                    </div>
+                `;
+            }
+        });
+    }
+
+    function equipItem(instanceId) {
+        const item = game.player.inventory.find(i => i.instanceId === instanceId);
+        game.player.equipped[item.type] = item;
+        updateUI();
+    }
+
+    function unequipItem(slot) {
+        game.player.equipped[slot] = null;
+        updateUI();
+    }
+
+    // --- MATCH SYSTEM ---
+    function playMatch() {
+        const opp = game.league.opponents[game.league.currentMatch % game.league.opponents.length];
+        const btn = document.getElementById('match-btn');
+        const consoleEl = document.getElementById('match-display');
+        const scoreboard = document.getElementById('scoreboard');
+        
+        btn.disabled = true;
+        consoleEl.innerHTML = "";
+        scoreboard.style.display = "flex";
+        document.getElementById('away-team').innerText = opp.name.toUpperCase();
+        
+        let min = 0;
+        let scoreH = 0;
+        let scoreA = 0;
+        const myOvr = calculateOvr();
+
+        const matchLoop = setInterval(() => {
+            min += 1;
+            if(min % 10 === 0) {
+                const log = document.createElement('div');
+                // Tactical calculation
+                let rng = Math.random() * 100;
+                let successChance = 40 + (myOvr - opp.rating);
+                
+                if(rng < 15) { // Attacking Chance
+                    if(Math.random() * 100 < successChance) {
+                        scoreH++;
+                        log.innerHTML = `<span style="color:var(--gold)">${min}' - GOAL! You find the bottom corner!</span>`;
+                    } else {
+                        log.innerText = `${min}' - You break through but the keeper saves it.`;
+                    }
+                } else if (rng > 85) { // Opponent Attacking Chance
+                    if(Math.random() * 100 > successChance + 20) {
+                        scoreA++;
+                        log.innerHTML = `<span style="color:#e74c3c">${min}' - GOAL! ${opp.name} score on the counter.</span>`;
+                    } else {
+                        log.innerText = `${min}' - ${opp.name} attack, but you intercept the ball.`;
+                    }
+                } else {
+                    log.innerText = `${min}' - Tough tactical battle in midfield...`;
+                }
+                
+                consoleEl.prepend(log);
+                document.getElementById('live-score').innerText = `${scoreH} - ${scoreA}`;
+            }
+
+            if(min >= 90) {
+                clearInterval(matchLoop);
+                endMatch(scoreH, scoreA, opp);
+            }
+        }, 100);
+    }
+
+    function endMatch(h, a, opp) {
+        const btn = document.getElementById('match-btn');
+        let bonus = 50;
+        if(h > a) {
+            game.league.w++;
+            game.league.points += 3;
+            bonus = 200 + (opp.rating * 2);
+            alert("Match Finished: Victory! You earned €" + bonus);
+        } else if (h === a) {
+            game.league.d++;
+            game.league.points += 1;
+            bonus = 80;
+            alert("Match Finished: Draw. You earned €" + bonus);
+        } else {
+            game.league.l++;
+            alert("Match Finished: Defeat.");
+        }
+        
+        game.player.bank += bonus;
+        game.league.currentMatch++;
+        btn.disabled = false;
+        updateUI();
     }
 
     function updateLeagueTable() {
-        const tbody = document.getElementById('league-body');
-        const teams = [
-            { name: "You", pts: leaguePoints },
-            { name: "Red Devils", pts: 12 },
-            { name: "Blue Moon", pts: 10 },
-            { name: "The Gunners", pts: 7 }
+        const table = document.getElementById('league-table');
+        const rows = [
+            { name: "YOU", w: game.league.w, d: game.league.d, l: game.league.l, pts: game.league.points },
+            { name: "Elite FC", w: 5, d: 1, l: 0, pts: 16 },
+            { name: "Sunday Utd", w: 2, d: 2, l: 2, pts: 8 },
+            { name: "Local Pub", w: 0, d: 1, l: 5, pts: 1 }
         ].sort((a,b) => b.pts - a.pts);
 
-        tbody.innerHTML = teams.map(t => `<tr><td>${t.name}</td><td>${matchesPlayed}</td><td>${t.pts}</td></tr>`).join('');
+        table.innerHTML = rows.map(r => `
+            <tr>
+                <td style="${r.name === 'YOU' ? 'color:var(--gold)' : ''}">${r.name}</td>
+                <td>${r.w}</td><td>${r.d}</td><td>${r.l}</td>
+                <td><b>${r.pts}</b></td>
+            </tr>
+        `).join('');
     }
 
-    // --- PRO MATCH ENGINE ---
-    function startProMatch() {
-        const btn = document.getElementById('btn-match');
-        const consoleEl = document.getElementById('match-console');
-        btn.disabled = true;
-        consoleEl.innerHTML = '';
-        
-        let minute = 0;
-        let myScore = 0;
-        let oppScore = 0;
-        
-        const matchInterval = setInterval(() => {
-            minute += 5;
-            const log = document.createElement('div');
-            log.className = 'match-log-entry';
-            
-            // Logic based on stats
-            let eventRand = Math.random() * 100;
-            if(eventRand > 85) {
-                if(stats.Shooting + stats.Speed > Math.random() * 150) {
-                    myScore++;
-                    log.innerText = `${minute}' - GOAL! Brilliant finish by the Wonderkid! (${myScore}-${oppScore})`;
-                    log.style.color = 'var(--primary)';
-                } else {
-                    log.innerText = `${minute}' - Chance missed! Needs more Shooting training.`;
-                }
-            } else if (eventRand < 15) {
-                if(stats.Defending < Math.random() * 60) {
-                    oppScore++;
-                    log.innerText = `${minute}' - Goal conceded. Defense was caught sleeping. (${myScore}-${oppScore})`;
-                    log.style.color = '#ff4444';
-                } else {
-                    log.innerText = `${minute}' - Great tackle! Clean defensive work.`;
-                }
-            } else {
-                log.innerText = `${minute}' - Midfield battle continues...`;
-            }
-
-            consoleEl.appendChild(log);
-            consoleEl.scrollTop = consoleEl.scrollHeight;
-
-            if (minute >= 90) {
-                clearInterval(matchInterval);
-                finishMatch(myScore, oppScore);
-                btn.disabled = false;
-            }
-        }, 400);
+    function switchTab(tab) {
+        document.getElementById('shop-view').style.display = tab === 'shop' ? 'block' : 'none';
+        document.getElementById('locker-view').style.display = tab === 'locker' ? 'block' : 'none';
+        const btns = document.querySelectorAll('.tab-btn');
+        btns[0].classList.toggle('active', tab === 'shop');
+        btns[1].classList.toggle('active', tab === 'locker');
     }
 
-    function finishMatch(me, opp) {
-        matchesPlayed++;
-        let reward = 20;
-        if(me > opp) {
-            leaguePoints += 3;
-            reward = 100;
-            alert("Victory! Earned 100€");
-        } else if (me === opp) {
-            leaguePoints += 1;
-            reward = 40;
-            alert("Draw! Earned 40€");
-        } else {
-            alert("Defeat. Earned 20€");
-        }
-        euros += reward;
-        
-        if(leaguePoints >= 15) {
-            division--;
-            leaguePoints = 0;
-            matchesPlayed = 0;
-            alert("PROMOTED! You are now in Division " + division);
-            document.getElementById('current-league').innerText = `Division ${division}: ${leagueNames[division]}`;
-        }
-        
-        updateUI();
-        updateLeagueTable();
-    }
-
-    function openPack(tier) {
-        const costs = { bronze: 50, silver: 150, gold: 500 };
-        if(euros < costs[tier]) return alert("Not enough money!");
-        
-        euros -= costs[tier];
-        const items = ["Speed Boots", "Golden Whistle", "Energy Drink", "Elite Coach", "Titanium Shinguards"];
-        const item = items[Math.floor(Math.random()*items.length)];
-        
-        inventory.push(item);
-        document.getElementById('inventory-list').innerHTML += `<div>📦 ${tier.toUpperCase()}: ${item}</div>`;
-        
-        // Randomly boost a stat for opening a pack
-        const s = Object.keys(stats);
-        stats[s[Math.floor(Math.random()*s.length)]] += 2;
-        
-        updateUI();
-    }
-
-    init();
+    // --- START ---
+    initTraining();
+    initShop();
+    updateUI();
 </script>
 
 </body>
